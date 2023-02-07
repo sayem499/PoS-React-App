@@ -1,21 +1,22 @@
 import '../css/layout.css'
 import {Outlet, Link} from 'react-router-dom'
+import {SidebarData} from './sidebardata'
 
 function Layout (){
 
     return (
         <>
+         <div className='Sidebar'>
          <nav>
-            <ul>
-                <li>
-                    <Link to="/">Home</Link>
-                </li>
-
-            </ul>
+            
          </nav>
-         <Outlet/>
+         </div>
 
+         <Link to="/">Home</Link>
+         <Outlet/>
+          
         </>
+       
     )
 }
 
