@@ -1,11 +1,11 @@
 import '../css/dashboard.css'
-function Dashboard(){
+function Customers(){
 
     return(
         <div className='dashboard'>
-          <h1>Hello AgAin</h1>
+          <h1>CUSTGOMERS</h1>
         </div>
     )
 }
 
-export default Dashboard
+export default Customers

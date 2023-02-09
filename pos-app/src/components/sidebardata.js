@@ -1,25 +1,28 @@
 import React from "react";
 import GridViewIcon from '@mui/icons-material/GridView';
+import PeopleIcon from '@mui/icons-material/People';
+import Inventory2Icon from '@mui/icons-material/Inventory2';
+import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 
 export const SidebarData = [
     {
         title: "Dashboard",
         icon:  <GridViewIcon/>,
-        link:  "/dashboard"
+        link:  "/"
     },
     {
         title: "Customers",
-        icon:  <GridViewIcon/>,
-        link:  "/dashboard"
+        icon:  <PeopleIcon/>,
+        link:  "/customers"
     },
     {
         title: "Products",
-        icon:  <GridViewIcon/>,
-        link:  "/dashboard"
+        icon:  <Inventory2Icon/>,
+        link:  "/products"
     },
     {
         title: "Suppliers",
-        icon:  <GridViewIcon/>,
-        link:  "/dashboard"
+        icon:  <LocalShippingIcon/>,
+        link:  "/suppliers"
     },
 ]
