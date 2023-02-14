@@ -5,22 +5,24 @@
 
 .Sidebar {
     height: 100%;
-    width: 250px;
+    width: 275px;
     background-color: #0f1c33;
     float:left;
-    position: absolute;
 }
 
 .SidebarList {
    height:auto;
    padding:0;
    width:100%;
+   
+   
 
 }
 
+
+
 .SidebarList .row{
    height:70px;
-   width:100%;
    list-style-type: none;
    margin:0%;
    display:flex;
@@ -28,19 +30,25 @@
    color:white;
    justify-content: center;
    align-items: center;
-   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-
-
-}
-
-.SidebarList .row:hover {
-    cursor: pointer;
-    background-color:#1e5004 ;
+   transition :0.2s cubic-bezier(0.6, -0.28, 0.735, 0.045);
+   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; 
+   border-right: 2px solid transparent;
 }
 
 .SidebarList #active {
-    background-color:#1e5004 ;
+    background-color:#010920 ;
+    border-right: 2px solid white;
 }
+
+.SidebarList .row:hover {
+    border-right: 2px solid white;
+    transition :0.2s cubic-bezier(0.6, -0.28, 0.735, 0.045);
+    cursor: pointer; 
+    background-color:#686666 ;
+    
+}
+
+
 
 .row #icon{
     flex: 30%;
@@ -53,6 +61,31 @@
 }
 
 .Outlet{
+    height: 100%;
     float:center;
-    margin-left: 250px;
+    margin-left: 200px;
+}
+
+.top-section {
+    height: 60px;
+    display: flex;
+    flex-direction: row;
+    padding: 0;
+    margin: 2px;
+    justify-content: center;
+    align-items: center;
+    
+}
+.logo {
+    display: grid;
+    color: white;
+    place-items: center;
+    flex: 80%;
+}
+
+.menu-icon {
+    display: grid;
+    color: white;
+    place-items: center;
+    flex:auto;
 }
