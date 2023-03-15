@@ -5,6 +5,7 @@ import {motion} from "framer-motion"
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import { useState } from 'react';
+import Searchbar from './searchbar';
 
 function Layout (){
     const [isOpen, setIsOpen] = useState(true); 
@@ -35,9 +36,12 @@ function Layout (){
             })}
            </ul>
          </motion.div>
-         <div className='Outlet'>
+         <div style= {{marginLeft: isOpen ? "200px" : "40px"}} className='Outlet'>
+         <Searchbar/>
+         <div>
             <Outlet/>
-
+         </div>
+         
          </div>
         </div>  
     
