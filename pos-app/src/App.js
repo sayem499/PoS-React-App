@@ -4,6 +4,7 @@ import Dashboard from './views/dashboard.jsx'
 import Customers from './views/customers.jsx'
 import Products from './views/products.jsx'
 import Suppliers from './views/suppliers.jsx'
+import Profile from './views/profile.jsx'
 import "./css/App.css"
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
                 <Route path="/customers" element={<Customers/>}></Route>
                 <Route path="/products" element={<Products/>}></Route>
                 <Route path="/suppliers" element={<Suppliers/>}></Route>
+                <Route path="/profile" element={<Profile/>}></Route>
             </Route>
 
 
