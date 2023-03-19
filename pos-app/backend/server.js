@@ -17,6 +17,9 @@ connection.once('open', () => {
     console.log("MOngoDB database connection established successfully")
 })
 
+
+app.use('/api/products', require('./routes/product.routes'))
+
 app.listen(port, () => {
     console.log(`Server is running on port: ${port}`)
 } )
