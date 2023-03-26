@@ -8,7 +8,7 @@ const  productSchema = mongoose.Schema({
     productType: {type: String, required: true},
     productUnitPrice: {type: Number, required: true}
 }, {
-    timestamp: true
+    timestamps: true
 })
 
 module.exports = mongoose.model('Products', productSchema )
