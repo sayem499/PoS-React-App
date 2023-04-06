@@ -40,7 +40,7 @@
 
 .SidebarList #active {
     background-color:#010920 ;
-    border-right: 2px solid white;
+    border-right: 2px solid #c2bebeb8;
 }
 
 .SidebarList .row:hover {
@@ -76,6 +76,7 @@
     margin: 2px;
     justify-content: center;
     align-items: center;
+    border-bottom: 1px solid white;
     
 }
 .logo {

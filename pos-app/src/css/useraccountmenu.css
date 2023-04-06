@@ -1,30 +1,31 @@
 .Useraccountmenu {
      position: absolute;
-     top: 80px;
-     right: 55px;
+     top: 85px;
+     right: 30px;
      background-color: #fff;
-     /* border-radius: 20px; */
+     border-radius: 5px;
      padding: 10px 20px;
      border: 1px solid #0f1c33;
      height: fit-content;
 
-
     }
 
-/* .Useraccountmenu::before {
+.Useraccountmenu::before {
     content: '';
     position: absolute;
-    top: -5px;
-    right: 20px;
+    top: -11px;
+    right: 15px;
     height: 20px;
     width: 20px;
     background: #fff;
+    border-left: 1px solid #0f1c33;
+    border-top: 1px solid #0f1c33;
     transform: rotate(45deg);
 
 
 
 
-} */
+}
 .Useraccountmenu.active {
     opacity: 1;
     visibility: visible;

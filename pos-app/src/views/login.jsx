@@ -1,4 +1,3 @@
-import React from 'react'
 import { useState } from 'react'
 import '../css/login.css'
 import PosLogo from '../assets/pos-logo.jpg'
@@ -18,7 +17,7 @@ function Login() {
     <div className='Login'>
       <form onSubmit={handleSubmit}>
         <img src={PosLogo} alt='PoS logo' className='Poslogo'></img>
-        <span>Login</span>
+        <h3>Login</h3>
         <label htmlform="Username">Username </label>
         <input value={userName} onChange={(e) => setUserName(e.target.value)} type="username" placeholder="Username" id="Username" name="Username"></input>
         <label htmlform="Password">Password </label>

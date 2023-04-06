@@ -36,13 +36,13 @@ function Layout (){
             })}
            </ul>
          </motion.div>
-         <div style= {{marginLeft: isOpen ? "200px" : "40px"}} className='Outlet'>
+         <motion.div animate = {{marginLeft: isOpen ? "200px" : "40px"}} className='Outlet'>
          <Searchbar/>
          <div>
             <Outlet/>
          </div>
          
-         </div>
+         </motion.div>
         </div>  
     
         

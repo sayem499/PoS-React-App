@@ -1,0 +1,22 @@
+.users{
+    width:100%;
+    height:100%;
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden; 
+}
+.usertable {
+    margin: 50px;
+    width:  inherit;
+    height: 400px;
+    overflow: hidden; 
+    
+}
+
+.registeruser {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

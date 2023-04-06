@@ -3,6 +3,7 @@ import GridViewIcon from '@mui/icons-material/GridView';
 import PeopleIcon from '@mui/icons-material/People';
 import Inventory2Icon from '@mui/icons-material/Inventory2';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
+import GroupAddTwoToneIcon from '@mui/icons-material/GroupAddTwoTone';
 
 export const SidebarData = [
     {
@@ -24,5 +25,10 @@ export const SidebarData = [
         title: "Suppliers",
         icon:  <LocalShippingIcon/>,
         link:  "/suppliers"
+    },
+    {
+        title: "Users",
+        icon:  <GroupAddTwoToneIcon/>,
+        link:  "/users"
     },
 ]

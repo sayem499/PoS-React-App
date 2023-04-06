@@ -12,6 +12,7 @@ body {
 
 
 .Login {
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -42,13 +43,10 @@ button {
     margin: 10px;
 }
 
-span{
-    margin: 10px 0 20px 0;
+h1{
+    margin: 0px 0 20px 0;
 }
 
-img {
-   
-}
 .Poslogo {
     
     height: 200px;

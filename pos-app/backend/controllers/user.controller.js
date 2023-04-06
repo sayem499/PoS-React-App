@@ -13,7 +13,7 @@ const getUsers = asyncHandler( async (req, res) => {
 
 
 //@desc Register new users
-//@route POST /api/users
+//@route POST /api/users/register
 //@acess Private
 const registerUser = asyncHandler( async (req, res) => {
     const {userName, userPassword, userType} = req.body
@@ -33,13 +33,14 @@ const registerUser = asyncHandler( async (req, res) => {
 
     //Generate Salt & Password hash.
     const salt = await bcrypt.genSalt(10)
-    const hashedPassword = await bcrypt.hash(req.body.userPassword, salt)
+    const hashedPassword = await bcrypt.hash(userPassword, salt)
     
     //Create user
     const users = await Users.create({
-        userName: req.body.userName,
-        userType: req.body.userType,
-        userPassword: hashedPassword
+        userName: userName,
+        userPassword: hashedPassword,
+        userType: userType
+        
     })
 
     //Check whether user is created successfully or not
@@ -48,6 +49,7 @@ const registerUser = asyncHandler( async (req, res) => {
         res.status(201).json({
             _id: users.id,
             userName: users.userName,
+            userType: users.userType,
             token: generateToken(users._id)
         })
     }else{
@@ -67,6 +69,7 @@ const loginUser = asyncHandler( async (req, res) => {
         res.json({
             _id: user.id,
             userName: user.userName,
+            userType: user.userType,
             token: generateToken(user._id)  
         })
     }else{
