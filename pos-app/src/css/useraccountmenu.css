@@ -50,11 +50,19 @@
     
 }
 
-.Useraccountmenu .icon{
+.Useraccountmenu .icon1{
     display: grid;
     padding-right: 10px;
     place-items: center;
 }
+
+.Useraccountmenu .icon2{
+    display: grid;
+    padding-right: 10px;
+    place-items: center;
+}
+
+
 .Useraccountmenu .title {
     display: flex;
     align-items: center;

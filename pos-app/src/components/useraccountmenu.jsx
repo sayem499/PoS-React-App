@@ -1,25 +1,51 @@
 import '../css/useraccountmenu.css'
-import {UserAccountMenuData} from '../utils/useraccountmenudata.jsx'
 import { useNavigate } from 'react-router-dom'
 import Accountlogo from "../assets/accountlogo.png"
-
+import { useSelector, useDispatch } from 'react-redux'
+import { logout, reset } from '../auth/authSlice.js'
+import { useEffect } from 'react'
+import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
+import ExitToAppOutlinedEIcon from '@mui/icons-material/ExitToAppOutlined';
 
 function UserAccountMenu(classnameprop) {
+  const {user} = useSelector((state) => state.auth )  
+  const dispatch = useDispatch()
   const navigate = useNavigate()
+  
+
+  const onLogout = (e) => {
+      e.preventDefault()
+      dispatch(logout())
+      navigate('/login')
+
+  }
+
+  const onClick = () =>{
+    navigate('/profile')
+  } 
+
+  useEffect(() => {
+    
+    dispatch(reset())
+    
+  }, [dispatch])
+
+  
+  
+  
+  
     return (
-        <div className = {`Useraccountmenu ${classnameprop ? " active" : "inactive"}`}>
+        <div className = {`Useraccountmenu ${classnameprop ? "active" : "inactive"}`}>
              <div className='Userimage'><img src={Accountlogo} alt="UserImage" ></img></div>
-             <div className='Userid'>User ID</div>
+             <div className='Userid'>{user ? user.userName : ""}</div>
             <ul>
             <hr/>
-                {UserAccountMenuData.map((val, key) => {
-                    return (
-                        <li key={key} onClick= {()=> {navigate(val.link)}}>
-                        <div className='icon'>{val.icon}</div> 
-                        <div className='title'>{val.title}</div>
-                        </li>
-                    )
-                }) }
+             <li onClick ={onClick}>
+                <AccountCircleOutlinedIcon className='icon1' />Profile
+             </li>
+             <li onClick = {onLogout}>
+                <ExitToAppOutlinedEIcon className='icon2' />Signout
+            </li>
                 
                 
             </ul>

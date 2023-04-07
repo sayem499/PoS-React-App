@@ -4,13 +4,22 @@ import {SidebarData} from './sidebardata'
 import {motion} from "framer-motion"
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Searchbar from './searchbar';
+import { useSelector} from 'react-redux'
 
 function Layout (){
+    const {user} = useSelector((state) => state.auth )
     const [isOpen, setIsOpen] = useState(true); 
     const toggle = () => setIsOpen(!isOpen)
     const navigate = useNavigate()
+    
+
+    useEffect(() => {
+        if(!user){
+             navigate("/login")
+        }
+    }, [user])
     return (
         <div className='Wrapper'> 
          <motion.div animate={{width: isOpen ? "200px" : "40px"}} className='Sidebar'>

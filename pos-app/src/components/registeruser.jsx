@@ -3,6 +3,8 @@ import { useEffect, useState } from 'react'
 import { register, reset } from '../auth/authSlice.js'
 import { useSelector, useDispatch } from 'react-redux'
 import { toast } from 'react-toastify'
+import { Blocks } from 'react-loader-spinner'
+
 
 
 
@@ -22,9 +24,9 @@ function Registeruser(propdata) {
       toast.error(message)
     }
 
-    /* if(isSuccess || user){
+    if(isSuccess){
       toast.success('User created!')
-    } */
+    }
     
     dispatch(reset())
 
@@ -43,11 +45,26 @@ function Registeruser(propdata) {
         userPassword,
         userType,
       }
-     
+      
       dispatch(register(userData))
+      setUserName('')
+      setPassWord('')
+      setPassWord2('')
+      setUserType('')
     }
     
 
+  }
+
+  if(isLoading){
+    return <Blocks
+      visible={true}
+      height="80"
+      width="80"
+      ariaLabel="blocks-loading"
+      wrapperStyle={{}}
+      wrapperClass="blocks-wrapper"
+    />
   }
 
 
