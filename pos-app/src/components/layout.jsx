@@ -13,13 +13,16 @@ function Layout (){
     const [isOpen, setIsOpen] = useState(true); 
     const toggle = () => setIsOpen(!isOpen)
     const navigate = useNavigate()
+
+    
+
     
 
     useEffect(() => {
         if(!user){
              navigate("/login")
         }
-    }, [user])
+    }, [user, navigate])
     return (
         <div className='Wrapper'> 
          <motion.div animate={{width: isOpen ? "200px" : "40px"}} className='Sidebar'>
@@ -32,8 +35,14 @@ function Layout (){
           </div>
           <ul className='SidebarList'>
            {SidebarData.map((val, key)=>{
+            let userRole = 'regular'
+                if(user){
+                    const {userType} = user
+                    userRole = userType
+                }
+            
             return(
-            <li id={window.location.pathname === val.link ? "active" : ""} className="row" key={key} onClick={()=>{navigate(val.link)}} >
+            <li id={window.location.pathname === val.link ? "active" : ""} className={`row  ${(userRole === 'regular' && val.title === 'Users') ? "invisible" : "visible"}`} key={key} onClick={()=>{navigate(val.link)}} >
                 {" "}
                 <div id='icon'>{val.icon}</div>{" "}
                 {isOpen && <div id='title'>{val.title}</div>}

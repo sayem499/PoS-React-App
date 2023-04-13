@@ -92,3 +92,13 @@
     place-items: center;
     flex:auto;
 }
+
+.row.visible {
+    opacity: 1;
+    visibility: visible;
+} 
+
+.row.invisible {
+    opacity: 0;
+    visibility: hidden;
+} 

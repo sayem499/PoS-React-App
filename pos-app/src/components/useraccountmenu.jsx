@@ -15,8 +15,9 @@ function UserAccountMenu(classnameprop) {
 
   const onLogout = (e) => {
       e.preventDefault()
-      dispatch(logout())
       navigate('/login')
+      dispatch(logout())
+      
 
   }
 
