@@ -13,7 +13,6 @@ function Login() {
     (state) => state.auth)
   const [userName, setUserName] = useState("")
   const [userPassword, setPassWord] = useState("")
-  const [userType, setUserType] = useState("")
 
   const dispatch = useDispatch()
   const navigate = useNavigate()

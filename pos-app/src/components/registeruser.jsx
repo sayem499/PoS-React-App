@@ -35,7 +35,7 @@ function Registeruser(propdata) {
   const handleSubmit = (e) => {
     e.preventDefault()
 
-    if(userType !== "admin" && userType !== "reguler"){
+    if(userType !== "admin" && userType !== "regular"){
       toast.error('Please choose a role!')
     }else if(userPassword !== passWord2){
       toast.error('Passwords do not match!')
