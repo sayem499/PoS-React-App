@@ -71,8 +71,8 @@ function Users(){
             {isOpen ? <Registeruser data={isOpen}/>: ""}
           </div>
         </div>
+        <span className='activeuser'>Active Users</span>
         <div className='usertable'>
-          Active Users
           {users.users ? <DataGrid
             rows={rows}
             columns={columns}

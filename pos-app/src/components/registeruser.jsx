@@ -12,7 +12,7 @@ function Registeruser(propdata) {
   const [userName, setUserName] = useState('')
   const [userPassword, setPassWord] = useState('')
   const [passWord2, setPassWord2] = useState('')
-  const [userType, setUserType] = useState('')
+  const [userType, setUserType] = useState('choose')
 
   const dispatch = useDispatch()
 
@@ -35,7 +35,9 @@ function Registeruser(propdata) {
   const handleSubmit = (e) => {
     e.preventDefault()
 
-    if(userType !== "admin" && userType !== "regular"){
+    if(userName || userPassword || passWord2 === ''){
+      toast.error('Please fill the required fields!')
+    }else if(userType !== "admin" && userType !== "regular"){
       toast.error('Please choose a role!')
     }else if(userPassword !== passWord2){
       toast.error('Passwords do not match!')
@@ -78,7 +80,7 @@ function Registeruser(propdata) {
         <input value={passWord2} onChange={(e) => setPassWord2(e.target.value)} type="password" placeholder="Retype password" id="Password2" name="Password2"></input>
         <label htmlform="User Type" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select an option</label>
         <select value = {userType} onChange={(e) => setUserType(e.target.value)} id="userRole" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-          <option selected >Choose a role...</option>
+          <option value="choose">Choose a role...</option>
           <option value="admin">Admin</option>
           <option value="regular">Reguler</option>
         </select>
