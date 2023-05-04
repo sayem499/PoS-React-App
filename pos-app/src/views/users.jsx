@@ -60,7 +60,6 @@ function Users(){
           return { ...values, id: i}
           
         })
-        console.log(rows)
       }
     
     return(

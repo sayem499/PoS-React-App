@@ -1,9 +1,10 @@
 import '../css/dashboard.css'
+import BasicTable from '../components/tableproduct'
 function Products(){
 
     return(
-        <div className='dashboard'>
-          <h1>Hello PRODUCTS</h1>
+        <div className='productpage'>
+          <BasicTable/>
         </div>
     )
 }
