@@ -12,9 +12,13 @@ function Searchbar() {
 
     useEffect(() => {
         let handler = (e) => {
+         try{
             if(!menuref.current.contains(e.target)){
                 setIsOpen(false)
             }
+         } catch (error){
+            console.log(error)
+         }
             
         }
         document.addEventListener('mousedown',handler)

@@ -9,6 +9,8 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { useEffect } from 'react';
 import { allProducts, reset } from '../redux/products/productSlice';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 
 
 
@@ -20,22 +22,24 @@ export default function BasicTable() {
     const dispatch = useDispatch()
     const { products, isError, isLoading, message } = useSelector( (state) => state.products )
     
-    useEffect(() => {
-        if(isError){
-            console.log(message)
-        }
+  useEffect(() => {
+    if (!user) {
+      navigate('/login')
+    }
 
-        if(!user){
-            navigate('/login')
-        }
+    if (isError) {
+      console.log(message)
+    }
 
-        dispatch(allProducts())
 
-        return() => {
-            dispatch(reset())
-          }
 
-    },[ user, isError, message, navigate, dispatch])
+    dispatch(allProducts())
+
+    return () => {
+      dispatch(reset())
+    }
+
+  }, [user, isError, message, navigate, dispatch])
 
     if(products.products){
         rows = products.products
@@ -49,9 +53,10 @@ export default function BasicTable() {
           <TableRow>
             <TableCell>Product Name</TableCell>
             <TableCell align="right">Product Brand</TableCell>
-            <TableCell align="right">Quantity&nbsp;()</TableCell>
-            <TableCell align="right">Category&nbsp;()</TableCell>
+            <TableCell align="right">Quantity</TableCell>
+            <TableCell align="right">Category</TableCell>
             <TableCell align="right">Unit Price&nbsp;(Tk.)</TableCell>
+            <TableCell align="right">Actions</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -67,6 +72,7 @@ export default function BasicTable() {
               <TableCell align="right">{row.productQuantity}</TableCell>
               <TableCell align="right">{row.productType}</TableCell>
               <TableCell align="right">{row.productUnitPrice}</TableCell>
+              <TableCell align="right"> <EditIcon/> <DeleteIcon/></TableCell>
             </TableRow>
           ))}
         </TableBody>

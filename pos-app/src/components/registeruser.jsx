@@ -74,7 +74,7 @@ function Registeruser(propdata) {
     <div className= {`registerwindow ${propdata ? "active" : "inactive"}`}>
       <form onSubmit={handleSubmit}>
         <label htmlform="Username">Username </label>
-        <input value={userName} onChange={(e) => setUserName(e.target.value)} type="username" placeholder="Username" id="Username" name="Username"></input>
+        <input value={userName} onChange={(e) => setUserName(e.target.value)} type="text" placeholder="Username" id="Username" name="Username"></input>
         <label htmlform="Password">Password </label>
         <input value={userPassword} onChange={(e) => setPassWord(e.target.value)} type="password" placeholder="Password" id="Password" name="Password"></input>
         <input value={passWord2} onChange={(e) => setPassWord2(e.target.value)} type="password" placeholder="Retype password" id="Password2" name="Password2"></input>
