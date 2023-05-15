@@ -3,6 +3,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import AccountLogo from "../assets/accountlogo.png"
 import { useState, useEffect, useRef} from 'react';
 import UserAccountMenu from './useraccountmenu';
+import Clock from './clock'
 
 function Searchbar() {
     const [isOpen, setIsOpen] = useState(false);
@@ -29,6 +30,9 @@ function Searchbar() {
              <input type = "text" placeholder = "Search..." >
              </input>
              <SearchIcon className='Searchicon'/>
+            </div>
+            <div>
+                <Clock/>
             </div>
             <div className='Accountlogo' onClick={toggle}  ref={menuref}>
              <img src={AccountLogo} alt="Account LOGO" ></img>
