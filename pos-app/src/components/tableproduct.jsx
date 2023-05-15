@@ -14,14 +14,15 @@ import EditIcon from '@mui/icons-material/Edit';
 
 
 
-let rows = []
+
 
 export default function BasicTable() {
-    const navigate = useNavigate()
-    const {user} = useSelector((state) => state.auth)
-    const dispatch = useDispatch()
-    const { products, isError, isLoading, message } = useSelector( (state) => state.products )
-    
+  let rows = []
+  const navigate = useNavigate()
+  const { user } = useSelector((state) => state.auth)
+  const dispatch = useDispatch()
+  const { products, isSuccess, isError, isLoading, message } = useSelector((state) => state.products)
+
   useEffect(() => {
     if (!user) {
       navigate('/login')
@@ -31,22 +32,23 @@ export default function BasicTable() {
       console.log(message)
     }
 
+    if (products.products && rows === []) {
+      rows = products.products
+    }
 
 
     dispatch(allProducts())
 
-    return () => {
-      dispatch(reset())
-    }
+
 
   }, [user, isError, message, navigate, dispatch])
 
-    if(products.products){
-        rows = products.products
-        console.log(rows)
-      }
 
-    return (
+  if (products.products) {
+    rows = products.products
+  }
+
+  return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
@@ -72,7 +74,7 @@ export default function BasicTable() {
               <TableCell align="right">{row.productQuantity}</TableCell>
               <TableCell align="right">{row.productType}</TableCell>
               <TableCell align="right">{row.productUnitPrice}</TableCell>
-              <TableCell align="right"> <EditIcon/> <DeleteIcon/></TableCell>
+              <TableCell align="right"> <EditIcon /> <DeleteIcon /></TableCell>
             </TableRow>
           ))}
         </TableBody>

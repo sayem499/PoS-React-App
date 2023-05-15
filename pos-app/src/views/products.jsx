@@ -1,7 +1,8 @@
 import '../css/dashboard.css'
 import BasicTable from '../components/tableproduct'
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { reset } from '../redux/products/productSlice'
 import { useEffect, useState } from 'react';
 import Addproduct from '../components/addproduct';
 
@@ -12,7 +13,6 @@ function Products(){
 
 
 
-
   useEffect(() => {
     if (!user) {
       navigate('/login')
@@ -20,13 +20,19 @@ function Products(){
 
   }, [user, navigate])
 
+
+   const handleButtonClick = (e) => {
+    e.preventDefault() 
+    setIsAddProductOpen(true)
+   }
+
   
     return(
         <div className='productpage'>
-          <button onClick={() => setIsAddProductOpen(true)}>Add Product</button>
+          <button onClick={handleButtonClick}>Add Product</button>
           {isAddProductOpen && <Addproduct closeAddProduct = { () => {
             setIsAddProductOpen(false)
-          } }/>}
+          } } />}
           {user ?  
            <BasicTable/>
            :
