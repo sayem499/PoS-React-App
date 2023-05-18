@@ -24,6 +24,7 @@ export default function BasicTable() {
   const dispatch = useDispatch()
   const { products, isSuccess, isError, isLoading, message } = useSelector((state) => state.products)
   const [isUpdateProductOpen, setIsUpdateProductOpen] = useState(false)
+  const [updateID, setUpdateID] = useState('')
 
   useEffect(() => {
     if (!user) {
@@ -44,8 +45,10 @@ export default function BasicTable() {
     rows = products.products
   }
 
-  const handleClick = (e) => {
-    e.preventDefault()
+  const handleUpdate = (ID) =>{
+    setUpdateID(ID)
+  }
+  const handleClick = () => {
     setIsUpdateProductOpen(true)
 
   }
@@ -64,9 +67,9 @@ export default function BasicTable() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
+          {rows.map((row, index) => (
             <TableRow
-              key={row.productTitle}
+              key={row._id}
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
             >
               <TableCell component="th" scope="row">
@@ -76,8 +79,8 @@ export default function BasicTable() {
               <TableCell align="right">{row.productQuantity}</TableCell>
               <TableCell align="right">{row.productType}</TableCell>
               <TableCell align="right">{row.productUnitPrice}</TableCell>
-              <TableCell align="right"> <EditIcon onClick={handleClick}/> <DeleteIcon onClick={() => { dispatch(deleteProduct(row._id)); dispatch(allProducts()); } } />
-              { isUpdateProductOpen && <Updateproduct product= {row} closeUpdateProduct = { () =>  setIsUpdateProductOpen(false)} />}
+              <TableCell align="right"> <EditIcon onClick={() => {handleClick(); handleUpdate(row._id);}}/> <DeleteIcon onClick={() => { dispatch(deleteProduct(row._id)); dispatch(allProducts()); } } />
+              { isUpdateProductOpen && updateID === row._id && <Updateproduct row = {row} closeUpdateProduct = { () =>  setIsUpdateProductOpen(false)}/>} 
               </TableCell>
             </TableRow>
           ))}

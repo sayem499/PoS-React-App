@@ -1,17 +1,20 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import '../css/updateproduct.css'
 
 
-function Updateproduct({product, closeUpdateProduct}) {
-    const [productTitle, setProductTitle] = useState(product.productTitle)
-    const [productBrand, setProductBrand] = useState(product.productBrand)
-    const [productQuantity, setProductQuantity] = useState(product.productQuantity)
-    const [productType, setProductType] = useState(product.productType)
-    const [productUnitPrice, setProductUnitPrice] = useState(product.productUnitPrice) 
+function Updateproduct({ row, closeUpdateProduct}) {
+
+    const [productTitle, setProductTitle] = useState(row.productTitle)
+    const [productBrand, setProductBrand] = useState(row.productBrand)
+    const [productQuantity, setProductQuantity] = useState(row.productQuantity)
+    const [productType, setProductType] = useState(row.productType)
+    const [productUnitPrice, setProductUnitPrice] = useState(row.productUnitPrice) 
 
   const handleSubmit = (e) =>{
     e.preventDefault()
   }
+
+
   return (
     <div className='updateproduct-container' onClick={(e) => { if(e.target.className === 'updateproduct-container')  closeUpdateProduct()}}>
       <div className='updateproductform'>
