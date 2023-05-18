@@ -7,10 +7,11 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { useEffect } from 'react';
-import { allProducts, reset } from '../redux/products/productSlice';
+import { useEffect, useState } from 'react';
+import { allProducts, deleteProduct, reset } from '../redux/products/productSlice';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import Updateproduct from './updateproduct';
 
 
 
@@ -22,6 +23,7 @@ export default function BasicTable() {
   const { user } = useSelector((state) => state.auth)
   const dispatch = useDispatch()
   const { products, isSuccess, isError, isLoading, message } = useSelector((state) => state.products)
+  const [isUpdateProductOpen, setIsUpdateProductOpen] = useState(false)
 
   useEffect(() => {
     if (!user) {
@@ -31,12 +33,6 @@ export default function BasicTable() {
     if (isError) {
       console.log(message)
     }
-
-    if (products.products && rows === []) {
-      rows = products.products
-    }
-
-
     dispatch(allProducts())
 
 
@@ -46,6 +42,12 @@ export default function BasicTable() {
 
   if (products.products) {
     rows = products.products
+  }
+
+  const handleClick = (e) => {
+    e.preventDefault()
+    setIsUpdateProductOpen(true)
+
   }
 
   return (
@@ -74,7 +76,9 @@ export default function BasicTable() {
               <TableCell align="right">{row.productQuantity}</TableCell>
               <TableCell align="right">{row.productType}</TableCell>
               <TableCell align="right">{row.productUnitPrice}</TableCell>
-              <TableCell align="right"> <EditIcon /> <DeleteIcon /></TableCell>
+              <TableCell align="right"> <EditIcon onClick={handleClick}/> <DeleteIcon onClick={() => { dispatch(deleteProduct(row._id)); dispatch(allProducts()); } } />
+              { isUpdateProductOpen && <Updateproduct product= {row} closeUpdateProduct = { () =>  setIsUpdateProductOpen(false)} />}
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>

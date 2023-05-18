@@ -32,7 +32,7 @@ const setProducts = asyncHandler( async (req, res) => {
  })
 
 
-//@desc Upatet products
+//@desc Upadate products
 //@route PUT/api/products/:id
 //@access Private
 const updateProduct = asyncHandler( async (req, res) => {

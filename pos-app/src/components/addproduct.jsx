@@ -49,6 +49,7 @@ function Addproduct({closeAddProduct}) {
           productType,
           productUnitPrice,
         }
+        
         try{
           dispatch(setProducts(productData))
 

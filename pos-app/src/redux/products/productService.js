@@ -1,7 +1,7 @@
 import axios from 'axios'
 
-const API_URL_GETPRODUCTS = '/api/products'
-const API_URL_SETPRODUCTS = '/api/products'
+const API_URL = '/api/products/'
+
 
 const allProducts = async (token) => {
     const config = {
@@ -10,7 +10,7 @@ const allProducts = async (token) => {
         }
     }
 
-    const response = await axios.get(API_URL_GETPRODUCTS, config)
+    const response = await axios.get(API_URL, config)
     return response.data
 }
 
@@ -21,16 +21,28 @@ const setProducts = async (data, token) => {
     }
  }
 
- const response = await axios.post(API_URL_SETPRODUCTS, data, config)
+ const response = await axios.post(API_URL, data, config)
 
  return response.data
 
+}
+
+const deleteProduct = async (productID, token) => {
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    }
+
+    const response = await axios.delete(API_URL + productID, config)
+    return response.data
 }
 
 
 const productService = {
     allProducts,
     setProducts,
+    deleteProduct,
 }
 
 export default productService
