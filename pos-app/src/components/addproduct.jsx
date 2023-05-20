@@ -4,9 +4,11 @@ import { useSelector, useDispatch } from 'react-redux'
 import { setProducts, reset , allProducts} from '../redux/products/productSlice'
 import { toast } from 'react-toastify'
 import { Blocks } from 'react-loader-spinner'
+import { useNavigate } from 'react-router-dom'
 
 
 function Addproduct({closeAddProduct}) {
+  const navigate = useNavigate()
   const dispatch = useDispatch()
     const { products, isLoading, isError, isSuccess, message } = useSelector( (state) => state.products)
     const [productTitle, setProductTitle] = useState('')
@@ -19,7 +21,9 @@ function Addproduct({closeAddProduct}) {
     const  { user } = useSelector( (state) => state.auth)
 
     useEffect( () => {
-     
+      if(!user){
+        navigate('/login')
+      }
       
       if(isError){
         toast.error(message)
@@ -49,7 +53,7 @@ function Addproduct({closeAddProduct}) {
           productType,
           productUnitPrice,
         }
-        
+
         try{
           dispatch(setProducts(productData))
 

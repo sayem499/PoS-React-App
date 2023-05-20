@@ -1,17 +1,65 @@
 import { useEffect, useState } from "react"
 import '../css/updateproduct.css'
+import { updateProducts, reset, allProducts } from '../redux/products/productSlice'
+import { useDispatch, useSelector } from "react-redux"
+import { toast } from 'react-toastify'
+import { useNavigate } from "react-router-dom"
+import { all } from "axios"
 
 
 function Updateproduct({ row, closeUpdateProduct}) {
-
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
+    const {products, isSuccess, isError, isLoaing, message} = useSelector((state) => state.products)
+    const {user} = useSelector((state) => state.auth)
     const [productTitle, setProductTitle] = useState(row.productTitle)
     const [productBrand, setProductBrand] = useState(row.productBrand)
     const [productQuantity, setProductQuantity] = useState(row.productQuantity)
     const [productType, setProductType] = useState(row.productType)
     const [productUnitPrice, setProductUnitPrice] = useState(row.productUnitPrice) 
 
+    useEffect(() => {
+        
+        if(!user){
+            navigate('/login')
+        }
+        if(isError){
+            toast.error(message)
+          } 
+        return() => {
+          dispatch(reset())
+          dispatch(allProducts())
+        }  
+       
+    },[user, isError, message, navigate, dispatch, products])
+
+
   const handleSubmit = (e) =>{
     e.preventDefault()
+
+    if (productTitle === '' || productBrand === '' || productType === '')
+      toast.error('Please fill the required fields!')
+    else {
+      const updatedProductData = {
+        productTitle,
+        productBrand,
+        productQuantity,
+        productType,
+        productUnitPrice,
+      }
+      let productID = row._id
+      const payload = {
+        productID,
+        updatedProductData,
+      }
+
+      dispatch(updateProducts(payload))
+    }
+
+
+    if (isSuccess) {
+      toast.success('Product updated successfully!')
+    }
   }
 
 

@@ -36,8 +36,6 @@ export default function BasicTable() {
     }
     dispatch(allProducts())
 
-
-
   }, [user, isError, message, navigate, dispatch])
 
 
@@ -67,7 +65,7 @@ export default function BasicTable() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row, index) => (
+          {rows.map((row) => (
             <TableRow
               key={row._id}
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -80,7 +78,7 @@ export default function BasicTable() {
               <TableCell align="right">{row.productType}</TableCell>
               <TableCell align="right">{row.productUnitPrice}</TableCell>
               <TableCell align="right"> <EditIcon onClick={() => {handleClick(); handleUpdate(row._id);}}/> <DeleteIcon onClick={() => { dispatch(deleteProduct(row._id)); dispatch(allProducts()); } } />
-              { isUpdateProductOpen && updateID === row._id && <Updateproduct row = {row} closeUpdateProduct = { () =>  setIsUpdateProductOpen(false)}/>} 
+              { isUpdateProductOpen && updateID === row._id && <Updateproduct row = {row} closeUpdateProduct = { () => { setIsUpdateProductOpen(false);} }/>} 
               </TableCell>
             </TableRow>
           ))}
