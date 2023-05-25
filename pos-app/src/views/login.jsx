@@ -7,12 +7,15 @@ import { useSelector, useDispatch } from 'react-redux'
 import { toast } from 'react-toastify'
 import { Blocks } from 'react-loader-spinner'
 import { useNavigate } from 'react-router-dom'
+import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined';
+import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
 
 function Login() {
   const { user, isError, isSuccess, isLoading, message } = useSelector(
     (state) => state.auth)
   const [userName, setUserName] = useState("")
   const [userPassword, setPassWord] = useState("")
+  const [visibility, setVisibility] = useState(false)
 
   const dispatch = useDispatch()
   const navigate = useNavigate()
@@ -57,6 +60,12 @@ function Login() {
     />
   }
 
+  const handleVisibility = () =>{
+    setVisibility(!visibility)
+
+  }
+
+  
   return (
 
     <div className='Login'>
@@ -66,7 +75,8 @@ function Login() {
         <label htmlform="Username">Username </label>
         <input value={userName} onChange={(e) => setUserName(e.target.value)} type="username" placeholder="Username" id="Username" name="Username"></input>
         <label htmlform="Password">Password </label>
-        <input value={userPassword} onChange={(e) => setPassWord(e.target.value)} type="password" placeholder="Password" id="Password" name="Password"></input>
+        <input value={userPassword} onChange={(e) => setPassWord(e.target.value)} type={visibility ? 'text' : 'password'} placeholder="Password" id="Password" name="Password"></input>
+        {visibility ? <VisibilityOffOutlinedIcon onClick={handleVisibility} id='visibility-icon'/>  : <RemoveRedEyeOutlinedIcon onClick={handleVisibility} id='visibility-icon'/> }
         <button  type="submit">Login</button>
       </form>
     </div>

@@ -6,6 +6,7 @@ import UserAccountMenu from './useraccountmenu';
 import Clock from './clock'
 
 function Searchbar() {
+    const [searchInput, setSearchInput] = useState('')
     const [isOpen, setIsOpen] = useState(false);
     const toggle = () => {setIsOpen(!isOpen)}
     let menuref = useRef()
@@ -23,11 +24,12 @@ function Searchbar() {
             
         }
         document.addEventListener('mousedown',handler)
-    })
+        console.log(searchInput)
+    },)
     return(
         <div className="Searchbar">
             <div className="Searchbox">
-             <input type = "text" placeholder = "Search..." >
+             <input type = "text" value= {searchInput} onChange={(e)=> setSearchInput(e.target.value)} placeholder = "Search..." >
              </input>
              <SearchIcon className='Searchicon'/>
             </div>

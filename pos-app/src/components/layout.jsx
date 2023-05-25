@@ -10,7 +10,7 @@ import { useSelector} from 'react-redux'
 
 function Layout (){
     const {user} = useSelector((state) => state.auth )
-    const [isOpen, setIsOpen] = useState(true); 
+    const [isOpen, setIsOpen] = useState(false); 
     const toggle = () => setIsOpen(!isOpen)
     const navigate = useNavigate()
 
