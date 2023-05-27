@@ -1,4 +1,4 @@
-import '../css/dashboard.css'
+import '../css/products.css'
 import BasicTable from '../components/tableproduct'
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
