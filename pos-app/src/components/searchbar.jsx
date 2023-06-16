@@ -51,7 +51,7 @@ function Searchbar() {
              </form> 
              <SearchIcon onClick={handleSearch} className='Searchicon'/>
             </div>
-            <div>
+            <div className='clock'>
                 <Clock/>
             </div>
             <div className='Accountlogo' onClick={toggle}  ref={menuref}>
