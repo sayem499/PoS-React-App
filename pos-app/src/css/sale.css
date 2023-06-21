@@ -5,6 +5,7 @@
     flex-direction: row;
     margin-top: 50px;
     justify-content: left;
+    --primary-color:cornflowerblue;
     
     
 } 
@@ -29,7 +30,6 @@
     width: 40%;
     display:flex;
     align-items: center;
-    justify-content: center;
     /* border: 1px black; */
     flex-direction: column;
     overflow: auto;
@@ -89,4 +89,131 @@
 #unit-price {
     margin-left: 30px;
 }
+
+.cart-header {
+    margin: 20px 0px 0px 0px;
+    font-family:"Garamond", Times, serif;
+}
+
+.cart-header h1{
+    margin: 0px;
+}
+
+.payment-selector-btn {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    width:100%;
+    height:60px;
+    display:flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    
+}
+
+.payment-selector-btn input {
+    margin: 0px 5px 0px 5px;
+    position:absolute;
+    width: 10%;
+    height: 9%;
+    cursor:pointer;
+    z-index: 2;
+    opacity: 0;
+}
+
+.cash-div {
+    width:50%;
+    height:100%;
+    margin-right: 10px;
+    display:flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.credit-div {
+    height:100%;
+    width:50%;
+    box-shadow: 0px 2px px;
+    margin-left: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo-tile {
+    width:40%;
+    display: flex;
+    flex-direction: column;
+    align-items:center;
+    justify-content: center;
+    height: 100%;
+    border: 2px solid cornflowerblue;
+    border-radius: 8px;
+    transition:all 300ms ease;
+}
+
+.logo-tile .btn-icon {
+    color:cornflowerblue;
+    font-size: 2rem;;
+}
+
+.logo-tile label {
+    color:cornflowerblue;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;;
+
+}
+
+input:checked + .logo-tile{
+    background-color: cornflowerblue;
+    box-shadow: 0 0 6px cornflowerblue;
+
+}
+
+input:hover + .logo-tile {
+    box-shadow: 0 0 6px cornflowerblue; 
+}
+
+input:checked + .logo-tile .btn-icon,
+input:checked + .logo-tile label {
+    color: white;
+}
+
+hr {
+    height:1px;
+    width: 96%;
+}
+
+.product-cart-list {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+     width:97%;
+     height: 400px;
+}
+
+.product-cart-list ul {
+    margin: 0px;
+    padding: 0px;
+    height: 80px;
+    display:flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.product-cart-list li {
+    background-color: rgb(244, 236, 226);
+    margin: 2px 5px 2px 5px;
+    list-style: none;
+    width:  98.5%;
+    height:80px;
+    box-shadow: 0px 2px 7px rgb(154, 151, 151);
+    display:flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+
 
