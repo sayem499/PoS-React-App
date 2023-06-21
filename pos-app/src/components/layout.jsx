@@ -54,7 +54,7 @@ function Layout (){
             })}
            </ul>
          </motion.div>
-         <motion.div animate = {{marginLeft: isOpen ? "200px" : "40px"}} className='Outlet'>
+         <motion.div animate = {{marginLeft: isOpen ? "0px" : "0px"}} className='Outlet'>
          <Searchbar/>
          <div>
             <Outlet/>

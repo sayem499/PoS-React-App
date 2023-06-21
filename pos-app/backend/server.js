@@ -12,8 +12,10 @@ connectDB()
 // app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({ extended: false}))
+app.use('/api/sales', require('./routes/sale.routes'))
 app.use('/api/products', require('./routes/product.routes'))
 app.use('/api/users', require('./routes/user.routes'))
+
 
 app.use(errorHandler)
 
@@ -25,4 +27,5 @@ app.use(errorHandler)
 app.listen(port, () => {
     console.log(`Server is running on port: ${port}`)
 } )
+
 

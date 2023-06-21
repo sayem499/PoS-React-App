@@ -12,7 +12,7 @@
 .Searchbox {
     width: 600px;
     height: 50px;
-    margin: 0px 10px 0px 50px; 
+    margin: 10px 10px 0px 50px; 
     border: 1px solid white;
     background-color: white;
     display: flex;
@@ -76,7 +76,9 @@
 
 .clock {
     width:100%;
+    height: auto;
     display:flex;
     justify-content: flex-end;
     margin-right: 70px;
+    float: right;
 }

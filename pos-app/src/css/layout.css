@@ -1,12 +1,12 @@
 .Wrapper {
-  height: 100%;
-  width: 100%;
+  height: 100vh;
+  width: 100vw;
   margin: 0;
-  display: inline-block;
+  display: flex;
 }
 
 .Sidebar {
-    height: 100%;
+    height: 100vh;
     width: 275px;
     background-color: #0f1c33;
     float:left;
@@ -64,8 +64,10 @@
 }
 
 .Outlet{
-    height: 100%;
+    width: 100vw;
+    height: 100vh;
     float:center;
+    overflow: auto;
 }
 
 .top-section {

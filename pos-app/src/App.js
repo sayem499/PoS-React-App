@@ -8,6 +8,7 @@ import Suppliers from './views/suppliers.jsx'
 import Profile from './views/profile.jsx'
 import Login from './views/login.jsx'
 import Users from './views/users.jsx'
+import Sale from './views/sale.jsx'
 import { ToastContainer } from "react-toastify"
 import 'react-toastify/dist/ReactToastify.css'
 
@@ -20,7 +21,7 @@ function App() {
         <Routes>
             <Route path="/login" index element={<Login/>} ></Route>
             <Route path = "/" element = {<Layout/>}>
-                
+                <Route path="/sale" element={<Sale/>}></Route>
                 <Route path="/dashboard" element = {<Dashboard/>}></Route>
                 <Route path="/customers" element={<Customers/>}></Route>
                 <Route path="/products" element={<Products/>}></Route>

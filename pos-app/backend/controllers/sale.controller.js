@@ -10,17 +10,19 @@ const getSales = asyncHandler( async (req, res) => {
 })
 
 
-//@dec PUT sales
-//@route PUT/api/sales
+//@dec POST sales
+//@route POST/api/sales
 //@access Private
 const setSales = asyncHandler( async (req, res) => {
     if(!req.body.saleTitle && 
     !req.body.saleQuantity &&
+    !req.body.saleUnitPrice &&
     !req.body.saleTotal &&
     !req.body.salePayType &&
     !req.body.salePayByCard &&
     !req.body.salePayByCash && 
-    !req.body.saleTime){
+    !req.body.saleTime &&
+    !req.body.saleServedBy){
 
         res.status(400)
         throw new Error('Product field error!')
@@ -29,11 +31,13 @@ const setSales = asyncHandler( async (req, res) => {
     const sale = await Sales.create({
     saleTitle: req.body.saleTitle,
     saleQuantity: req.body.saleQuantity,
+    saleUnitPrice: req.body.saleUnitPrice,
     saleTotal: req.body.saleTotal,
     salePayType: req.body.salePayType,
     salePayByCard: req.body.salePayByCard,
     salePayByCash: req.body.salePayByCash,
     saleTime: req.body.saleTime,
+    saleServedBy: req.body.saleServedBy,
     }) 
     res.status(200).json(sale)
 })

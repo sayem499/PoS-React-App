@@ -1,6 +1,5 @@
 import { useState } from "react"
-
-
+import '../css/clock.css'
 function Clock() {
  let time = new Date().toLocaleTimeString()
  let date = new Date().toLocaleDateString()
@@ -15,7 +14,7 @@ function Clock() {
  setInterval(updateTime, 1000)
 
     return (
-    <div>
+    <div className="clock-inner">
         <section>{date}</section>
         <section>{time}</section>
     
