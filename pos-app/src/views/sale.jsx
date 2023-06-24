@@ -3,17 +3,22 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { allProducts, reset } from '../redux/products/productSlice';
+import { insertProduct, resetCart, deleteProduct } from '../redux/sale/cartSlice';
 import MoneyIcon from '@mui/icons-material/Money';
 import CreditCardIcon from '@mui/icons-material/CreditCard';
-
+import CloseIcon from '@mui/icons-material/Close';
 function Sale() {
   const navigate = useNavigate()
   const {user} = useSelector((state) => state.auth)
   const {products} = useSelector((state) => state.products)
   const {searchInput} = useSelector( (state) => state.search)
+  const {cartProduct} = useSelector((state) => state.cart)
   const dispatch = useDispatch()
   const [paymentMethod, setPaymentMethod] = useState('Cash')
   let productTemp = []
+
+
+
 
   useEffect(()=>{
     if(!user){
@@ -22,18 +27,28 @@ function Sale() {
     }
 
     dispatch(allProducts())
+    
    
-
+    return()=>{
+      dispatch(reset())
+    }
   },[user, navigate,dispatch])
 
   if(products.products){
     productTemp = products.products
-    console.log(productTemp)
+  }
+  
+
+  const handleProductClick = (id, e) => {
+
+     e.preventDefault()
+     if(cartProduct.some((product)=> product._id === id && cartProduct !== [])){
+      console.log("Increment...")
+     }else
+      dispatch(insertProduct(productTemp.filter((product) =>  product._id === id)))
+
   }
 
-  const handleProductClick = () =>{
-
-  }
   return (
     <div className="container">
         <div className='card-container'>
@@ -49,11 +64,11 @@ function Sale() {
           </div>
           { searchInput && productTemp.filter((product) => product.productTitle.toLowerCase().includes(searchInput.toLowerCase())).map((product, key) => {
           return (
-          <div className='card' onClick={handleProductClick}>
-            <ul>
+          <div className='card' key={key}  onClick = { e => handleProductClick(product._id,e)}>
+            <ul >
               
                 
-                <li key={key}>
+                <li>
                 <span>{product.productTitle}</span>
                 <span>{product.productBrand}</span>
                 <span>{product.productQuantity}</span>
@@ -109,26 +124,64 @@ function Sale() {
            
         </div>
         <hr></hr>
-         <div className='product-cart-list'>
-         <ul>
-              
-                
-              <li>
-              <span>Vasline</span>
-              <span> 30</span>
-              <span>120</span>
-              <span>+</span>
-              <span></span>
-              <span>-</span>
-              <span></span>
-              </li>
-              
-            
-              
+        <div className='cart-list-header'>
+        <table>
+              <tr>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Qty</th>
+                <th>Total</th>
+              </tr>
+          </table>
+        </div>
+       <div className='product-cart-list-container'>
+        {console.log()}
+        {cartProduct && cartProduct.map((product, key) => {
           
-          </ul>
+         return( 
+           <div key={key} className='product-cart-list'>
+             <ul>
+               <li >
+                 <section>
+                   <span>{product.productTitle}</span>
+                 </section>
+                 <section>
+                   <span>{product.productUnitPrice}</span>
+                 </section>
+                 <section>
+                   <span id='unit-multiplier-btn'>-</span>
+                   <span id='unit-multiplier'>5</span>
+                   <span id='unit-multiplier-btn'>+</span>
+                 </section>
+                 <section>
+                   <span>100</span>
+                 </section>
+                 <span id='close-btn'><CloseIcon /></span>
+               </li>
+             </ul>
+           </div>
+         )
+         })}
+         </div> 
+         <hr></hr>
+         <div className='product-total'>
+          <section>
+            Sub-Total:  <span>100</span>
+          </section>
+          <section>
+            VAT:    <span>15</span>
+          </section>
+          <section>
+            Discount:  <span>0</span>
+          </section>
+          <section>
+            Less Adjustment: <span>0</span>
+          </section>
+          <hr></hr>
+          <section>
+            <h4>Net Amount (Tk.):</h4> <span><h4>115</h4></span>
+          </section>
          </div>
-
         </div>
     </div>
   )
