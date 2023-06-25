@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { allProducts, reset } from '../redux/products/productSlice';
-import { insertProduct, resetCart, deleteProduct } from '../redux/sale/cartSlice';
+import { insertProduct, resetCart, deleteProduct, allCartProduct} from '../redux/sale/cartSlice';
 import MoneyIcon from '@mui/icons-material/Money';
 import CreditCardIcon from '@mui/icons-material/CreditCard';
 import CloseIcon from '@mui/icons-material/Close';
@@ -38,6 +38,12 @@ function Sale() {
     productTemp = products.products
   }
   
+  const handleClose = (id, e) =>{
+    e.preventDefault()
+    console.log(id)
+    dispatch(deleteProduct(id))
+
+  }
 
   const handleProductClick = (id, e) => {
 
@@ -135,7 +141,7 @@ function Sale() {
           </table>
         </div>
        <div className='product-cart-list-container'>
-        {console.log()}
+        {console.log(cartProduct)}
         {cartProduct && cartProduct.map((product, key) => {
           
          return( 
@@ -156,7 +162,7 @@ function Sale() {
                  <section>
                    <span>100</span>
                  </section>
-                 <span id='close-btn'><CloseIcon /></span>
+                 <span id='close-btn'><CloseIcon onClick={ (e) =>  handleClose(product._id,e)} /></span>
                </li>
              </ul>
            </div>
