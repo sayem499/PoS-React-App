@@ -3,7 +3,7 @@ import authReducer from '../auth/authSlice.js'
 import userReducer from '../redux/users/userSlice.js'
 import productReducer from '../redux/products/productSlice.js'
 import searchReducer from '../redux/search/searchSlice.js'
-import cartReducer from '../redux/sale/cartSlice.js'
+import saleReducer from '../redux/sale/saleSlice.js'
 
 export const store = configureStore({
     reducer: {
@@ -11,6 +11,6 @@ export const store = configureStore({
         users: userReducer,
         products: productReducer,
         search: searchReducer,
-        cart: cartReducer,
+        sale: saleReducer,
     },
 })
