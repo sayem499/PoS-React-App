@@ -9,22 +9,34 @@ import { resetSale,
   decrementCartItem, 
   deleteCartItem, 
   cartProductTotal,
-  cartSubTotal, } from '../redux/sale/saleSlice';
+  cartSubTotal, 
+  cartNetTotal,
+  getSaleSettings,
+  cartTotalLessAdjustment } from '../redux/sale/saleSlice';
 import MoneyIcon from '@mui/icons-material/Money';
 import CreditCardIcon from '@mui/icons-material/CreditCard';
 import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
+import Salesettings from '../components/salesettings';
 
 function Sale() {
   const navigate = useNavigate()
   const {user} = useSelector((state) => state.auth)
   const {products} = useSelector((state) => state.products)
   const {searchInput} = useSelector( (state) => state.search)
-  const {cartItems, saleSubTotal} = useSelector((state => state.sale))
+  const { cartItems, 
+          saleSubTotal,
+          saleVAT,
+          saleDiscount,
+          saleTotal,
+          saleLessAdjustment,
+          saleLessAdjustmentToggle } = useSelector((state => state.sale))
   const dispatch = useDispatch()
   const [paymentMethod, setPaymentMethod] = useState('Cash')
-  let productTemp = []
+  const [isSaleSettingsOpen, setIsSaleSettingsOpen] = useState(false)
+  let productTemp = [], fetch = JSON.parse(localStorage.getItem('sale-settings'))
+
 
 
 
@@ -38,11 +50,17 @@ function Sale() {
     dispatch(allProducts())
     dispatch(cartProductTotal())
     dispatch(cartSubTotal())
+    if(fetch)
+      dispatch(getSaleSettings())
+    dispatch(cartNetTotal())  
+    if(fetch.saleLessAdjustmentToggle)
+      dispatch(cartTotalLessAdjustment())
+    
    
     return()=>{
       dispatch(reset())
     }
-  },[user, navigate,dispatch, cartItems])
+  },[user, navigate,dispatch, cartItems, saleTotal, saleLessAdjustmentToggle ])
 
   if(products.products && products.products.length !== productTemp.length){
     productTemp = products.products
@@ -97,9 +115,14 @@ function Sale() {
      
   }
 
+  const handleSaleSettings = () => {
+    setIsSaleSettingsOpen(true)
+  }
+
   return (
-    <div className="container">
-        <div className='card-container'>
+    <div className='container-column'>
+      <div className="container-row">
+         <div className='card-container'>
           <div className='table-header'> 
           <table>
               <tr>
@@ -131,8 +154,8 @@ function Sale() {
           )
           })}
 
-        </div>
-        <div className='cart-container'>
+          </div>
+          <div className='cart-container'>
           <span className='cart-header'><h1>Cart</h1></span>
 
           <hr></hr>
@@ -224,23 +247,33 @@ function Sale() {
          <hr></hr>
          <div className='product-total'>
           <section>
-            Sub-Total:  <span>{saleSubTotal}</span>
+            <h4>Sub-Total:</h4>  <span><h4>{saleSubTotal}</h4></span>
           </section>
           <section>
-            VAT:    <span>15</span>
+            VAT(%):    <span>{saleVAT}</span>
           </section>
           <section>
-            Discount:  <span>0</span>
+            Discount(%):  <span>{saleDiscount}</span>
           </section>
           <section>
-            Less Adjustment: <span>0</span>
+            Less Adjustment: <span>{ saleLessAdjustment.toFixed(2) }</span>
           </section>
           <hr></hr>
           <section>
-            <h4>Net Amount (Tk.):</h4> <span><h4>115</h4></span>
+            <h4>Net Amount (Tk.):</h4> <span><h4>{saleTotal}</h4></span>
           </section>
          </div>
+          </div>
+        
+      </div>
+      <div className='button-container'>
+        <div className='button-wrapper'>
+          <button className='sale-options-btn' onClick={ handleSaleSettings }>Settings</button>
+          {
+            isSaleSettingsOpen && <Salesettings closeSaleSettings = {() => { setIsSaleSettingsOpen(false) }}/>
+          }
         </div>
+      </div>
     </div>
   )
 }

@@ -16,7 +16,7 @@ function Clock() {
     return (
     <div className="clock-inner">
         <section>{date}</section>
-        <section>{time}</section>
+        <section>{ctime}</section>
     
     </div>
   )

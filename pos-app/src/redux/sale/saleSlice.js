@@ -13,7 +13,9 @@ const initialState = {
     salePayByCash: 0,
     saleTime: 0,
     saleDate: 0,
-    saleServedBy: '', 
+    saleServedBy: '',
+    saleLessAdjustment: 0,
+    saleLessAdjustmentToggle: false, 
     isLoading: false,
     isError: false,
     isSuccess: false,
@@ -78,7 +80,44 @@ export const saleSlice = createSlice({
             state.cartItems.forEach((item) => {
                 state.saleSubTotal = state.saleSubTotal + item.productTotal
             })
+        },
+
+        cartNetTotal: (state) => {
+            state.saleTotal = 0
+            if(state.saleVAT > 0){
+                state.saleTotal = state.saleTotal - ((state.saleVAT/100) * state.saleSubTotal)
+            }
+
+            if(state.saleDiscount > 0){
+                state.saleTotal = state.saleTotal + ((state.saleDiscount/100) * state.saleSubTotal)
+            }
+
+            state.saleTotal = state.saleTotal + state.saleSubTotal
+
+        },
+
+        setSaleSettings: (state, action) => {
+            localStorage.setItem( 'sale-settings', JSON.stringify(action.payload))
+            
+        },
+
+        getSaleSettings: (state) => {
+           let payload = JSON.parse(localStorage.getItem('sale-settings'))
+           state.saleVAT = payload.saleVAT
+           state.saleDiscount = payload.saleDiscount
+           state.saleLessAdjustmentToggle = payload.saleLessAdjustmentToggle
+        },
+
+        cartTotalLessAdjustment: (state) => {
+            let temp = 0 
+            state.saleLessAdjustment = 0
+            if(state.saleLessAdjustmentToggle && state.saleTotal){
+               temp = Math.floor(state.saleTotal)
+               state.saleLessAdjustment = state.saleTotal - temp 
+               state.saleTotal = temp
+            }   
         }
+        
 
 
     },
@@ -101,5 +140,17 @@ export const saleSlice = createSlice({
    }, 
 })
 
-export const { resetSale, insertProductSale, incrementCartItem, decrementCartItem, deleteCartItem, cartProductTotal, cartSubTotal} = saleSlice.actions
+export const { 
+    resetSale, 
+    insertProductSale, 
+    incrementCartItem, 
+    decrementCartItem, 
+    deleteCartItem, 
+    cartProductTotal, 
+    cartSubTotal, 
+    cartNetTotal,
+    setSaleSettings,
+    getSaleSettings,
+    cartTotalLessAdjustment,
+} = saleSlice.actions
 export default saleSlice.reducer
