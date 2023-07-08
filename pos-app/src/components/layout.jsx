@@ -7,6 +7,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { useEffect, useState } from 'react';
 import Searchbar from './searchbar';
 import { useSelector} from 'react-redux'
+import PosWelcomeLogo from '../assets/pos-welcome-logo.jpg'
 
 function Layout (){
     const {user} = useSelector((state) => state.auth )
@@ -56,8 +57,11 @@ function Layout (){
          </motion.div>
          <motion.div animate = {{marginLeft: isOpen ? "0px" : "0px"}} className='Outlet'>
          <Searchbar/>
-         <div>
-            <Outlet/>
+         <div className='Outlet-Inner'>
+            {
+                
+              window.location.pathname === '/' ? <img src={PosWelcomeLogo} alt='PosWelcomeLogo' className='PosWelcomeLogo'></img> : <Outlet/>
+            }
          </div>
          
          </motion.div>

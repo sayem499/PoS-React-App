@@ -1,6 +1,6 @@
 import '../css/salesettings.css'
 import { useState } from 'react'
-import { setSaleSettings } from '../redux/sale/saleSlice' 
+import { setSaleSettings, resetSale } from '../redux/sale/saleSlice' 
 import { useDispatch } from 'react-redux'
 import { Switch } from 'antd'
 
@@ -25,6 +25,8 @@ const handleSubmit = (e) => {
         saleLessAdjustmentToggle,
     }
     dispatch(setSaleSettings(payload))
+    dispatch(resetSale())
+    closeSaleSettings()
 }
 
   return (

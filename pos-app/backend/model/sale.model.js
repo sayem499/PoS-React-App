@@ -1,14 +1,7 @@
 const mongoose = require('mongoose')
 
 const saleSchema = mongoose.Schema({
-    products:[{
-        _id: {type: String },
-        productID: {type: Number, required: true},
-        productTitle: {type: String, required: true},
-        productQuantity: {type: Number, required: true},
-        productUnitPrice: {type: Number, required:true},
-        productTotal: { type:Number, required: true },
-    }],
+    products:{ type: Array, required:true},
     saleSubTotal: {type: Number, required: true},
     saleVAT: {type:Number, required: true},
     saleDiscount: {type:Number, required: true},
@@ -17,8 +10,9 @@ const saleSchema = mongoose.Schema({
     salePayByCard: {type: Number, required: true},
     salePayByCash: {type: Number, required:true},
     saleTime: {type: String},
-    saleDate: {type: Date, default: Date.now},
-    saleServedBy: {type: String, required:true}
+    saleDate: {type: String, default: Date.now},
+    saleServedBy: {type: String, required:true},
+    saleLessAdjustment: { type: String }
 },{
     timestamps: true,
 })

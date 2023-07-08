@@ -8,7 +8,7 @@ const initialState = {
     saleVAT: 0,
     saleDiscount: 0,
     saleTotal: 0,
-    salePayType: 0,
+    salePayType: '',
     salePayByCard: 0,
     salePayByCash: 0,
     saleTime: 0,
@@ -24,10 +24,11 @@ const initialState = {
 
 
 
-export const registerSale = createAsyncThunk('sale/registerSale', async (cartItems, thunkAPI) => {
+
+export const registerSale = createAsyncThunk('sale/registerSale', async (salePayload, thunkAPI) => {
     try{
         const token = thunkAPI.getState().auth.user.token
-        return await saleServices.registerSale(cartItems, token)
+        return await saleServices.registerSale(salePayload, token)
 
     }catch( error ) {
         const message = (error.response && error.response.data && error.response.data.message) 
@@ -85,11 +86,11 @@ export const saleSlice = createSlice({
         cartNetTotal: (state) => {
             state.saleTotal = 0
             if(state.saleVAT > 0){
-                state.saleTotal = state.saleTotal - ((state.saleVAT/100) * state.saleSubTotal)
+                state.saleTotal = state.saleTotal + ((state.saleVAT/100) * state.saleSubTotal)
             }
 
             if(state.saleDiscount > 0){
-                state.saleTotal = state.saleTotal + ((state.saleDiscount/100) * state.saleSubTotal)
+                state.saleTotal = state.saleTotal - ((state.saleDiscount/100) * state.saleSubTotal)
             }
 
             state.saleTotal = state.saleTotal + state.saleSubTotal
@@ -113,9 +114,29 @@ export const saleSlice = createSlice({
             state.saleLessAdjustment = 0
             if(state.saleLessAdjustmentToggle && state.saleTotal){
                temp = Math.floor(state.saleTotal)
-               state.saleLessAdjustment = state.saleTotal - temp 
+               state.saleLessAdjustment = (state.saleTotal - temp) 
                state.saleTotal = temp
             }   
+        },
+
+        insertSalePayType: (state,action) => {
+            state.salePayType = action.payload
+            if(state.salePayType === 'Credit'){
+                state.salePayByCard = state.saleTotal
+                state.salePayByCash = 0
+            }else if(state.salePayType === 'Cash'){
+                state.salePayByCash = state.saleTotal
+                state.salePayByCard = 0
+            }
+        },
+
+        insertSalePerson: (state, action) => {
+            state.saleServedBy = action.payload
+        },
+
+        insertTimeDate: (state, action) => {
+            state.saleDate = action.payload.saleDate
+            state.saleTime = action.payload.saleTime
         }
         
 
@@ -130,7 +151,7 @@ export const saleSlice = createSlice({
         .addCase(registerSale.fulfilled, (state, action) => {
             state.isLoading = false
             state.isSuccess = true
-            state.push(action.payload)
+            console.log(action.payload)
         })
         .addCase(registerSale.rejected, (state, action) => {
             state.isLoading = true
@@ -152,5 +173,8 @@ export const {
     setSaleSettings,
     getSaleSettings,
     cartTotalLessAdjustment,
+    insertSalePayType,
+    insertSalePerson,
+    insertTimeDate,
 } = saleSlice.actions
 export default saleSlice.reducer

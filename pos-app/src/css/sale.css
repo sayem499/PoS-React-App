@@ -360,3 +360,65 @@ hr {
     cursor: pointer;
     box-shadow: 0 0 6px cornflowerblue;
 }
+
+.sale-options-btn-clear {
+    font-size: medium;
+    font-weight: bold;
+    background-color: #e71e1e;
+    width: 100px;
+    height: 40px;
+    text-align: center;
+    text-decoration: none;
+    text-transform: uppercase;
+    border: none;
+    color:white;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.sale-options-btn-clear:hover, .sale-options-btn-clear:focus {
+    font-size: medium;
+    font-weight: bold;
+    background-color: #e71e1e;
+    width: 100px;
+    height: 40px;
+    text-align: center;
+    text-decoration: none;
+    text-transform: uppercase;
+    border: none;
+    color:white;
+    border-radius: 5px;
+    cursor: pointer;
+    box-shadow: 0 0 6px #de4747;
+}
+
+.sale-options-btn-confirm {
+    font-size: medium;
+    font-weight: bold;
+    background-color: #1aba24;
+    width: 100px;
+    height: 40px;
+    text-align: center;
+    text-decoration: none;
+    text-transform: uppercase;
+    border: none;
+    color:white;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.sale-options-btn-confirm:hover, .sale-options-btn-confirm:focus {
+    font-size: medium;
+    font-weight: bold;
+    background-color: #1aba24;
+    width: 100px;
+    height: 40px;
+    text-align: center;
+    text-decoration: none;
+    text-transform: uppercase;
+    border: none;
+    color:white;
+    border-radius: 5px;
+    cursor: pointer;
+    box-shadow: 0 0 6px #2bdb37;
+}

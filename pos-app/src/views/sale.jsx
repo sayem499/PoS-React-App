@@ -12,7 +12,11 @@ import { resetSale,
   cartSubTotal, 
   cartNetTotal,
   getSaleSettings,
-  cartTotalLessAdjustment } from '../redux/sale/saleSlice';
+  cartTotalLessAdjustment,
+  insertSalePayType,
+  insertSalePerson,
+  insertTimeDate, 
+  registerSale } from '../redux/sale/saleSlice';
 import MoneyIcon from '@mui/icons-material/Money';
 import CreditCardIcon from '@mui/icons-material/CreditCard';
 import CloseIcon from '@mui/icons-material/Close';
@@ -30,8 +34,14 @@ function Sale() {
           saleVAT,
           saleDiscount,
           saleTotal,
+          salePayType,
+          salePayByCard,
+          salePayByCash,
+          saleTime,
+          saleDate,
+          saleServedBy,
           saleLessAdjustment,
-          saleLessAdjustmentToggle } = useSelector((state => state.sale))
+        } = useSelector((state => state.sale))
   const dispatch = useDispatch()
   const [paymentMethod, setPaymentMethod] = useState('Cash')
   const [isSaleSettingsOpen, setIsSaleSettingsOpen] = useState(false)
@@ -46,7 +56,6 @@ function Sale() {
 
       navigate('/login')
     }
-
     dispatch(allProducts())
     dispatch(cartProductTotal())
     dispatch(cartSubTotal())
@@ -55,12 +64,13 @@ function Sale() {
     dispatch(cartNetTotal())  
     if(fetch.saleLessAdjustmentToggle)
       dispatch(cartTotalLessAdjustment())
-    
+    dispatch(insertSalePayType(paymentMethod))  
+    dispatch(insertSalePerson(user.userName))
    
     return()=>{
       dispatch(reset())
     }
-  },[user, navigate,dispatch, cartItems, saleTotal, saleLessAdjustmentToggle ])
+  },[user, navigate,dispatch, cartItems, saleTotal, paymentMethod])
 
   if(products.products && products.products.length !== productTemp.length){
     productTemp = products.products
@@ -82,10 +92,9 @@ function Sale() {
     e.preventDefault()
     dispatch(deleteCartItem(id))
     
-
   }
 
-  const handleProductClick = (id, e,UnitPrice) => {
+  const handleProductClick = (id, e) => {
 
      e.preventDefault()
       let payload,productID,productTitle,productQuantity,productUnitPrice,productTotal,_id
@@ -117,6 +126,42 @@ function Sale() {
 
   const handleSaleSettings = () => {
     setIsSaleSettingsOpen(true)
+  }
+
+  const handleClearCart = () => {
+    dispatch(resetSale())
+  }
+
+  const handleConfirm = (e) => {
+    e.preventDefault()
+    let saleTime, saleDate, payload, products
+    saleTime = new Date().toLocaleTimeString()
+    saleDate = new Date().toLocaleDateString()
+
+    payload = {
+      saleTime,
+      saleDate
+    }
+
+    dispatch(insertTimeDate(payload))
+
+    products = cartItems
+    const salePayload = {
+      products,
+      saleSubTotal,
+      saleVAT,
+      saleDiscount,
+      saleTotal,
+      salePayType,
+      salePayByCard,
+      salePayByCash,
+      saleTime,
+      saleDate,
+      saleServedBy,
+      saleLessAdjustment,
+  }
+
+    dispatch(registerSale(salePayload))
   }
 
   return (
@@ -166,7 +211,8 @@ function Sale() {
             type='radio'
             name='payment-method'
             value='Cash'
-            onChange = {(e) => setPaymentMethod(e.target.value)}
+            defaultChecked = { paymentMethod }
+            onClick = {(e) => setPaymentMethod(e.target.value)}
             ></input>
            <div className='logo-tile'>
             <MoneyIcon className='btn-icon'/>
@@ -182,7 +228,7 @@ function Sale() {
             type='radio'
             name='payment-method'
             value='Credit'
-            onChange = {(e) => setPaymentMethod(e.target.value)}
+            onClick = {(e) => setPaymentMethod(e.target.value)}
             ></input>
           <div className='logo-tile'>
           <CreditCardIcon className='btn-icon'/>
@@ -247,7 +293,7 @@ function Sale() {
          <hr></hr>
          <div className='product-total'>
           <section>
-            <h4>Sub-Total:</h4>  <span><h4>{saleSubTotal}</h4></span>
+            <h4>Sub-Total:</h4>  <span><h4>{saleSubTotal.toFixed(2)}</h4></span>
           </section>
           <section>
             VAT(%):    <span>{saleVAT}</span>
@@ -260,7 +306,7 @@ function Sale() {
           </section>
           <hr></hr>
           <section>
-            <h4>Net Amount (Tk.):</h4> <span><h4>{saleTotal}</h4></span>
+            <h4>Net Amount (Tk.):</h4> <span><h4>{saleTotal.toFixed(2)}</h4></span>
           </section>
          </div>
           </div>
@@ -272,6 +318,9 @@ function Sale() {
           {
             isSaleSettingsOpen && <Salesettings closeSaleSettings = {() => { setIsSaleSettingsOpen(false) }}/>
           }
+
+          <button className='sale-options-btn-clear' onClick={ handleClearCart }> Clear </button>
+          <button className='sale-options-btn-confirm' onClick={(e) => { handleConfirm(e) }}>Confirm</button>
         </div>
       </div>
     </div>

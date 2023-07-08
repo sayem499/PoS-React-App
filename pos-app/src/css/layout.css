@@ -66,8 +66,17 @@
 .Outlet{
     width: 100vw;
     height: 100vh;
-    float:center;
     overflow: auto;
+}
+
+.Outlet-Inner {
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+}
+
+.Outlet-Inner img{
+    width: 100%;
 }
 
 .top-section {
