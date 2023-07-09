@@ -24,7 +24,9 @@ const setSales = asyncHandler( async (req, res) => {
     !req.body.salePayByCash && 
     !req.body.saleTime &&
     !req.body.saleServedBy &&
-    !req.body.saleLessAdjustment){
+    !req.body.saleLessAdjustment &&
+    !req.body.saleVATAmount &&
+    !req.body.saleDiscountAmount ){
         res.status(400)
         throw new Error('Product field error!')
     }
@@ -42,6 +44,8 @@ const setSales = asyncHandler( async (req, res) => {
     saleDate: req.body.saleDate,
     saleServedBy: req.body.saleServedBy,
     saleLessAdjustment: req.body.saleLessAdjustment,
+    saleVATAmount: req.body.saleVATAmount,
+    saleDiscountAmount: req.body.saleDiscountAmount,
     }) 
     res.status(200).json(sale)
 })

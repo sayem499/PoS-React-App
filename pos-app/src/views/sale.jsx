@@ -17,6 +17,8 @@ import { resetSale,
   insertSalePerson,
   insertTimeDate, 
   registerSale } from '../redux/sale/saleSlice';
+import { toast } from 'react-toastify'  
+import Loading from '../components/loading';
 import MoneyIcon from '@mui/icons-material/Money';
 import CreditCardIcon from '@mui/icons-material/CreditCard';
 import CloseIcon from '@mui/icons-material/Close';
@@ -37,10 +39,13 @@ function Sale() {
           salePayType,
           salePayByCard,
           salePayByCash,
-          saleTime,
-          saleDate,
           saleServedBy,
           saleLessAdjustment,
+          saleVATAmount,
+          saleDiscountAmount,
+          isSaleLoading,
+          isSaleError,
+          isSaleSuccess,
         } = useSelector((state => state.sale))
   const dispatch = useDispatch()
   const [paymentMethod, setPaymentMethod] = useState('Cash')
@@ -52,6 +57,7 @@ function Sale() {
 
 
   useEffect(()=>{
+   
     if(!user){
 
       navigate('/login')
@@ -66,11 +72,22 @@ function Sale() {
       dispatch(cartTotalLessAdjustment())
     dispatch(insertSalePayType(paymentMethod))  
     dispatch(insertSalePerson(user.userName))
+    if(isSaleError){
+      toast.error("Sale Confirmation Error!!")
+    }
+    
+    if(isSaleSuccess){
+      setTimeout(() => {
+        toast.success("Sale Confirmed Successfully!!")    
+        dispatch(resetSale()) 
+      },2000)
+      
+    }
    
     return()=>{
       dispatch(reset())
     }
-  },[user, navigate,dispatch, cartItems, saleTotal, paymentMethod])
+  },[user, navigate,dispatch, cartItems, saleTotal, paymentMethod,isSaleLoading])
 
   if(products.products && products.products.length !== productTemp.length){
     productTemp = products.products
@@ -133,8 +150,8 @@ function Sale() {
   }
 
   const handleConfirm = (e) => {
-    e.preventDefault()
-    let saleTime, saleDate, payload, products
+    e.preventDefault()    
+    let saleTime, saleDate, payload, products, clearTimer
     saleTime = new Date().toLocaleTimeString()
     saleDate = new Date().toLocaleDateString()
 
@@ -159,9 +176,20 @@ function Sale() {
       saleDate,
       saleServedBy,
       saleLessAdjustment,
+      saleVATAmount,
+      saleDiscountAmount,
   }
 
     dispatch(registerSale(salePayload))
+
+  
+        
+  
+  
+      
+    
+    
+
   }
 
   return (
@@ -256,6 +284,9 @@ function Sale() {
           
          return( 
            <div key={key} className='product-cart-list'>
+            {
+              isSaleLoading && <Loading/>
+            }
              <ul>
                <li >
                  <section>
@@ -296,13 +327,13 @@ function Sale() {
             <h4>Sub-Total:</h4>  <span><h4>{saleSubTotal.toFixed(2)}</h4></span>
           </section>
           <section>
-            VAT(%):    <span>{saleVAT}</span>
+            VAT({saleVAT}%):    <span>{saleVATAmount.toFixed(2)}</span>
           </section>
           <section>
-            Discount(%):  <span>{saleDiscount}</span>
+            Discount({saleDiscount}%):  <span>-{saleDiscountAmount.toFixed(2)}</span>
           </section>
           <section>
-            Less Adjustment: <span>{ saleLessAdjustment.toFixed(2) }</span>
+            Less Adjustment: <span>-{ saleLessAdjustment.toFixed(2) }</span>
           </section>
           <hr></hr>
           <section>
@@ -314,7 +345,10 @@ function Sale() {
       </div>
       <div className='button-container'>
         <div className='button-wrapper'>
-          <button className='sale-options-btn' onClick={ handleSaleSettings }>Settings</button>
+          {
+            user.userType === 'admin' ? <button className='sale-options-btn' onClick={ handleSaleSettings }>Settings</button> :''
+          }
+          
           {
             isSaleSettingsOpen && <Salesettings closeSaleSettings = {() => { setIsSaleSettingsOpen(false) }}/>
           }

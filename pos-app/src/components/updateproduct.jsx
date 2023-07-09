@@ -4,7 +4,7 @@ import { updateProducts, reset, allProducts } from '../redux/products/productSli
 import { useDispatch, useSelector } from "react-redux"
 import { toast } from 'react-toastify'
 import { useNavigate } from "react-router-dom"
-import { all } from "axios"
+
 
 
 function Updateproduct({ row, closeUpdateProduct}) {

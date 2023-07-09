@@ -15,10 +15,12 @@ const initialState = {
     saleDate: 0,
     saleServedBy: '',
     saleLessAdjustment: 0,
+    saleVATAmount: 0,
+    saleDiscountAmount: 0,
     saleLessAdjustmentToggle: false, 
-    isLoading: false,
-    isError: false,
-    isSuccess: false,
+    isSaleLoading: false,
+    isSaleError: false,
+    isSaleSuccess: false,
     message: '',
 }
 
@@ -89,10 +91,13 @@ export const saleSlice = createSlice({
                 state.saleTotal = state.saleTotal + ((state.saleVAT/100) * state.saleSubTotal)
             }
 
+            state.saleVATAmount = ((state.saleVAT/100) * state.saleSubTotal)
+
             if(state.saleDiscount > 0){
                 state.saleTotal = state.saleTotal - ((state.saleDiscount/100) * state.saleSubTotal)
             }
 
+            state.saleDiscountAmount = ((state.saleDiscount/100) * state.saleSubTotal)
             state.saleTotal = state.saleTotal + state.saleSubTotal
 
         },
@@ -146,16 +151,16 @@ export const saleSlice = createSlice({
     extraReducers: (builder) => {
         builder
         .addCase(registerSale.pending, (state) => {
-            state.isLoading = true
+            state.isSaleLoading = true
         })
         .addCase(registerSale.fulfilled, (state, action) => {
-            state.isLoading = false
-            state.isSuccess = true
+            state.isSaleLoading = false
+            state.isSaleSuccess = true
             console.log(action.payload)
         })
         .addCase(registerSale.rejected, (state, action) => {
-            state.isLoading = true
-            state.isError = true
+            state.isSaleLoading = false
+            state.isSaleError = true
             state.message = action.payload
         })
    }, 
