@@ -59,7 +59,6 @@ function Layout (){
          <Searchbar/>
          <div className='Outlet-Inner'>
             {
-                
               window.location.pathname === '/' ? <img src={PosWelcomeLogo} alt='PosWelcomeLogo' className='PosWelcomeLogo'></img> : <Outlet/>
             }
          </div>
