@@ -9,6 +9,7 @@ const getCustomers = async (token) => {
         }
     }
     const response = await axios.get(API_URL, config)
+    return response.data
 }
 const setCustomers = async (data, token) => {
     const config = { 
@@ -21,9 +22,33 @@ const setCustomers = async (data, token) => {
     return response.data
 }
 
+const updateCustomer = async (customerID, data, token) => {
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    }
+
+    const response = await axios.put(API_URL + customerID, data, config)
+    return response.data
+}
+
+const deleteCustomer = async (customerID, token) => {
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    }
+
+    const response = await axios.delete(API_URL + customerID, config)
+    return response.data
+}
+
 const customerService = {
     getCustomers,
     setCustomers,
+    updateCustomer,
+    deleteCustomer,
 }
 
 export default customerService

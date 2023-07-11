@@ -10,29 +10,39 @@ import Paper from '@mui/material/Paper';
 import { useEffect, useState } from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import './css/tablecustomer.css'
+import '../css/tablecustomer.css'
+import { getCustomers, deleteCustomer} from '../redux/customer/customerSlice';
+import UpdateCustomer from './updateCustomer';
 
 
 export default function BasicTable() {
     const {searchInput} = useSelector( (state) => state.search)
-    let rows = []
+    const {customers, isCustomerError, message} = useSelector((state) => state.customerState) 
+
+    
     const navigate = useNavigate()
     const { user } = useSelector((state) => state.auth)
     const dispatch = useDispatch()
     const [isUpdateCustomerOpen, setIsUpdateCustomerOpen] = useState(false)
     const [updateID, setUpdateID] = useState('')
+    let rows
   
     useEffect(() => {
       if (!user) {
         navigate('/login')
       }
-  
+      
+      if (isCustomerError) {
+        console.log(message)
+      }
+
+      dispatch(getCustomers())
       
   
-    }, [user, navigate, dispatch])
+    }, [user, isCustomerError, message, navigate, dispatch])
   
     if(customers){
-      row = customers
+      rows = customers
     }
    
   
@@ -50,7 +60,6 @@ export default function BasicTable() {
           <Table sx={{ minWidth: 650 }} aria-label="simple table">
             <TableHead>
               <TableRow>
-                <TableCell>Product Name</TableCell>
                 <TableCell align="right">Customer Name</TableCell>
                 <TableCell align="right">Customer Mobile No.</TableCell>
                 <TableCell align="right">Customer Total Expenditure&nbsp;(Tk.)</TableCell>
@@ -59,36 +68,34 @@ export default function BasicTable() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {searchInput === '' ? rows.map((row) => (
+              {searchInput === '' ? rows?.map((row) => (
                 <TableRow
                   key={row._id}
                   sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                 >
                   <TableCell component="th" scope="row">
-                    {row.productTitle}
+                    {row.customerName}
                   </TableCell>
-                  <TableCell align="right">{row.productBrand}</TableCell>
-                  <TableCell align="right">{row.productQuantity}</TableCell>
-                  <TableCell align="right">{row.productType}</TableCell>
-                  <TableCell align="right">{row.productUnitPrice}</TableCell>
-                  <TableCell align="right"> <EditIcon onClick={() => { handleClick(); handleUpdate(row._id); }} /> <DeleteIcon onClick={() => { dispatch(deleteProduct(row._id)); dispatch(allProducts()); }} />
-                    {isUpdateProductOpen && updateID === row._id && <Updateproduct row={row} closeUpdateProduct={() => { setIsUpdateProductOpen(false); }} />}
+                  <TableCell align="right">{row.customerPhoneNumber}</TableCell>
+                  <TableCell align="right">{row.customerTotalExpenditure}</TableCell>
+                  <TableCell align="right">{row.customerTotalTrades}</TableCell>
+                  <TableCell align="right"> <EditIcon onClick={() => { handleClick(); handleUpdate(row._id); }} /> <DeleteIcon onClick={() => { dispatch(deleteCustomer(row._id)); dispatch(getCustomers()); }} />
+                    {isUpdateCustomerOpen && updateID === row._id && <UpdateCustomer row={row} closeUpdateCustomer={() => { setIsUpdateCustomerOpen(false); }} />}
                   </TableCell>
                 </TableRow>
-              )) : rows.filter((row) => row.productTitle.toLowerCase().includes(searchInput.toLowerCase())).map((row) => (
+              )) : rows.filter((row) => row.customerPhoneNumber.toLowerCase().includes(searchInput.toLowerCase())).map((row,key) => (
                 <TableRow
                   key={row._id}
                   sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                 >
                   <TableCell component="th" scope="row">
-                    {row.productTitle}
+                    {row.customerName}
                   </TableCell>
-                  <TableCell align="right">{row.productBrand}</TableCell>
-                  <TableCell align="right">{row.productQuantity}</TableCell>
-                  <TableCell align="right">{row.productType}</TableCell>
-                  <TableCell align="right">{row.productUnitPrice}</TableCell>
-                  <TableCell align="right"> <EditIcon onClick={() => { handleClick(); handleUpdate(row._id); }} /> <DeleteIcon onClick={() => { dispatch(deleteProduct(row._id)); dispatch(allProducts()); }} />
-                    {isUpdateProductOpen && updateID === row._id && <Updateproduct row={row} closeUpdateProduct={() => { setIsUpdateProductOpen(false); }} />}
+                  <TableCell align="right">{row.customerPhoneNumber}</TableCell>
+                  <TableCell align="right">{row.customerTotalExpenditure}</TableCell>
+                  <TableCell align="right">{row.customerToalTrades}</TableCell>
+                  <TableCell align="right"> <EditIcon onClick={() => { handleClick(); handleUpdate(row._id); }} /> <DeleteIcon onClick={() => { dispatch(deleteCustomer(row._id)); dispatch(getCustomers()); }} />
+                    {isUpdateCustomerOpen && updateID === row._id && <UpdateCustomer row={row} closeUpdateCustomer ={() => { setIsUpdateCustomerOpen(false); }} />}
                   </TableCell>
                 </TableRow>
               ))}

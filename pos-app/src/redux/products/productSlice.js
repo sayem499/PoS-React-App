@@ -93,7 +93,7 @@ export const productSlice = createSlice({
             .addCase(setProducts.fulfilled, (state, action) => {
                 state.isLoading = false
                 state.isSuccess = true
-                state.products.push(action.payload)
+                state.products = state.products.concat(action.payload)
             })
             .addCase(setProducts.rejected, (state, action) => {
                 state.isLoading = false
@@ -119,7 +119,7 @@ export const productSlice = createSlice({
             .addCase(updateProducts.fulfilled, (state, action) => {
                 state.isLoading = false
                 state.isSuccess = true
-                state.products = state.products.map((product) => {
+                state.products.map((product) => {
                     if( product._id === action.payload._id){
                         product.productTitle = action.payload.productTitle
                         product.productBrand = action.payload.productBrand

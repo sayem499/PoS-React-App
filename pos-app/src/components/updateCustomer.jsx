@@ -1,21 +1,20 @@
-import '../css/addcustomer.css'
+import '../css/updatecustomer.css'
 import { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { toast } from 'react-toastify'
 import { Blocks } from 'react-loader-spinner'
 import { useNavigate } from 'react-router-dom'
-import { getCustomers, resetCustomers, setCustomers } from '../redux/customer/customerSlice'
+import { getCustomers, resetCustomers, updateCustomer } from '../redux/customer/customerSlice'
 
 
-function AddCustomer({closeAddCustomer}) {
+function UpdateCustomer({row,closeUpdateCustomer}) {
   const navigate = useNavigate()
   const dispatch = useDispatch()
-    const { customers, isLoading, isError, isSuccess, message } = useSelector( (state) => state.customerState)
-    const [customerName, setCustomerName] = useState('')
-    const [customerPhoneNumber, setCustomerPhoneNumber] = useState('')
-    const customerTotalExpenditure = 0, customerTotalTrades = 0
-  
-
+    const { customers, isCustomerLoading, isCustomerError, isCustomerSuccess, message } = useSelector( (state) => state.customerState)
+    const [customerName, setCustomerName] = useState(row.customerName)
+    const [customerPhoneNumber, setCustomerPhoneNumber] = useState(row.customerPhoneNumber)
+    const [customerTotalExpenditure] = useState(row.customerTotalExpenditure)
+    const [customerTotalTrades] = useState(row.customerTotalTrades)
    
     const  { user } = useSelector( (state) => state.auth)
 
@@ -24,10 +23,9 @@ function AddCustomer({closeAddCustomer}) {
         navigate('/login')
       }
       
-      if(isError){
+      if(isCustomerError){
         toast.error(message)
       }
-      
 
       return() =>{ 
         dispatch(resetCustomers()) 
@@ -35,7 +33,7 @@ function AddCustomer({closeAddCustomer}) {
       }
       
 
-    },[ isError, message, dispatch ])
+    },[ isCustomerError, message, dispatch])
 
   
 
@@ -45,35 +43,30 @@ function AddCustomer({closeAddCustomer}) {
       if( customerName === '' || customerPhoneNumber === '')
         toast.error('Please fill the required fields!')
 
-        const customerData = {
+        const updatedCustomerData = {
             customerName,
             customerPhoneNumber,
             customerTotalExpenditure,
             customerTotalTrades
         }
 
-        try{
-          dispatch(setCustomers(customerData))
-
-        }catch (error){
-          console.log(error)
+        let customerID = row._id
+        const payload = {
+            customerID,
+            updatedCustomerData,     
         }
-        
-        if(isSuccess){
-          toast.success('Product created successfully!')
+        dispatch(updateCustomer(payload))
+
+        if(isCustomerSuccess){
+          toast.success('Product updated successfully!')
         }
-
-        setCustomerName('')
-        setCustomerPhoneNumber('')
-
-
     }
 
 
   return (
-    <div className='addcustomer-container' onClick={(e) => { if(e.target.className === 'addcustomer-container')  closeAddCustomer()}}>
-      <div className='addcustomerform'>
-        <span>ADD CUSTOMER</span>
+    <div className='updatecustomer-container' onClick={(e) => { if(e.target.className === 'updatecustomer-container')  closeUpdateCustomer()}}>
+      <div className='updatecustomerform'>
+        <span>UPDATE CUSTOMER</span>
         <form onSubmit={handleSubmit}>
           <label htmlFor='customerName'>Customer Name</label>
           <input value={customerName} onChange={e => setCustomerName(e.target.value)} placeholder='Customer Name' type='text' name='customerName'/>
@@ -87,4 +80,4 @@ function AddCustomer({closeAddCustomer}) {
   )
 }
 
-export default AddCustomer
+export default UpdateCustomer

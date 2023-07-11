@@ -38,9 +38,9 @@ const setCustomers = asyncHandler( async (req, res) => {
 const updateCustomer = asyncHandler( async (req, res) => {
     const customer = Customers.findById(req.params.id)
 
-    if(!product){
+    if(!customer){
         res.status(200).json(customer)
-        throw new Error('Product not found!')
+        throw new Error('Customer not found!')
     }
 
     const updatedCustomer = await Customers.findByIdAndUpdate(req.params.id, req.body, { new: true, })

@@ -1,4 +1,4 @@
-//import BasicTable from '../components/tablecustomer'
+import BasicTable from '../components/tablecustomer'
 import { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
@@ -25,9 +25,9 @@ function Customers(){
 
     return(
         <div className='customer-container'>
-         <button onClick={handleButtonClick}>Add Customer</button>
+         <button  className='add-customer-btn' onClick={handleButtonClick}>Add Customer</button>
           {isAddCustomerOpen && <AddCustomer closeAddCustomer = { () => {setIsAddCustomerOpen(false) }}/>}   
-          {/* <BasicTable/> */}
+          {<BasicTable/>}
         </div>
     )
 }

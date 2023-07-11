@@ -29,7 +29,7 @@ function Products(){
   
     return(
         <div className='productpage'>
-          <button onClick={handleButtonClick}>Add Product</button>
+          <button className='add-product-btn' onClick={handleButtonClick}>Add Product</button>
           {isAddProductOpen && <Addproduct closeAddProduct = { () => {
             setIsAddProductOpen(false)
           } } />}
