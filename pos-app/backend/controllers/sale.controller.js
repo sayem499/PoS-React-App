@@ -1,7 +1,7 @@
 const asyncHandler = require('express-async-handler') 
 const Sales = require('../model/sale.model')
 
-//@dec GET sales
+//@desc GET sales
 //@route GET/api/sales
 //@access Private
 const getSales = asyncHandler( async (req, res) => {
@@ -10,7 +10,7 @@ const getSales = asyncHandler( async (req, res) => {
 })
 
 
-//@dec POST sales
+//@desc POST sales
 //@route POST/api/sales
 //@access Private
 const setSales = asyncHandler( async (req, res) => {
@@ -30,7 +30,6 @@ const setSales = asyncHandler( async (req, res) => {
         res.status(400)
         throw new Error('Product field error!')
     }
-    console.log(req.body)
     const sale = await Sales.create({
     products: req.body.products,
     saleSubTotal: req.body.saleSubTotal, 

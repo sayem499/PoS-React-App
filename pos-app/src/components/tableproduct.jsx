@@ -42,8 +42,8 @@ export default function BasicTable() {
   }, [user, isError, message, navigate, dispatch])
 
 
-  if (products.products) {
-    rows = products.products
+  if (products) {
+    rows = products
   }
 
   const handleUpdate = (ID) =>{

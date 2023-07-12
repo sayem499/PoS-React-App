@@ -31,7 +31,7 @@ function Updateproduct({ row, closeUpdateProduct}) {
           dispatch(allProducts())
         }  
        
-    },[user, isError, message, navigate, dispatch, products])
+    },[user, isError, message, navigate, dispatch])
 
 
   const handleSubmit = (e) =>{

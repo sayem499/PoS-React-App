@@ -89,8 +89,8 @@ function Sale() {
     }
   },[user, navigate,dispatch, cartItems, saleTotal, paymentMethod,isSaleLoading])
 
-  if(products.products && products.products.length !== productTemp.length){
-    productTemp = products.products
+  if(products && products.length !== productTemp.length){
+    productTemp = products
   }
 
   const handleDecrement = (id,e) => {

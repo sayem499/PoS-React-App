@@ -6,7 +6,7 @@
  //@access Private
  const getProducts = asyncHandler( async (req, res) => {
     const products = await Products.find()
-    res.status(200).json({products})
+    res.status(200).json(products)
  })
 
 //@desc Set products
