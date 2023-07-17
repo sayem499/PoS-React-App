@@ -12,7 +12,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import '../css/tablecustomer.css'
 import { getCustomers, deleteCustomer} from '../redux/customer/customerSlice';
-import UpdateCustomer from './updateCustomer';
+import UpdateCustomer from './updatecustomer';
 
 
 export default function BasicTable() {
@@ -55,7 +55,7 @@ export default function BasicTable() {
     }
   
     return (
-      <div className='table-container'>
+      <div className='table-container-customer'>
         <TableContainer component={Paper}>
           <Table sx={{ minWidth: 650 }} aria-label="simple table">
             <TableHead>

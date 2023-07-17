@@ -1,6 +1,6 @@
-.table-container {
+.table-container-customer {
     overflow:auto;
-    width: 800px;
+    width: 70%;
     height: 100%;
 
 }

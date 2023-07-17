@@ -27,7 +27,7 @@ function Customers(){
         <div className='customer-container'>
          <button  className='add-customer-btn' onClick={handleButtonClick}>Add Customer</button>
           {isAddCustomerOpen && <AddCustomer closeAddCustomer = { () => {setIsAddCustomerOpen(false) }}/>}   
-          {<BasicTable/>}
+          <BasicTable/>
         </div>
     )
 }

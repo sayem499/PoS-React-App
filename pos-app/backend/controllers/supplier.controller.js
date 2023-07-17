@@ -15,7 +15,7 @@ const setSupplier = asyncHandler( async(req,res) => {
         supplierProducts: req.body.supplierProducts,
         supplierName: req.body.supplierName,
         supplierPhoneNumber: req.body.supplierPhoneNumber,
-        supplierAddress: req.body.supplierPhoneNumber,
+        supplierAddress: req.body.supplierAddress,
         supplierEmail: req.body.supplierEmail
       })
       
@@ -41,7 +41,7 @@ const updateSupplier = asyncHandler( async (req, res) => {
         throw new Error('Supplier not found!')
     }
 
-    const updatedSupplier = Suppliers.findByIdAndUpdate(req.params.id, req.body, {new: true})
+    const updatedSupplier = await Suppliers.findByIdAndUpdate(req.params.id, req.body, {new: true})
     res.status(200).json(updatedSupplier)
 })
 

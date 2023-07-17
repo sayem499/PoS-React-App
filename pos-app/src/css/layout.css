@@ -1,12 +1,12 @@
 .Wrapper {
-  height: 100vh;
-  width: 100vw;
+  height: 100%;
+  width: 100%;
   margin: 0;
   display: flex;
 }
 
 .Sidebar {
-    height: 100vh;
+    height: 100%;
     width: 275px;
     background-color: #0f1c33;
     float:left;
@@ -64,8 +64,8 @@
 }
 
 .Outlet{
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    height: 100%;
     overflow: auto;
 }
 
@@ -74,11 +74,12 @@
     height: 100%;
     display: flex;
     flex-direction: column;
-    overflow: auto;
 }
 
 .Outlet-Inner img{
     width: 100%;
+    height: fit-content;
+
 }
 
 .top-section {

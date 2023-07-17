@@ -206,7 +206,7 @@ function Sale() {
               </tr>
           </table>
           </div>
-          { searchInput && productTemp.filter((product) => product.productTitle.toLowerCase().includes(searchInput.toLowerCase())).map((product, key) => {
+          { searchInput ? productTemp.filter((product) => product.productTitle.toLowerCase().includes(searchInput.toLowerCase())).map((product, key) => {
           return (
           <div className='card' key={key}  onClick = { e => handleProductClick(product._id,e,product.productUnitPrice)}>
             <ul >
@@ -225,7 +225,26 @@ function Sale() {
             </ul>
           </div>
           )
-          })}
+          }): productTemp.map((product, key) => {
+            return (
+            <div className='card' key={key}  onClick = { e => handleProductClick(product._id,e,product.productUnitPrice)}>
+              <ul >
+                
+                  
+                  <li>
+                  <span>{product.productTitle}</span>
+                  <span>{product.productBrand}</span>
+                  <span>{product.productQuantity}</span>
+                  <span id='unit-price'>{product.productUnitPrice}</span>
+                  </li>
+                  
+                
+                  
+              
+              </ul>
+            </div>
+            )
+            })}
 
           </div>
           <div className='cart-container'>
