@@ -1,27 +1,21 @@
 import { useEffect, useState } from "react"
-import '../css/updatesupplierproduct.css'
+import '../css/addsupplierproduct.css'
 import { updateSupplier, resetSuppliers, getSupplier } from '../redux/supplier/supplierSlice'
 import { useDispatch, useSelector } from "react-redux"
 import { toast } from 'react-toastify'
 import { useNavigate } from "react-router-dom"
 
+function AddSupplierProduct({id,closeAddSupplierProduct}) {
 
-
-function UpdateSupplierProduct({ i, product, row, closeUpdateSupplierProduct }) {
     const dispatch = useDispatch()
     const navigate = useNavigate()
-    const { isSupplierSuccess, isSupplierError, message } = useSelector((state) => state.supplierState)
+    const { suppliers,isSupplierSuccess, isSupplierError, message } = useSelector((state) => state.supplierState)
     const { user } = useSelector((state) => state.auth)
-    const [supplierName] = useState(row.supplierName)
-    const [supplierPhoneNumber] = useState(row.supplierPhoneNumber)
-    const [supplierAddress] = useState(row.supplierAddress)
-    const [supplierEmail] = useState(row.supplierEmail)
-    const [supplierProduct] = useState(row.supplierProducts)
-    const [productTitle, setProductTitle] = useState(product.productTitle)
-    const [productBrand, setProductBrand] = useState(product.productBrand)
-    const [productQuantity, setProductQuantity] = useState(product.productQuantity)
-    const [productType, setProductType] = useState(product.productType)
-    const [productUnitPrice, setProductUnitPrice] = useState(product.productUnitPrice)
+    const [productTitle, setProductTitle] = useState('')
+    const [productBrand, setProductBrand] = useState('')
+    const [productQuantity, setProductQuantity] = useState('')
+    const [productType, setProductType] = useState('')
+    const [productUnitPrice, setProductUnitPrice] = useState('')
 
     useEffect(() => {
 
@@ -40,7 +34,6 @@ function UpdateSupplierProduct({ i, product, row, closeUpdateSupplierProduct }) 
 
     }, [user, isSupplierError, message, navigate, dispatch])
 
-
     const handleSubmit = (e) => {
         e.preventDefault()
         const updatedProduct = {
@@ -51,8 +44,14 @@ function UpdateSupplierProduct({ i, product, row, closeUpdateSupplierProduct }) 
             productUnitPrice,
         }
 
-        const supplierProducts = [...supplierProduct]
-        supplierProducts.splice(i, 1, updatedProduct)
+        suppliers.filter((supplier) => supplier._id === id).forEach(element => {
+            let supplierName = element.supplierName, 
+            supplierPhoneNumber = element.supplierPhoneNumber, 
+            supplierAddress = element.supplierAddress, 
+            supplierEmail = element.supplierEmail
+
+            let supplierProducts = [...element.supplierProducts] 
+            supplierProducts.splice(element.supplierProducts.length, 0, updatedProduct)
 
         const updatedSupplierData = {
             supplierProducts,
@@ -62,7 +61,7 @@ function UpdateSupplierProduct({ i, product, row, closeUpdateSupplierProduct }) 
             supplierEmail,
         }
 
-        let supplierID = row._id
+        let supplierID = id
         const payload = {
             supplierID,
             updatedSupplierData,
@@ -71,15 +70,19 @@ function UpdateSupplierProduct({ i, product, row, closeUpdateSupplierProduct }) 
         dispatch(updateSupplier(payload))
 
         if (isSupplierSuccess) {
-            toast.success('Supplier updated successfully!')
+            toast.success('Supplier created successfully!')
         }
 
+        });
+
+        
+        
     }
 
-    return (
-        <div className="update-supplier-product-container" onClick={(e) => { if (e.target.className === "update-supplier-product-container") closeUpdateSupplierProduct() }}>
-            <div className='update-supplier-product-form'>
-                <span>UPDATE PRODUCT</span>
+  return (
+    <div className="add-supplier-product-container" onClick={(e) => { if (e.target.className === "add-supplier-product-container") closeAddSupplierProduct() }}>
+            <div className='add-supplier-product-form'>
+                <span>ADD PRODUCT</span>
                 <form onSubmit={(e) => handleSubmit(e)}>
                     <label htmlFor='Product Name'>Product Name</label>
                     <input value={productTitle} onChange={e => setProductTitle(e.target.value)} placeholder='Product Name' type='text' name='productTitle' />
@@ -91,12 +94,12 @@ function UpdateSupplierProduct({ i, product, row, closeUpdateSupplierProduct }) 
                     <input value={productType} onChange={e => setProductType(e.target.value)} placeholder='Category' type='text' name='productType' />
                     <label htmlFor='Unit Price'>Unit Price (Tk.)</label>
                     <input value={productUnitPrice} onChange={e => setProductUnitPrice(parseInt(e.target.value))} placeholder='Product Unit Price' type='number' name='productUnitPrice' />
-                    <button type='submit' className='btn-supplier-product-submit'>Submit</button>
+                    <button type='submit' className='btn-add-supplier-product-submit'>Submit</button>
                 </form>
             </div>
 
         </div>
-    )
+  )
 }
 
-export default UpdateSupplierProduct
+export default AddSupplierProduct
