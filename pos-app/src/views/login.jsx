@@ -71,7 +71,7 @@ function Login() {
     <div className='Login'>
       <form onSubmit={handleSubmit}>
         <img src={PosLogo} alt='PoS logo' className='Poslogo'></img>
-        <h3>Login</h3>
+        <section className = 'login-title'><h3>Login</h3></section>
         <label htmlform="Username">Username </label>
         <input value={userName} onChange={(e) => setUserName(e.target.value)} type="username" placeholder="Username" id="Username" name="Username"></input>
         <label htmlform="Password">Password </label>

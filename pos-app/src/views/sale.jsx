@@ -64,7 +64,8 @@ function Sale() {
 
       navigate('/login')
     }
-    dispatch(allProducts())
+    if(productTemp.length === 0)
+      dispatch(allProducts())
     dispatch(cartProductTotal())
     dispatch(cartSubTotal())
     if(fetch)
@@ -86,9 +87,7 @@ function Sale() {
       
     }
    
-    return()=>{
-      dispatch(reset())
-    }
+  
   },[user, navigate,dispatch, productBarcode, cartItems, saleTotal, paymentMethod,isSaleLoading])
 
   if(products && products.length !== productTemp.length){

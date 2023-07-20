@@ -4,19 +4,20 @@ import { updateSupplier, resetSuppliers, getSupplier } from '../redux/supplier/s
 import { useDispatch, useSelector } from "react-redux"
 import { toast } from 'react-toastify'
 import { useNavigate } from "react-router-dom"
+import BarcodeReader from 'react-barcode-reader'
 
-function AddSupplierProduct({id,closeAddSupplierProduct}) {
+function AddSupplierProduct({ id, closeAddSupplierProduct }) {
 
     const dispatch = useDispatch()
     const navigate = useNavigate()
-    const { suppliers,isSupplierSuccess, isSupplierError, message } = useSelector((state) => state.supplierState)
+    const { suppliers, isSupplierSuccess, isSupplierError, message } = useSelector((state) => state.supplierState)
     const { user } = useSelector((state) => state.auth)
     const [productTitle, setProductTitle] = useState('')
     const [productBrand, setProductBrand] = useState('')
     const [productQuantity, setProductQuantity] = useState('')
     const [productType, setProductType] = useState('')
     const [productUnitPrice, setProductUnitPrice] = useState('')
-    const [productBarcode, setProductBarcode ] = useState('')
+    const [productBarcode, setProductBarcode] = useState('')
 
     useEffect(() => {
 
@@ -47,42 +48,46 @@ function AddSupplierProduct({id,closeAddSupplierProduct}) {
         }
 
         suppliers.filter((supplier) => supplier._id === id).forEach(element => {
-            let supplierName = element.supplierName, 
-            supplierPhoneNumber = element.supplierPhoneNumber, 
-            supplierAddress = element.supplierAddress, 
-            supplierEmail = element.supplierEmail
+            let supplierName = element.supplierName,
+                supplierPhoneNumber = element.supplierPhoneNumber,
+                supplierAddress = element.supplierAddress,
+                supplierEmail = element.supplierEmail
 
-            let supplierProducts = [...element.supplierProducts] 
+            let supplierProducts = [...element.supplierProducts]
             supplierProducts.splice(element.supplierProducts.length, 0, updatedProduct)
 
-        const updatedSupplierData = {
-            supplierProducts,
-            supplierName,
-            supplierPhoneNumber,
-            supplierAddress,
-            supplierEmail,
-        }
+            const updatedSupplierData = {
+                supplierProducts,
+                supplierName,
+                supplierPhoneNumber,
+                supplierAddress,
+                supplierEmail,
+            }
 
-        let supplierID = id
-        const payload = {
-            supplierID,
-            updatedSupplierData,
-        }
+            let supplierID = id
+            const payload = {
+                supplierID,
+                updatedSupplierData,
+            }
 
-        dispatch(updateSupplier(payload))
+            dispatch(updateSupplier(payload))
 
-        if (isSupplierSuccess) {
-            toast.success('Supplier created successfully!')
-        }
+            if (isSupplierSuccess) {
+                toast.success('Supplier created successfully!')
+            }
 
         });
 
-        
-        
     }
 
-  return (
-    <div className="add-supplier-product-container" onClick={(e) => { if (e.target.className === "add-supplier-product-container") closeAddSupplierProduct() }}>
+    const handleScan = (data) => {
+        setProductBarcode(data)
+    }
+
+
+    return (
+        <div className="add-supplier-product-container" onClick={(e) => { if (e.target.className === "add-supplier-product-container") closeAddSupplierProduct() }}>
+            {<BarcodeReader onScan={handleScan} />}
             <div className='add-supplier-product-form'>
                 <span>ADD PRODUCT</span>
                 <form onSubmit={(e) => handleSubmit(e)}>
@@ -97,13 +102,13 @@ function AddSupplierProduct({id,closeAddSupplierProduct}) {
                     <label htmlFor='Unit Price'>Unit Price (Tk.)</label>
                     <input value={productUnitPrice} onChange={e => setProductUnitPrice(parseInt(e.target.value))} placeholder='Product Unit Price' type='number' name='productUnitPrice' />
                     <label htmlFor='productBarcode'>Product Barcode</label>
-                    <input value={productBarcode} readonly placeholder='Product Barcode' type='text' name='productBarcode'/>
+                    <input value={productBarcode} onChange={e => setProductBarcode(e.target.value)} placeholder='Product Barcode' type='text' name='productBarcode' />
                     <button type='submit' className='btn-add-supplier-product-submit'>Submit</button>
                 </form>
             </div>
 
         </div>
-  )
+    )
 }
 
 export default AddSupplierProduct

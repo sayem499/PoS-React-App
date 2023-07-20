@@ -2,10 +2,11 @@
 
 
 .Login {
-    min-height: 100vh;
+    height: 50%;
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     background: #ffffffff;
     box-shadow:  rgba(0, 0, 0, 0.35) 0px 5px 15px;;
 
@@ -35,6 +36,11 @@ input {
 
 h1{
     margin: 0px 0 20px 0;
+}
+
+.login-title {
+    display: flex;
+    justify-content: center;
 }
 
 .Poslogo {

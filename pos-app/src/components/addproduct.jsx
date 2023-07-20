@@ -5,6 +5,7 @@ import { setProducts, reset , allProducts} from '../redux/products/productSlice'
 import { toast } from 'react-toastify'
 import { Blocks } from 'react-loader-spinner'
 import { useNavigate } from 'react-router-dom'
+import BarcodeReader from 'react-barcode-reader'
 
 
 function Addproduct({closeAddProduct}) {
@@ -76,10 +77,13 @@ function Addproduct({closeAddProduct}) {
 
 
     }
-
+    const handleScan = (data) => {
+      setProductBarcode(data)
+    }
 
   return (
     <div className='addproduct-container' onClick={(e) => { if(e.target.className === 'addproduct-container')  closeAddProduct()}}>
+      {<BarcodeReader onScan = {handleScan}/>}
       <div className='addproductform'>
         <span>ADD PRODUCT</span>
         <form onSubmit={handleSubmit}>
@@ -94,7 +98,7 @@ function Addproduct({closeAddProduct}) {
           <label htmlFor='Unit Price'>Unit Price (Tk.)</label>
           <input value={productUnitPrice} onChange={ e => setProductUnitPrice(e.target.value)} placeholder='Product Unit Price' type='number' name='productUnitPrice'/>
           <label htmlFor='productBarcode'>Product Barcode</label>
-          <input value={productBarcode} readonly placeholder='Product Barcode' type='text' name='productBarcode'/>
+          <input value={productBarcode} onChange={e => setProductBarcode(e.target.value)} placeholder='Product Barcode' type='text' name='productBarcode'/>
           <button type='submit' className='btn'>Submit</button>
         </form>
       </div>
