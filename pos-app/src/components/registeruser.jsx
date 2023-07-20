@@ -88,7 +88,7 @@ function Registeruser(propdata) {
           <option value="admin">Admin</option>
           <option value="regular">Reguler</option>
         </select>
-        <button  type="submit">Register</button>
+        <button  className='register-button' type="submit">Register</button>
       </form>
     </div>
   )

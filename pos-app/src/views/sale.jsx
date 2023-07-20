@@ -25,6 +25,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import Salesettings from '../components/salesettings';
+import BarcodeReader from 'react-barcode-reader'
 
 function Sale() {
   const navigate = useNavigate()
@@ -50,6 +51,7 @@ function Sale() {
   const dispatch = useDispatch()
   const [paymentMethod, setPaymentMethod] = useState('Cash')
   const [isSaleSettingsOpen, setIsSaleSettingsOpen] = useState(false)
+  const [productBarcode, setProductBarcode] = useState('')
   let productTemp = [], fetch = JSON.parse(localStorage.getItem('sale-settings'))
 
 
@@ -87,7 +89,7 @@ function Sale() {
     return()=>{
       dispatch(reset())
     }
-  },[user, navigate,dispatch, cartItems, saleTotal, paymentMethod,isSaleLoading])
+  },[user, navigate,dispatch, productBarcode, cartItems, saleTotal, paymentMethod,isSaleLoading])
 
   if(products && products.length !== productTemp.length){
     productTemp = products
@@ -114,13 +116,13 @@ function Sale() {
   const handleProductClick = (id, e) => {
 
      e.preventDefault()
-      let payload,productID,productTitle,productQuantity,productUnitPrice,productTotal,_id
+      let payload,productTitle,productQuantity,productUnitPrice,productTotal,_id
       if(cartItems?.some((cart) => cart._id === id  && cartItems !== [])){
-        cartItems?.filter((cart) => cart._id === id).map((cart) => {
+        cartItems?.filter((cart) => cart._id === id).forEach((cart) => {
           dispatch(incrementCartItem(id))
         })
       } else {
-        productTemp.filter((product) => product._id === id).map((product) =>{
+        productTemp.filter((product) => product._id === id).forEach((product) =>{
           _id = product._id
           productTitle = product.productTitle
           productQuantity = 1
@@ -129,7 +131,6 @@ function Sale() {
         } )
         payload = {
           _id,
-          productID,
           productTitle,
           productQuantity,
           productUnitPrice,
@@ -151,7 +152,7 @@ function Sale() {
 
   const handleConfirm = (e) => {
     e.preventDefault()    
-    let saleTime, saleDate, payload, products, clearTimer
+    let saleTime, saleDate, payload, products
     saleTime = new Date().toLocaleTimeString()
     saleDate = new Date().toLocaleDateString()
 
@@ -181,22 +182,53 @@ function Sale() {
   }
 
     dispatch(registerSale(salePayload))
-
-  
-        
-  
-  
-      
-    
     
 
   }
 
+  
+
+  const handleScan = (data) => {
+    setProductBarcode(data)
+  }
+
+
   return (
     <div className='container-column'>
+      {
+        productBarcode && productTemp.filter((product) => product.productBarcode === productBarcode).forEach((product) => {
+          if(cartItems?.some((cart) => cart._id === product._id  && cartItems !== [])){
+            cartItems?.filter((cart) => cart._id === product._id).forEach((cart) => {
+              dispatch(incrementCartItem(product._id))
+              setProductBarcode('')
+            })
+        
+          } else {
+            let payload,productTitle,productQuantity,productUnitPrice,productTotal,_id
+              _id = product._id
+              productTitle = product.productTitle
+              productQuantity = 1
+              productUnitPrice = product.productUnitPrice
+              productTotal =  productQuantity * productUnitPrice
+
+              payload = {
+                _id,
+                productTitle,
+                productQuantity,
+                productUnitPrice,
+                productTotal,
+              }
+        
+              dispatch(insertProductSale(payload))
+              setProductBarcode('')
+
+          }
+        })
+      }
       <div className="container-row">
          <div className='card-container'>
           <div className='table-header'> 
+          <BarcodeReader onScan={handleScan}/>
           <table>
               <tr>
                 <th>Product Title</th>
@@ -205,6 +237,7 @@ function Sale() {
                 <th>Product Unit Price</th>
               </tr>
           </table>
+          
           </div>
           { searchInput ? productTemp.filter((product) => product.productTitle.toLowerCase().includes(searchInput.toLowerCase())).map((product, key) => {
           return (
@@ -343,20 +376,20 @@ function Sale() {
          <hr></hr>
          <div className='product-total'>
           <section>
-            <h4>Sub-Total:</h4>  <span><h4>{saleSubTotal.toFixed(2)}</h4></span>
+            <h4>Sub-Total:</h4>  <span><h4>৳&nbsp;{saleSubTotal.toFixed(2)}</h4></span>
           </section>
           <section>
-            VAT({saleVAT}%):    <span>{saleVATAmount.toFixed(2)}</span>
+            VAT({saleVAT}%):    <span>৳&nbsp;{saleVATAmount.toFixed(2)}</span>
           </section>
           <section>
-            Discount({saleDiscount}%):  <span>-{saleDiscountAmount.toFixed(2)}</span>
+            Discount({saleDiscount}%):  <span>৳&nbsp;-{saleDiscountAmount.toFixed(2)}</span>
           </section>
           <section>
-            Less Adjustment: <span>-{ saleLessAdjustment.toFixed(2) }</span>
+            Less Adjustment: <span>৳&nbsp;-{ saleLessAdjustment.toFixed(2) }</span>
           </section>
           <hr></hr>
           <section>
-            <h4>Net Amount (Tk.):</h4> <span><h4>{saleTotal.toFixed(2)}</h4></span>
+            <h4>Net Amount (Tk.):</h4> <span><h4>৳&nbsp;{saleTotal.toFixed(2)}</h4></span>
           </section>
          </div>
           </div>

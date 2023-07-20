@@ -14,12 +14,14 @@ function AddSupplier({ closeAddSupplier }) {
     productBrand: '',
     productQuantity: 0,
     productType: '',
-    productUnitPrice: 0
+    productUnitPrice: 0,
+    productBarcode: ''
   }])
   const [supplierName, setSupplierName] = useState('')
   const [supplierPhoneNumber, setSupplierPhoneNumber] = useState('')
   const [supplierAddress, setSupplierAddress] = useState('')
   const [supplierEmail, setSupplierEmail] = useState('')
+  const [supplierProductBarcode, setSupplierProductBarcode] = useState('')
   const SupplierExists = useRef(false)
 
 
@@ -157,6 +159,7 @@ function AddSupplier({ closeAddSupplier }) {
       productQuantity: 0,
       productType: '',
       productUnitPrice: 0,
+      productBarcode: ''
     }])
 
   }
@@ -213,6 +216,8 @@ function AddSupplier({ closeAddSupplier }) {
                     <input value={val.productType} onChange={e => handleChange(e, i)} placeholder='Category' type='text' name='productType' />
                     <label htmlFor='productUnitPrice'>Unit Price (Tk.)</label>
                     <input value={val.productUnitPrice} onChange={e => handleChange(e, i)} placeholder='Product Unit Price' type='number' name='productUnitPrice' />
+                    <label htmlFor='productBarcode'>Product Barcode</label>
+                    <input value={supplierProductBarcode} onChange={e => handleChange(e, i)} placeholder='Product Barcode' type='text' name='productBarcode'/>
                     <button onClick={(e) => handleDelete(e, i)}>Delete Product-</button>
                   </div>
                 )

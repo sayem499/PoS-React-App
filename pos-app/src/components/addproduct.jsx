@@ -16,6 +16,7 @@ function Addproduct({closeAddProduct}) {
     const [productQuantity, setProductQuantity] = useState(0)
     const [productType, setProductType] = useState('')
     const [productUnitPrice, setProductUnitPrice] = useState(0)
+    const [productBarcode, setProductBarcode ] = useState('')
 
    
     const  { user } = useSelector( (state) => state.auth)
@@ -52,6 +53,7 @@ function Addproduct({closeAddProduct}) {
           productQuantity,
           productType,
           productUnitPrice,
+          productBarcode
         }
 
         try{
@@ -70,6 +72,7 @@ function Addproduct({closeAddProduct}) {
         setProductQuantity(0)
         setProductType('')
         setProductUnitPrice(0)
+        setProductBarcode('No Code Entered!')
 
 
     }
@@ -90,6 +93,8 @@ function Addproduct({closeAddProduct}) {
           <input value={productType} onChange={ e => setProductType(e.target.value)} placeholder='Category' type='text' name='productType'/>
           <label htmlFor='Unit Price'>Unit Price (Tk.)</label>
           <input value={productUnitPrice} onChange={ e => setProductUnitPrice(e.target.value)} placeholder='Product Unit Price' type='number' name='productUnitPrice'/>
+          <label htmlFor='productBarcode'>Product Barcode</label>
+          <input value={productBarcode} readonly placeholder='Product Barcode' type='text' name='productBarcode'/>
           <button type='submit' className='btn'>Submit</button>
         </form>
       </div>

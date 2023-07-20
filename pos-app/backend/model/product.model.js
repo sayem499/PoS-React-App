@@ -6,7 +6,9 @@ const  productSchema = mongoose.Schema({
     productBrand: {type: String},
     productQuantity: {type: Number, required: true},
     productType: {type: String, required: true},
-    productUnitPrice: {type: Number, required: true}
+    productUnitPrice: {type: Number, required: true},
+    productBarcode:{type: String}
+
 }, {
     timestamps: true
 })

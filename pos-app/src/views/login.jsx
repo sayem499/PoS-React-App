@@ -77,7 +77,7 @@ function Login() {
         <label htmlform="Password">Password </label>
         <input value={userPassword} onChange={(e) => setPassWord(e.target.value)} type={visibility ? 'text' : 'password'} placeholder="Password" id="Password" name="Password"></input>
         {visibility ? <VisibilityOffOutlinedIcon onClick={handleVisibility} id='visibility-icon'/>  : <RemoveRedEyeOutlinedIcon onClick={handleVisibility} id='visibility-icon'/> }
-        <button  type="submit">Login</button>
+        <button className = 'login-button' type="submit">Login</button>
       </form>
     </div>
 

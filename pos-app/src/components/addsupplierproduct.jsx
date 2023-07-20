@@ -16,6 +16,7 @@ function AddSupplierProduct({id,closeAddSupplierProduct}) {
     const [productQuantity, setProductQuantity] = useState('')
     const [productType, setProductType] = useState('')
     const [productUnitPrice, setProductUnitPrice] = useState('')
+    const [productBarcode, setProductBarcode ] = useState('')
 
     useEffect(() => {
 
@@ -42,6 +43,7 @@ function AddSupplierProduct({id,closeAddSupplierProduct}) {
             productQuantity,
             productType,
             productUnitPrice,
+            productBarcode
         }
 
         suppliers.filter((supplier) => supplier._id === id).forEach(element => {
@@ -94,6 +96,8 @@ function AddSupplierProduct({id,closeAddSupplierProduct}) {
                     <input value={productType} onChange={e => setProductType(e.target.value)} placeholder='Category' type='text' name='productType' />
                     <label htmlFor='Unit Price'>Unit Price (Tk.)</label>
                     <input value={productUnitPrice} onChange={e => setProductUnitPrice(parseInt(e.target.value))} placeholder='Product Unit Price' type='number' name='productUnitPrice' />
+                    <label htmlFor='productBarcode'>Product Barcode</label>
+                    <input value={productBarcode} readonly placeholder='Product Barcode' type='text' name='productBarcode'/>
                     <button type='submit' className='btn-add-supplier-product-submit'>Submit</button>
                 </form>
             </div>

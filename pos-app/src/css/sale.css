@@ -1,7 +1,7 @@
 
 .container-column {
-    height: 100vh;
-    width: 99%;
+    height: 100%;
+    width: 100%;
     display: flex;
     flex-direction: column;
     margin-top: 0px;
@@ -309,10 +309,10 @@ hr {
 
 .button-container {
     width: 99%;
-    height: 20%;
+    height: 15%;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     margin: 0px;
     
 }
@@ -322,8 +322,8 @@ hr {
     height: 70%;
     display: flex;
     flex-direction: row;
-    align-items: center;
     justify-content: center;
+    align-items: center;
     margin: 0px;
     border-style: outset;
     box-shadow: 0px 2px 20px gray;
@@ -343,6 +343,7 @@ hr {
     color:white;
     border-radius: 5px;
     cursor: pointer;
+    margin: 0px 10px 0px 10px;
 }
 
 .sale-options-btn:hover, .sale-options-btn:focus {
@@ -358,6 +359,7 @@ hr {
     color:white;
     border-radius: 5px;
     cursor: pointer;
+    margin: 0px 10px 0px 10px;
     box-shadow: 0 0 6px cornflowerblue;
 }
 
@@ -374,6 +376,7 @@ hr {
     color:white;
     border-radius: 5px;
     cursor: pointer;
+    margin: 0px 10px 0px 10px;
 }
 
 .sale-options-btn-clear:hover, .sale-options-btn-clear:focus {
@@ -390,6 +393,7 @@ hr {
     border-radius: 5px;
     cursor: pointer;
     box-shadow: 0 0 6px #de4747;
+    margin: 0px 10px 0px 10px;
 }
 
 .sale-options-btn-confirm {
@@ -405,6 +409,7 @@ hr {
     color:white;
     border-radius: 5px;
     cursor: pointer;
+    margin: 0px 10px 0px 10px;
 }
 
 .sale-options-btn-confirm:hover, .sale-options-btn-confirm:focus {
@@ -420,5 +425,6 @@ hr {
     color:white;
     border-radius: 5px;
     cursor: pointer;
+    margin: 0px 10px 0px 10px;
     box-shadow: 0 0 6px #2bdb37;
 }
