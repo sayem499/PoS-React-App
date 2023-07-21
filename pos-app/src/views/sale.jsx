@@ -2,7 +2,7 @@ import '../css/sale.css'
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { allProducts, reset } from '../redux/products/productSlice';
+import { allProducts, reset, updateProducts } from '../redux/products/productSlice';
 import { resetSale, 
   insertProductSale, 
   incrementCartItem, 
@@ -64,7 +64,7 @@ function Sale() {
 
       navigate('/login')
     }
-    if(productTemp.length === 0)
+    if(productTemp.length === 0 || products.length > productTemp)
       dispatch(allProducts())
     dispatch(cartProductTotal())
     dispatch(cartSubTotal())
@@ -80,6 +80,32 @@ function Sale() {
     }
     
     if(isSaleSuccess){
+      cartItems?.forEach((cartProduct) => {
+        products?.filter((product) => product._id === cartProduct._id).forEach((product) => {
+          let productID = product._id,
+          productTitle = product.productTitle,
+          productBrand = product.productBrand,
+          productQuantity = product.productQuantity - cartProduct.productQuantity, 
+          productType = product.productType,
+          productUnitPrice = product.productUnitPrice,
+          productBarcode = product.productBarcode
+
+          let updatedProductData = {
+            productTitle,
+            productBrand,
+            productQuantity,
+            productType,
+            productUnitPrice,
+            productBarcode,
+          }
+
+          let payload = {
+            productID,
+            updatedProductData
+          }
+          dispatch(updateProducts(payload))
+        })
+      })
       setTimeout(() => {
         toast.success("Sale Confirmed Successfully!!")    
         dispatch(resetSale()) 
