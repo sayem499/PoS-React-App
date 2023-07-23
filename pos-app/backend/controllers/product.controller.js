@@ -27,7 +27,8 @@ const setProducts = asyncHandler( async (req, res) => {
       productQuantity: req.body.productQuantity,
       productType: req.body.productType,
       productUnitPrice: req.body.productUnitPrice,
-      productBarcode: req.body.productBarcode
+      productBarcode: req.body.productBarcode,
+      productSupplierID: req.body.productSupplierID,
     })
     res.status(200).json(product)
  })

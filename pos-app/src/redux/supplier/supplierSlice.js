@@ -113,6 +113,12 @@ const supplierSlice = createSlice({
                     }
                 })
             })
+            .addCase(updateSupplier.rejected, (state,action) => {
+                state.isSupplierLoading = false
+                state.isSupplierError = true
+                state.message = action.payload
+            })
+
             
 
 

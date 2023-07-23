@@ -54,7 +54,7 @@ function Addproduct({closeAddProduct}) {
           productQuantity,
           productType,
           productUnitPrice,
-          productBarcode
+          productBarcode,
         }
 
         try{

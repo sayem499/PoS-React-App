@@ -46,7 +46,8 @@ export default function BasicTable() {
       console.log(message)
     }
 
-    dispatch(getSupplier())
+    if(rows.length === 0 || rows.length > suppliers || rows.length < suppliers)
+      dispatch(getSupplier())
 
 
   }, [user, isSupplierError, message, navigate, dispatch])

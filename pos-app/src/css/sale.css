@@ -66,7 +66,7 @@
 
 .card {
     width:98.5%;
-    height: 50px;
+    height: 10%;
     margin-top: 10px;
     border-collapse: collapse ;
     box-shadow: 0px 2px 20px gray;
@@ -74,7 +74,6 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    
 }
 
 .card ul {
@@ -221,7 +220,7 @@ hr {
     align-items: center;
     justify-content:  flex-start;
     width: 99%;
-    height: 30%;
+    height: 40%;
     overflow: auto;
 }
 
@@ -232,7 +231,7 @@ hr {
     justify-content: center;
     align-items: center;
     width:97%;
-    height: 20%;
+    height: 30%;
 }
 
 .product-cart-list ul {

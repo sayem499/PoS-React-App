@@ -64,7 +64,7 @@ function Sale() {
 
       navigate('/login')
     }
-    if(productTemp.length === 0 || products.length > productTemp)
+    if(productTemp.length === 0 || products.length > productTemp || products.length < productTemp)
       dispatch(allProducts())
     dispatch(cartProductTotal())
     dispatch(cartSubTotal())

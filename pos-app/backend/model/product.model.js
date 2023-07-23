@@ -7,7 +7,8 @@ const  productSchema = mongoose.Schema({
     productQuantity: {type: Number, required: true},
     productType: {type: String, required: true},
     productUnitPrice: {type: Number, required: true},
-    productBarcode:{type: String}
+    productBarcode:{type: String},
+    productSupplierID: {type: String}
 
 }, {
     timestamps: true
