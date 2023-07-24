@@ -18,6 +18,7 @@ function AddSupplier({ closeAddSupplier }) {
   const [productQuantity, setProductQuantity] = useState(0)
   const [productType, setProductType] = useState('')
   const [productUnitPrice, setProductUnitPrice] = useState(0)
+  const [productUnitCost, setProductUnitCost] = useState(0)
   const [productBarcode, setProductBarcode] = useState('')
   const SupplierExists = useRef(false)
   const supplierProductsRef = useRef('')
@@ -67,6 +68,7 @@ function AddSupplier({ closeAddSupplier }) {
           productQuantity,
           productType,
           productUnitPrice,
+          productUnitCost,
           productBarcode,
         }
 
@@ -107,6 +109,7 @@ function AddSupplier({ closeAddSupplier }) {
           productQuantity,
           productType,
           productUnitPrice,
+          productUnitCost,
           productBarcode,
         }
 
@@ -174,6 +177,8 @@ function AddSupplier({ closeAddSupplier }) {
               <input value={productType} onChange={e => setProductType(e.target.value)} placeholder='Category' type='text' name='productType' />
               <label htmlFor='productUnitPrice'>Unit Price (Tk.)</label>
               <input value={productUnitPrice} onChange={e => setProductUnitPrice(e.target.value)} placeholder='Product Unit Price' type='number' name='productUnitPrice' />
+              <label htmlFor='productUnitCost'>Unit Cost (Tk.)</label>
+              <input value={productUnitCost} onChange={ e => setProductUnitCost(e.target.value)} placeholder='Product Unit Cost' type='number' name='productUnitCost'/>
               <label htmlFor='productBarcode'>Product Barcode</label>
               <input value={productBarcode} onChange={e => setProductBarcode(e.target.value)} placeholder='Product Barcode' type='text' name='productBarcode' />
             </div>

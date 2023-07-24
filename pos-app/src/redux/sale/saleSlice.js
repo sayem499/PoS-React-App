@@ -3,11 +3,13 @@ import saleServices from './saleService'
 
 
 const initialState = {
+    sales: [],
     cartItems: [],
     saleSubTotal: 0,
     saleVAT: 0,
     saleDiscount: 0,
     saleTotal: 0,
+    saleTotalCost: 0,
     salePayType: '',
     salePayByCard: 0,
     salePayByCash: 0,
@@ -21,6 +23,9 @@ const initialState = {
     isSaleLoading: false,
     isSaleError: false,
     isSaleSuccess: false,
+    isFetchSaleLoading: false,
+    isFetchSaleError: false,
+    isFetchSaleSuccess: false,
     message: '',
 }
 
@@ -34,6 +39,18 @@ export const registerSale = createAsyncThunk('sale/registerSale', async (salePay
 
     }catch( error ) {
         const message = (error.response && error.response.data && error.response.data.message) 
+        || error.message || error.toString()
+
+        return thunkAPI.rejectWithValue(message)
+    }
+})
+
+export const getSales = createAsyncThunk('sale/getSales', async (_, thunkAPI) => {
+    try{
+        const token = thunkAPI.getState().auth.user.token
+        return await saleServices.getSales(token)
+    } catch (error) {
+        const message = (error.response && error.response.data && error.response.data.message)
         || error.message || error.toString()
 
         return thunkAPI.rejectWithValue(message)
@@ -161,6 +178,19 @@ export const saleSlice = createSlice({
         .addCase(registerSale.rejected, (state, action) => {
             state.isSaleLoading = false
             state.isSaleError = true
+            state.message = action.payload
+        })
+        .addCase(getSales.pending, (state) => {
+            state.isFetchSaleLoading = true
+        })
+        .addCase(getSales.fulfilled, (state, action) => {
+            state.isFetchSaleLoading = false
+            state.isFetchSaleSuccess = true
+            state.sales = action.payload
+        })
+        .addCase(getSales.rejected, (state, action) => {
+            state.isFetchSaleLoading = false
+            state.isFetchSaleError = true
             state.message = action.payload
         })
    }, 

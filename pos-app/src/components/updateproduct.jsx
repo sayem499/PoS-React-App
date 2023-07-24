@@ -17,8 +17,9 @@ function Updateproduct({ row, closeUpdateProduct}) {
     const [productBrand, setProductBrand] = useState(row.productBrand)
     const [productQuantity, setProductQuantity] = useState(row.productQuantity)
     const [productType, setProductType] = useState(row.productType)
-    const [productUnitPrice, setProductUnitPrice] = useState(row.productUnitPrice) 
-    const [productBarcode, setProductBarcode ] = useState('')
+    const [productUnitPrice, setProductUnitPrice] = useState(row.productUnitPrice)
+    const [productUnitCost, setProductUnitCost] = useState(row.productUnitCost) 
+    const [productBarcode, setProductBarcode ] = useState(row.productBarcode ? row.productBarcode :'')
 
     useEffect(() => {
         
@@ -48,6 +49,7 @@ function Updateproduct({ row, closeUpdateProduct}) {
         productQuantity,
         productType,
         productUnitPrice,
+        productUnitCost,
         productBarcode
       }
       let productID = row._id
@@ -85,6 +87,8 @@ function Updateproduct({ row, closeUpdateProduct}) {
           <input value={productType} onChange={ e => setProductType(e.target.value)} placeholder='Category' type='text' name='productType'/>
           <label htmlFor='Unit Price'>Unit Price (Tk.)</label>
           <input value={productUnitPrice} onChange={ e => setProductUnitPrice(e.target.value)} placeholder='Product Unit Price' type='number' name='productUnitPrice'/>
+          <label htmlFor='productUnitCost'>Unit Cost (Tk.)</label>
+          <input value={productUnitCost} onChange={ e => setProductUnitCost(e.target.value)} placeholder='Product Unit Cost' type='number' name='productUnitCost'/>
           <label htmlFor='productBarcode'>Product Barcode</label>
           <input value={productBarcode} onChange={e => setProductBarcode(e.target.value)} placeholder='Product Barcode' type='text' name='productBarcode'/>
           <button type='submit' className='btn'>Submit</button>

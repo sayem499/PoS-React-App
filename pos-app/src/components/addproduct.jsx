@@ -17,6 +17,7 @@ function Addproduct({closeAddProduct}) {
     const [productQuantity, setProductQuantity] = useState(0)
     const [productType, setProductType] = useState('')
     const [productUnitPrice, setProductUnitPrice] = useState(0)
+    const [productUnitCost, setProductUnitCost] = useState(0)
     const [productBarcode, setProductBarcode ] = useState('')
 
    
@@ -54,6 +55,7 @@ function Addproduct({closeAddProduct}) {
           productQuantity,
           productType,
           productUnitPrice,
+          productUnitCost,
           productBarcode,
         }
 
@@ -87,16 +89,18 @@ function Addproduct({closeAddProduct}) {
       <div className='addproductform'>
         <span>ADD PRODUCT</span>
         <form onSubmit={handleSubmit}>
-          <label htmlFor='Product Name'>Product Name</label>
+          <label htmlFor='productTitle'>Product Name</label>
           <input value={productTitle} onChange={e => setProductTitle(e.target.value)} placeholder='Product Name' type='text' name='productTitle'/>
-          <label htmlFor='Product Brand'>Product Brand</label>
+          <label htmlFor='productBrand'>Product Brand</label>
           <input value={productBrand} onChange={e => setProductBrand(e.target.value)} placeholder='Product Brand' type='text' name='productBrand'/>
-          <label htmlFor='Quantity'>Quantity</label>
+          <label htmlFor='productQuantity'>Quantity</label>
           <input value={productQuantity} onChange={ e => setProductQuantity(e.target.value)} placeholder='Quantity' type='number' name='productQuantity'/>
-          <label htmlFor='Category'>Category</label>
+          <label htmlFor='productType'>Category</label>
           <input value={productType} onChange={ e => setProductType(e.target.value)} placeholder='Category' type='text' name='productType'/>
-          <label htmlFor='Unit Price'>Unit Price (Tk.)</label>
+          <label htmlFor='productUnitPrice'>Unit Price (Tk.)</label>
           <input value={productUnitPrice} onChange={ e => setProductUnitPrice(e.target.value)} placeholder='Product Unit Price' type='number' name='productUnitPrice'/>
+          <label htmlFor='productUnitCost'>Unit Cost (Tk.)</label>
+          <input value={productUnitCost} onChange={ e => setProductUnitCost(e.target.value)} placeholder='Product Unit Cost' type='number' name='productUnitCost'/>
           <label htmlFor='productBarcode'>Product Barcode</label>
           <input value={productBarcode} onChange={e => setProductBarcode(e.target.value)} placeholder='Product Barcode' type='text' name='productBarcode'/>
           <button type='submit' className='btn'>Submit</button>

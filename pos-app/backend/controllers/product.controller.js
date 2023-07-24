@@ -16,7 +16,8 @@ const setProducts = asyncHandler( async (req, res) => {
     if(!req.body.productTitle && 
       !req.body.productQuantity && 
       !req.body.productType && 
-      !req.body.productUnitPrice){
+      !req.body.productUnitPrice &&
+      !req.body.productUnitCost ){
       
         res.status(400)
         throw new Error('Product field error!') 
@@ -27,6 +28,7 @@ const setProducts = asyncHandler( async (req, res) => {
       productQuantity: req.body.productQuantity,
       productType: req.body.productType,
       productUnitPrice: req.body.productUnitPrice,
+      productUnitCost: req.body.productUnitCost,
       productBarcode: req.body.productBarcode,
       productSupplierID: req.body.productSupplierID,
     })

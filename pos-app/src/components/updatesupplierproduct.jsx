@@ -4,6 +4,7 @@ import { updateSupplier, resetSuppliers, getSupplier } from '../redux/supplier/s
 import { useDispatch, useSelector } from "react-redux"
 import { toast } from 'react-toastify'
 import { useNavigate } from "react-router-dom"
+import BarcodeReader from 'react-barcode-reader'
 
 
 
@@ -22,6 +23,8 @@ function UpdateSupplierProduct({ i, product, row, closeUpdateSupplierProduct }) 
     const [productQuantity, setProductQuantity] = useState(product.productQuantity)
     const [productType, setProductType] = useState(product.productType)
     const [productUnitPrice, setProductUnitPrice] = useState(product.productUnitPrice)
+    const [productUnitCost, setProductUnitCost] = useState(0)
+    const [productBarcode, setProductBarcode] = useState('')
 
     useEffect(() => {
 
@@ -49,6 +52,8 @@ function UpdateSupplierProduct({ i, product, row, closeUpdateSupplierProduct }) 
             productQuantity,
             productType,
             productUnitPrice,
+            productUnitCost,
+            productBarcode,
         }
 
         const supplierProducts = [...supplierProduct]
@@ -76,8 +81,13 @@ function UpdateSupplierProduct({ i, product, row, closeUpdateSupplierProduct }) 
 
     }
 
+    const handleScan = (data) => {
+        setProductBarcode(data)
+      }
+
     return (
         <div className="update-supplier-product-container" onClick={(e) => { if (e.target.className === "update-supplier-product-container") closeUpdateSupplierProduct() }}>
+            {<BarcodeReader onScan = {handleScan}/>}
             <div className='update-supplier-product-form'>
                 <span>UPDATE PRODUCT</span>
                 <form onSubmit={(e) => handleSubmit(e)}>
@@ -91,6 +101,10 @@ function UpdateSupplierProduct({ i, product, row, closeUpdateSupplierProduct }) 
                     <input value={productType} onChange={e => setProductType(e.target.value)} placeholder='Category' type='text' name='productType' />
                     <label htmlFor='Unit Price'>Unit Price (Tk.)</label>
                     <input value={productUnitPrice} onChange={e => setProductUnitPrice(parseInt(e.target.value))} placeholder='Product Unit Price' type='number' name='productUnitPrice' />
+                    <label htmlFor='productUnitCost'>Unit Cost (Tk.)</label>
+                    <input value={productUnitCost} onChange={e => setProductUnitCost(e.target.value)} placeholder='Product Unit Cost' type='number' name='productUnitCost' />
+                    <label htmlFor='productBarcode'>Product Barcode</label>
+                    <input value={productBarcode} onChange={e => setProductBarcode(e.target.value)} placeholder='Product Barcode' type='text' name='productBarcode' />
                     <button type='submit' className='btn-supplier-product-submit'>Submit</button>
                 </form>
             </div>

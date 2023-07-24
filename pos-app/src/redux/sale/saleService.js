@@ -13,9 +13,21 @@ const registerSale = async (data, token) => {
     return response.data
 }
 
+const getSales = async (token) => {
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    }
+
+    const response = await axios.get(API_URL, config)
+    return response.data
+}
+
 
 const saleServices = {
     registerSale,
+    getSales,
 }
 
 export default saleServices

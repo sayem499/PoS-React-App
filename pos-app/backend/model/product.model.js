@@ -7,6 +7,7 @@ const  productSchema = mongoose.Schema({
     productQuantity: {type: Number, required: true},
     productType: {type: String, required: true},
     productUnitPrice: {type: Number, required: true},
+    productUnitCost: { type: Number, requird: true},
     productBarcode:{type: String},
     productSupplierID: {type: String}
 
