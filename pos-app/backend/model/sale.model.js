@@ -6,6 +6,7 @@ const saleSchema = mongoose.Schema({
     saleVAT: {type:Number, required: true},
     saleDiscount: {type:Number, required: true},
     saleTotal: {type: Number, required:true},
+    saleTotalCost: {type: Number, required: true},
     salePayType: {type: String, required: true},
     salePayByCard: {type: Number, required: true},
     salePayByCash: {type: Number, required:true},

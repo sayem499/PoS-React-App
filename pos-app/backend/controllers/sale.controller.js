@@ -6,7 +6,7 @@ const Sales = require('../model/sale.model')
 //@access Private
 const getSales = asyncHandler( async (req, res) => {
     const sales = await Sales.find()
-    res.status(200).json({sales})
+    res.status(200).json(sales)
 })
 
 
@@ -19,6 +19,7 @@ const setSales = asyncHandler( async (req, res) => {
     !req.body.saleVAT &&
     !req.body.saleDiscount &&
     !req.body.saleTotal &&
+    !req.body.saleTotalCost &&
     !req.body.salePayType &&
     !req.body.salePayByCard &&
     !req.body.salePayByCash && 
@@ -36,6 +37,7 @@ const setSales = asyncHandler( async (req, res) => {
     saleVAT: req.body.saleVAT,
     saleDiscount: req.body.saleDiscount, 
     saleTotal: req.body.saleTotal,
+    saleTotalCost: req.body.saleTotalCost,
     salePayType: req.body.salePayType,
     salePayByCard: req.body.salePayByCard,
     salePayByCash: req.body.salePayByCash,

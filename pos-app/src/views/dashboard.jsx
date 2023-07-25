@@ -2,38 +2,54 @@ import { useEffect } from 'react'
 import '../css/dashboard.css'
 import { getSales, resetSale } from '../redux/sale/saleSlice'
 import { useSelector, useDispatch } from 'react-redux'
+import { calculateTotalSale, calculateAverageSale, calculateGrossProfit, calculateGrossMargin } from '../redux/sale/saleSlice'
 
 
 function Dashboard(){
-const {sales} = useSelector((state) => state.sale)
+const {sales, totalSale, averageSale, grossProfit, grossMargin, isFetchSaleSuccess} = useSelector((state) => state.sale)
 const dispatch = useDispatch()
   useEffect(()=>{
 
-    if(sales){
+    if(sales.length === 0){
       dispatch(getSales())
+      
     }
 
-    return () =>{
-      dispatch(resetSale())
-    } 
-  },[dispatch])
+    if(isFetchSaleSuccess){
+      dispatch(calculateTotalSale())
+      dispatch(calculateAverageSale())
+      dispatch(calculateGrossProfit())
+      dispatch(calculateGrossMargin())
+
+    }
+    
+
+   
+  },[dispatch,isFetchSaleSuccess])
+
+  
+
     return(
         <div className='dashboard-container'>
           <div className='top-display-container'>
             <section className='display-total-sale'>
+              <span className='display-value'>৳&nbsp; {totalSale}</span>
               <span className='display-text'>Total Sale</span>
             </section>
 
             <section className='display-avarage-sale'>
+              <span className='display-value'>৳&nbsp;{averageSale.toFixed(2)}</span>
               <span className='display-text'>Average Sale</span>
             </section>
 
             <section className='display-gross-profit'>
-            <span className='display-text'>Gross Profit</span>
+             <span className='display-value'>৳&nbsp;{grossProfit}</span>
+             <span className='display-text'>Gross Profit</span>
             </section>
 
             <section className='display-gross-margin'>
-            <span className='display-text'>Gross Margin</span>
+             <span className='display-value'>{grossMargin.toFixed(2)}&nbsp;%</span>  
+             <span className='display-text'>Gross Margin</span>
             </section>
           </div>
         </div>

@@ -19,6 +19,11 @@ const initialState = {
     saleLessAdjustment: 0,
     saleVATAmount: 0,
     saleDiscountAmount: 0,
+    totalSale: 0,
+    averageSale: 0,
+    saleTotalCost: 0,
+    grossProfit: 0,
+    grossMargin: 0,
     saleLessAdjustmentToggle: false, 
     isSaleLoading: false,
     isSaleError: false,
@@ -159,7 +164,46 @@ export const saleSlice = createSlice({
         insertTimeDate: (state, action) => {
             state.saleDate = action.payload.saleDate
             state.saleTime = action.payload.saleTime
+        },
+        
+        cartTotalCost: (state) => {
+            state.saleTotalCost = 0
+            state.cartItems.map((item) => {
+                state.saleTotalCost = state.saleTotalCost + item.productQuantity * item.productUnitCost
+            })
+        },
+
+        calculateTotalSale: (state) => {
+            state.totalSale = 0
+            if(state.sales.length !== 0){
+                state.sales.map((sale) => {
+                    state.totalSale = state.totalSale + sale.saleTotal
+                })
+            }
+            
+        },
+
+        calculateAverageSale: (state) => {
+            state.averageSale = 0
+            if(state.sales.length !== 0){
+                state.averageSale = state.totalSale / state.sales.length
+            }
+        },
+
+        calculateGrossProfit: (state) => {
+            state.grossProfit = 0
+            state.sales.map((item) => {
+                state.grossProfit = state.grossProfit + ( item.saleTotal - item.saleTotalCost)
+            })
+        },
+
+        calculateGrossMargin: (state) => {
+            state.grossMargin = 0
+
+            state.grossMargin = (state.grossProfit / state.totalSale) * 100
         }
+
+
         
 
 
@@ -211,5 +255,10 @@ export const {
     insertSalePayType,
     insertSalePerson,
     insertTimeDate,
+    calculateTotalSale,
+    calculateAverageSale,
+    cartTotalCost,
+    calculateGrossProfit,
+    calculateGrossMargin,
 } = saleSlice.actions
 export default saleSlice.reducer
