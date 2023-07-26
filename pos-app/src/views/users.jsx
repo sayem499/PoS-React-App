@@ -5,7 +5,8 @@ import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { allUsers, reset } from '../redux/users/userSlice';
-import { Blocks } from 'react-loader-spinner'
+import Loading from '../components/loading';
+import { toast } from 'react-toastify'
 
 function Users(){
     const dispatch = useDispatch()
@@ -13,11 +14,11 @@ function Users(){
     const {user} = useSelector((state) => state.auth)
     const navigate = useNavigate()
     const [isOpen, setIsOpen] = useState(false)
-    const toggle = () => { setIsOpen(!isOpen)}
+    
     
     useEffect(() => {
       if(isError){
-        console.log(message)
+        toast.error(message)
       }
 
       if(!user){
@@ -61,16 +62,25 @@ function Users(){
           
         })
       }
+
+      const handleClick = (e) => {
+        e.preventDefault()
+        setIsOpen(true)
+      }
     
     return(
       <div className='users'>
         <div className='adduser'>
-          <button onClick={toggle} >Add User</button>
+          <button className="add-user-btn" onClick={handleClick} >Add User</button>
           <div className='registerUser'>
-            {isOpen ? <Registeruser data={isOpen}/>: ""}
+            {isOpen ? <Registeruser  closeAddUser = {() =>{
+
+              setIsOpen(false)
+            }}/>: ""}
           </div>
         </div>
-        <span className='activeuser'>Active Users</span>
+        <div className='activeuser'><span >Active Users</span></div>
+        
         <div className='usertable'>
           {users.users ? <DataGrid
             rows={rows}
@@ -78,14 +88,7 @@ function Users(){
             pageSize={5}
             rowsPerPageOptions={[5]}
             checkboxSelection
-          /> : <Blocks
-            visible={true}
-            height="80"
-            width="80"
-            ariaLabel="blocks-loading"
-            wrapperStyle={{}}
-            wrapperClass="blocks-wrapper"
-          />}
+          /> : <Loading/>}
         </div>
       </div>
     )
