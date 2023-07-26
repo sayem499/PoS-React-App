@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react';
 import Searchbar from './searchbar';
 import { useSelector} from 'react-redux'
 import PosWelcomeLogo from '../assets/pos-welcome-logo.jpg'
+import Receipt from './receipt';
 
 function Layout (){
     const {user} = useSelector((state) => state.auth )
@@ -59,7 +60,13 @@ function Layout (){
          <Searchbar/>
          <div className='Outlet-Inner'>
             {
-              window.location.pathname === '/' ? <img src={PosWelcomeLogo} alt='PosWelcomeLogo' className='PosWelcomeLogo'></img> : <Outlet/>
+              window.location.pathname === '/' ? 
+                <div>
+                    <Receipt/>
+                    <img src={PosWelcomeLogo} alt='PosWelcomeLogo' className='PosWelcomeLogo'></img> 
+                </div>
+              
+              : <Outlet/>
             }
          </div>
          

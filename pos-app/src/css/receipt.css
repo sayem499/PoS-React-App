@@ -1,0 +1,87 @@
+.receipt-container {
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0,0,0,0.4);
+    
+}
+
+.receipt-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    background-color: white;
+    padding: 20px;
+    width: 60%;
+    height: 70%;
+    overflow: auto;
+
+}
+
+.receipt {
+    display: flex;
+    flex-direction: column;
+    width: 90%;
+    height: 100%;
+    padding: 20px;
+    border: solid 0.5px black;
+    font-family: Arial, Helvetica, sans-serif;
+    
+}
+
+.receipt-header {
+    display:flex;
+    justify-content: center;
+}
+
+.receipt-date-time {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.receipt-date {
+    margin-left: 130px;
+}
+.receipt-time {
+    margin-right: 150px;
+}
+
+.receipt-list-header {
+    margin-top: 50px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.receipt-list-item {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.receipt-sale-info {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.receipt-net-total{
+    font-weight: bold;
+}
+
+.receipt-footer {
+    argin-top: 20px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
