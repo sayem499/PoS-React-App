@@ -4,7 +4,7 @@ import AccountLogo from "../assets/accountlogo.png"
 import { useState, useEffect, useRef} from 'react';
 import UserAccountMenu from './useraccountmenu';
 import { useDispatch } from 'react-redux';
-import {reset, search} from '../redux/search/searchSlice'
+import {reset, search, setSearchRef} from '../redux/search/searchSlice'
 import Clock from './clock'
 
 function Searchbar() {
@@ -13,6 +13,7 @@ function Searchbar() {
     const [isOpen, setIsOpen] = useState(false);
     const toggle = () => {setIsOpen(!isOpen)}
     let menuref = useRef()
+    let searchRef = useRef(null)
 
 
 
@@ -29,6 +30,8 @@ function Searchbar() {
         }
         document.addEventListener('mousedown',handler)
 
+        
+
         return () => {
             dispatch(reset())
         }
@@ -37,17 +40,19 @@ function Searchbar() {
 
     const handleSearch = (e) => {
         e.preventDefault()
-
         if(searchInput !== ''){
             dispatch(search(searchInput))
         }
+    }
+    const handleDispatch = () => {
+        dispatch(setSearchRef(searchRef.current.className))
     }
 
     return(
         <div className="Searchbar">
             <div className="Searchbox">
              <form onSubmit={handleSearch}>
-                <input type = "text" value= {searchInput} onChange={(e)=> setSearchInput(e.target.value)} placeholder = "Search..."  onSubmit={handleSearch}></input>
+                <input  className='search-input' ref = {searchRef}  onSelect={handleDispatch} type="text" value={searchInput} onChange={(e)=> setSearchInput(e.target.value)} placeholder = "Search..."  onSubmit={handleSearch}></input>
              </form> 
              <SearchIcon onClick={handleSearch} className='Searchicon'/>
             </div>

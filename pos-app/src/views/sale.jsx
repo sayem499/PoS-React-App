@@ -1,8 +1,9 @@
 import '../css/sale.css'
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { allProducts, reset, updateProducts } from '../redux/products/productSlice';
+import { setSearchRef } from '../redux/search/searchSlice';
 import {
   resetSale,
   insertProductSale,
@@ -29,12 +30,14 @@ import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import Salesettings from '../components/salesettings';
 import BarcodeReader from 'react-barcode-reader'
+import Swal from 'sweetalert2';
+import Receipt from '../components/receipt';
 
 function Sale() {
   const navigate = useNavigate()
   const { user } = useSelector((state) => state.auth)
   const { products } = useSelector((state) => state.products)
-  const { searchInput } = useSelector((state) => state.search)
+  const { searchInput, searchRef } = useSelector((state) => state.search)
   const { cartItems,
     saleSubTotal,
     saleVAT,
@@ -56,7 +59,10 @@ function Sale() {
   const [paymentMethod, setPaymentMethod] = useState('Cash')
   const [isSaleSettingsOpen, setIsSaleSettingsOpen] = useState(false)
   const [productBarcode, setProductBarcode] = useState('')
-  let productTemp = [], fetch = JSON.parse(localStorage.getItem('sale-settings'))
+  const [isReceiptOpen, setIsReceiptOpen] = useState(false)
+  const [salePayloadState, setSalePayloadState] = useState()
+  const elementRef = useRef(null)
+  let productTemp = [], fetch = JSON.parse(localStorage.getItem('sale-settings')), salePayload
 
 
 
@@ -120,8 +126,14 @@ function Sale() {
 
     }
 
+    
+    document.addEventListener('keydown', handleKeyPress)
+    
+     
+    return () =>   {document.removeEventListener('keydown', handleKeyPress)             
+      }
 
-  }, [user, navigate, dispatch, productBarcode, cartItems, saleTotal, paymentMethod, isSaleLoading])
+  }, [user, navigate, dispatch, searchRef,productBarcode, cartItems, saleTotal, paymentMethod, isSaleLoading])
 
   if (products && products.length !== productTemp.length) {
     productTemp = products
@@ -135,8 +147,16 @@ function Sale() {
 
   const handleIncrement = (id, e) => {
     e.preventDefault()
-    dispatch(incrementCartItem(id))
-
+    cartItems?.filter((cart) => cart._id === id).forEach((cart) => {
+      products.filter((product) => product._id === id).map((product) => {
+        if(product.productQuantity - cart.productQuantity > 0){
+          dispatch(incrementCartItem(id))
+        }else{
+          toast.error("Not enough products in stock!!")
+        }
+      })
+      
+    })
   }
 
   const handleClose = (id, e) => {
@@ -151,27 +171,42 @@ function Sale() {
     let payload, productTitle, productQuantity, productUnitPrice, productUnitCost, productTotal, _id
     if (cartItems?.some((cart) => cart._id === id && cartItems !== [])) {
       cartItems?.filter((cart) => cart._id === id).forEach((cart) => {
-        dispatch(incrementCartItem(id))
+        products.filter((product) => product._id === id).map((product) => {
+          if(product.productQuantity - cart.productQuantity >= 0){
+            dispatch(incrementCartItem(id))
+          }else{
+            toast.error("Not enough products in stock!!")
+          }
+        })
+        
       })
     } else {
-      productTemp.filter((product) => product._id === id).forEach((product) => {
-        _id = product._id
-        productTitle = product.productTitle
-        productQuantity = 1
-        productUnitPrice = product.productUnitPrice
-        productUnitCost = product.productUnitCost
-        productTotal = productQuantity * productUnitPrice
-      })
-      payload = {
-        _id,
-        productTitle,
-        productQuantity,
-        productUnitPrice,
-        productUnitCost,
-        productTotal,
-      }
-
-      dispatch(insertProductSale(payload))
+        products.filter((product) => product._id === id).map((product) => {
+          if(product.productQuantity > 0){
+            productTemp.filter((product) => product._id === id).forEach((product) => {
+              _id = product._id
+              productTitle = product.productTitle
+              productQuantity = 1
+              productUnitPrice = product.productUnitPrice
+              productUnitCost = product.productUnitCost
+              productTotal = productQuantity * productUnitPrice
+            })
+            payload = {
+              _id,
+              productTitle,
+              productQuantity,
+              productUnitPrice,
+              productUnitCost,
+              productTotal,
+            }
+      
+            dispatch(insertProductSale(payload))
+          }else{
+            toast.error("Not enough products in stock!!")
+          }
+        })
+        
+      
     }
 
   }
@@ -184,42 +219,96 @@ function Sale() {
     dispatch(resetSale())
   }
 
-  const handleConfirm = (e) => {
-    e.preventDefault()
+  const handleConfirm = () => {
+    
     let saleTime, saleDate, payload, products
-    saleTime = new Date().toLocaleTimeString()
-    saleDate = new Date().toLocaleDateString()
+        saleTime = new Date().toLocaleTimeString()
+        saleDate = new Date().toLocaleDateString()
 
-    payload = {
-      saleTime,
-      saleDate
-    }
+        payload = {
+          saleTime,
+          saleDate
+        }
 
-    dispatch(insertTimeDate(payload))
+        dispatch(insertTimeDate(payload))
 
-    products = cartItems
-    const salePayload = {
-      products,
-      saleSubTotal,
-      saleVAT,
-      saleDiscount,
-      saleTotal,
-      saleTotalCost,
-      salePayType,
-      salePayByCard,
-      salePayByCash,
-      saleTime,
-      saleDate,
-      saleServedBy,
-      saleLessAdjustment,
-      saleVATAmount,
-      saleDiscountAmount,
-    }
+        products = [...cartItems]
+        salePayload = {
+          products,
+          saleSubTotal,
+          saleVAT,
+          saleDiscount,
+          saleTotal,
+          saleTotalCost,
+          salePayType,
+          salePayByCard,
+          salePayByCash,
+          saleTime,
+          saleDate,
+          saleServedBy,
+          saleLessAdjustment,
+          saleVATAmount,
+          saleDiscountAmount,
+        }
+    
+    Swal.fire({
+      title: 'Confirm Sale?',
+      showDenyButton: true,
+      showCancelButton: true,
+      cancelButtonText: 'Cancel',
+      confirmButtonText: 'Confirm',
+      denyButtonText: `Don't Confirm`,
+    }).then((result) => {
+      /* Read more about isConfirmed, isDenied below */
+      if (result.isConfirmed) {
+        dispatch(registerSale(salePayload))
+        Swal.fire('Confirmed!', '', 'success')
 
-    dispatch(registerSale(salePayload))
+      } else if (result.isDenied) {
+        Swal.fire('Not Confirmed', '', 'info')
+      } 
+    })
+
 
 
   }
+
+
+  const handleSaleLoad = () => {
+    let saleTime, saleDate, payload, products
+        saleTime = new Date().toLocaleTimeString()
+        saleDate = new Date().toLocaleDateString()
+
+        payload = {
+          saleTime,
+          saleDate
+        }
+
+        dispatch(insertTimeDate(payload))
+
+        products = [...cartItems]
+        salePayload = {
+          products,
+          saleSubTotal,
+          saleVAT,
+          saleDiscount,
+          saleTotal,
+          saleTotalCost,
+          salePayType,
+          salePayByCard,
+          salePayByCash,
+          saleTime,
+          saleDate,
+          saleServedBy,
+          saleLessAdjustment,
+          saleVATAmount,
+          saleDiscountAmount,
+        }
+
+        setSalePayloadState(salePayload)
+  }
+
+  
 
 
 
@@ -232,9 +321,28 @@ function Sale() {
 
   })
 
+  const handleReceipt = () => {
+        handleSaleLoad()
+        setIsReceiptOpen(true)
+  }
+
+  const handleKeyPress = (e) => {
+    if (searchRef === 'container-column'&& e.key === 'Enter' && e.key !== ' '  ){
+      e.preventDefault()
+       handleConfirm();
+    }
+  }
+
+  const handleDispatch =()=>{
+    dispatch(setSearchRef(elementRef.current.className))
+  }
 
   return (
-    <div className='container-column'>
+    
+    <div className='container-column' ref={elementRef} onClick={handleDispatch}>
+
+     {
+     isReceiptOpen && <Receipt payload={salePayloadState} closeReceipt={() => {setIsReceiptOpen(false)}}/>}
       {
         productBarcode && productTemp.filter((product) => product.productBarcode === productBarcode).forEach((product) => {
           if (cartItems?.some((cart) => cart._id === product._id && cartItems !== [])) {
@@ -431,6 +539,8 @@ function Sale() {
 
           <button className='sale-options-btn-clear' onClick={handleClearCart}> Clear </button>
           <button className='sale-options-btn-confirm' onClick={(e) => { handleConfirm(e) }}>Confirm</button>
+          <button className='sale-options-btn-receipt-preview' onClick={e => handleReceipt(e)  }>Reciept Preview</button>
+         
         </div>
       </div>
     </div>
