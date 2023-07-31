@@ -53,24 +53,16 @@
 .receipt-date {
     margin-left: 100px;
 }
+
 .receipt-time {
     margin-right: 120px;
 }
 
-.receipt-list-header {
-    margin-top: 50px;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-}
 
-.receipt-list-items {
-    margin-top: 20px;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
 
+.receipt-list-items table ,tbody ,thead {
+    border: 0.5px solid black;
+    width: 100%;
 }
 
 .receipt-sale-info {
@@ -79,7 +71,7 @@
     flex-direction: row;
     justify-content: space-between;
 }
-.receipt-net-total{
+.receipt-net-total {
     font-weight: bold;
 }
 
@@ -90,7 +82,3 @@
     justify-content: center;
 }
 
-.receipt-list-items span {
-
-
-}

@@ -379,7 +379,7 @@ function Sale() {
         <div className='card-container'>
           <div className='table-header'>
             <BarcodeReader onScan={handleScan} />
-            <table>
+            <table className='table-header-table'>
               <tr>
                 <th>Product Title</th>
                 <th>Product Brand</th>
@@ -453,7 +453,7 @@ function Sale() {
           </div>
           <hr></hr>
           <div className='cart-list-header'>
-            <table>
+            <table className='cart-list-header-table-header'>
               <tr>
                 <th>Name</th>
                 <th>Price</th>
