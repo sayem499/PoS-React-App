@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { allProducts, reset, updateProducts } from '../redux/products/productSlice';
 import { setSearchRef } from '../redux/search/searchSlice';
+import { useReactToPrint } from 'react-to-print';
 import {
   resetSale,
   insertProductSale,
@@ -13,6 +14,7 @@ import {
   cartProductTotal,
   cartSubTotal,
   cartNetTotal,
+  setSaleSettings,
   getSaleSettings,
   cartTotalLessAdjustment,
   insertSalePayType,
@@ -31,13 +33,13 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import Salesettings from '../components/salesettings';
 import BarcodeReader from 'react-barcode-reader'
 import Swal from 'sweetalert2';
-import Receipt from '../components/receipt';
+import Receipt  from '../components/receipt';
 
 function Sale() {
   const navigate = useNavigate()
   const { user } = useSelector((state) => state.auth)
   const { products } = useSelector((state) => state.products)
-  const { searchInput, searchRef } = useSelector((state) => state.search)
+  const { searchInput, searchRef} = useSelector((state) => state.search)
   const { cartItems,
     saleSubTotal,
     saleVAT,
@@ -51,6 +53,7 @@ function Sale() {
     saleLessAdjustment,
     saleVATAmount,
     saleDiscountAmount,
+    saleLessAdjustmentToggle,
     isSaleLoading,
     isSaleError,
     isSaleSuccess,
@@ -62,6 +65,7 @@ function Sale() {
   const [isReceiptOpen, setIsReceiptOpen] = useState(false)
   const [salePayloadState, setSalePayloadState] = useState()
   const elementRef = useRef(null)
+  const printRef = useRef()
   let productTemp = [], fetch = JSON.parse(localStorage.getItem('sale-settings')), salePayload
 
 
@@ -78,19 +82,39 @@ function Sale() {
       dispatch(allProducts())
     dispatch(cartProductTotal())
     dispatch(cartSubTotal())
-    if (fetch)
+    if (fetch !== null)
       dispatch(getSaleSettings())
+    else {
+
+      let payload = {
+        saleVAT,
+        saleDiscount,
+        saleLessAdjustmentToggle,
+      }
+      dispatch(setSaleSettings(payload)) 
+    }
+      
     dispatch(cartNetTotal())
     dispatch(cartTotalCost())
-    if (fetch.saleLessAdjustmentToggle)
+    if (fetch?.saleLessAdjustmentToggle)
       dispatch(cartTotalLessAdjustment())
+    else {
+      let payload = {
+        saleVAT,
+        saleDiscount,
+        saleLessAdjustmentToggle,
+      }
+      dispatch(setSaleSettings(payload))   
+    }  
     dispatch(insertSalePayType(paymentMethod))
     dispatch(insertSalePerson(user.userName))
     if (isSaleError) {
       toast.error("Sale Confirmation Error!!")
     }
-
+  
     if (isSaleSuccess) {
+      
+      handlePrint()
       cartItems?.forEach((cartProduct) => {
         products?.filter((product) => product._id === cartProduct._id).forEach((product) => {
           let productID = product._id,
@@ -125,11 +149,10 @@ function Sale() {
       }, 2000)
 
     }
-
+    console.log(printRef)
     
     document.addEventListener('keydown', handleKeyPress)
     
-     
     return () =>   {document.removeEventListener('keydown', handleKeyPress)             
       }
 
@@ -219,8 +242,10 @@ function Sale() {
     dispatch(resetSale())
   }
 
+
+  /* Function to handle confirm button click */
   const handleConfirm = () => {
-    
+
     let saleTime, saleDate, payload, products
         saleTime = new Date().toLocaleTimeString()
         saleDate = new Date().toLocaleDateString()
@@ -261,6 +286,7 @@ function Sale() {
     }).then((result) => {
       /* Read more about isConfirmed, isDenied below */
       if (result.isConfirmed) {
+        setIsReceiptOpen(true)
         dispatch(registerSale(salePayload))
         Swal.fire('Confirmed!', '', 'success')
 
@@ -274,6 +300,7 @@ function Sale() {
   }
 
 
+  /* Function to load all the sale data. */
   const handleSaleLoad = () => {
     let saleTime, saleDate, payload, products
         saleTime = new Date().toLocaleTimeString()
@@ -337,12 +364,17 @@ function Sale() {
     dispatch(setSearchRef(elementRef.current.className))
   }
 
+  /* Function to handle receipt print*/
+  const handlePrint = useReactToPrint({
+    content: () => printRef.current,
+  });
+
   return (
     
     <div className='container-column' ref={elementRef} onClick={handleDispatch}>
 
      {
-     isReceiptOpen && <Receipt payload={salePayloadState} closeReceipt={() => {setIsReceiptOpen(false)}}/>}
+     isReceiptOpen && <Receipt payload={salePayloadState} closeReceipt={() => {setIsReceiptOpen(false)}} ref = {printRef}/>}
       {
         productBarcode && productTemp.filter((product) => product.productBarcode === productBarcode).forEach((product) => {
           if (cartItems?.some((cart) => cart._id === product._id && cartItems !== [])) {

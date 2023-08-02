@@ -1,10 +1,14 @@
 import '../css/receipt.css'
+import { forwardRef } from 'react'
 
-const Receipt = ({ payload, closeReceipt }) => {
+export const Receipt = forwardRef(({ payload, closeReceipt}, ref) => {
+  
+
+
   return (
     <div className='receipt-container' onClick={(e) => { if (e.target.className === 'receipt-container') closeReceipt() }}>
       <div className='receipt-wrapper'>
-        <div className='receipt'>
+        <div className='receipt' ref={ref}>
 
           <div className='receipt-header'>
             <h3>Sale Receipt</h3>
@@ -15,7 +19,7 @@ const Receipt = ({ payload, closeReceipt }) => {
           </div>
           <hr></hr>
           <div className='receipt-list-items'>
-          <table cellspacing="5">
+          <table cellSpacing="5">
             <thead align='left' border='1'>
               <tr>
                 <th>SL no.</th>
@@ -28,7 +32,7 @@ const Receipt = ({ payload, closeReceipt }) => {
             {
               payload.products.map((items, key) => {
                 return (
-                  <tbody align='left'>
+                  <tbody key={key} align='left'>
                     <tr>
                       <td>{key}</td>
                       <td>{items.productTitle}</td>
@@ -84,6 +88,6 @@ const Receipt = ({ payload, closeReceipt }) => {
       </div>
     </div>
   )
-}
+})
 
 export default Receipt

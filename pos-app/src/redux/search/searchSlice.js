@@ -18,7 +18,7 @@ const searchSlice = createSlice({
 
         setSearchRef: (state, action) => {
             state.searchRef = action.payload
-        }
+        },
 
     },
 })

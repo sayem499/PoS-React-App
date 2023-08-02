@@ -1,0 +1,34 @@
+version: '3'
+
+services: 
+
+    server: 
+        build:
+          context: ./backend
+          dockerfile: Dockerfile
+        image: pos-react-app-server
+        ports: 
+            - 5000:5000
+        volumes: 
+            - ./backend/config:/app/backend/config
+            - ./backend/controllers:/app/backend/controllers
+            - ./backend/middleware:/app/backend/middleware
+            - ./backend/model:/app/backend/model
+            - ./backend/routes:/app/backend/routes
+           
+        command: /app/backend/node_modules/.bin/nodemon server.js    
+    client:
+        build:
+          context: ./
+          dockerfile: Dockerfile
+        image: pos-react-app
+        ports:
+          - 3000:3000
+        volumes:
+          - ./public:/app/public
+          - ./src:/app/src
+        stdin_open: true
+        command: npm start    
+            
+
+

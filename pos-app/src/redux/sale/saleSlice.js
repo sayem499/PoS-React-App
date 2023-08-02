@@ -217,7 +217,7 @@ export const saleSlice = createSlice({
         .addCase(registerSale.fulfilled, (state, action) => {
             state.isSaleLoading = false
             state.isSaleSuccess = true
-            console.log(action.payload)
+            //state.sales = state.sales.conccat(action.payload)
         })
         .addCase(registerSale.rejected, (state, action) => {
             state.isSaleLoading = false
