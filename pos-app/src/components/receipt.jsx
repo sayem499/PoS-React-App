@@ -7,7 +7,7 @@ export const Receipt = forwardRef(({ payload, closeReceipt}, ref) => {
 
   return (
     <div className='receipt-container' onClick={(e) => { if (e.target.className === 'receipt-container') closeReceipt() }}>
-      <div className='receipt-wrapper'>
+      <div className='receipt-wrapper' >
         <div className='receipt' ref={ref}>
 
           <div className='receipt-header'>

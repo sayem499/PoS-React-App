@@ -33,13 +33,13 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import Salesettings from '../components/salesettings';
 import BarcodeReader from 'react-barcode-reader'
 import Swal from 'sweetalert2';
-import Receipt  from '../components/receipt';
+import Receipt from '../components/receipt';
 
 function Sale() {
   const navigate = useNavigate()
   const { user } = useSelector((state) => state.auth)
   const { products } = useSelector((state) => state.products)
-  const { searchInput, searchRef} = useSelector((state) => state.search)
+  const { searchInput, searchRef } = useSelector((state) => state.search)
   const { cartItems,
     saleSubTotal,
     saleVAT,
@@ -64,6 +64,9 @@ function Sale() {
   const [productBarcode, setProductBarcode] = useState('')
   const [isReceiptOpen, setIsReceiptOpen] = useState(false)
   const [salePayloadState, setSalePayloadState] = useState()
+  const [customerName, setCustomerName] = useState('')
+  const [customerPhoneNumber, setCustomerPhoneNumber] = useState('')
+  const [customerCashPaid, setCustomerCashPaid] = useState(0)
   const elementRef = useRef(null)
   const printRef = useRef()
   let productTemp = [], fetch = JSON.parse(localStorage.getItem('sale-settings')), salePayload
@@ -91,9 +94,9 @@ function Sale() {
         saleDiscount,
         saleLessAdjustmentToggle,
       }
-      dispatch(setSaleSettings(payload)) 
+      dispatch(setSaleSettings(payload))
     }
-      
+
     dispatch(cartNetTotal())
     dispatch(cartTotalCost())
     if (fetch?.saleLessAdjustmentToggle)
@@ -104,16 +107,16 @@ function Sale() {
         saleDiscount,
         saleLessAdjustmentToggle,
       }
-      dispatch(setSaleSettings(payload))   
-    }  
+      dispatch(setSaleSettings(payload))
+    }
     dispatch(insertSalePayType(paymentMethod))
     dispatch(insertSalePerson(user.userName))
     if (isSaleError) {
       toast.error("Sale Confirmation Error!!")
     }
-  
+
     if (isSaleSuccess) {
-      
+
       handlePrint()
       cartItems?.forEach((cartProduct) => {
         products?.filter((product) => product._id === cartProduct._id).forEach((product) => {
@@ -141,6 +144,7 @@ function Sale() {
             updatedProductData
           }
           dispatch(updateProducts(payload))
+          setIsReceiptOpen(false)
         })
       })
       setTimeout(() => {
@@ -150,13 +154,14 @@ function Sale() {
 
     }
     console.log(printRef)
-    
-    document.addEventListener('keydown', handleKeyPress)
-    
-    return () =>   {document.removeEventListener('keydown', handleKeyPress)             
-      }
 
-  }, [user, navigate, dispatch, searchRef,productBarcode, cartItems, saleTotal, paymentMethod, isSaleLoading])
+    document.addEventListener('keydown', handleKeyPress)
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyPress)
+    }
+
+  }, [user, navigate, dispatch, searchRef, productBarcode, cartItems, saleTotal, paymentMethod, isSaleLoading])
 
   if (products && products.length !== productTemp.length) {
     productTemp = products
@@ -172,13 +177,13 @@ function Sale() {
     e.preventDefault()
     cartItems?.filter((cart) => cart._id === id).forEach((cart) => {
       products.filter((product) => product._id === id).map((product) => {
-        if(product.productQuantity - cart.productQuantity > 0){
+        if (product.productQuantity - cart.productQuantity > 0) {
           dispatch(incrementCartItem(id))
-        }else{
+        } else {
           toast.error("Not enough products in stock!!")
         }
       })
-      
+
     })
   }
 
@@ -195,41 +200,41 @@ function Sale() {
     if (cartItems?.some((cart) => cart._id === id && cartItems !== [])) {
       cartItems?.filter((cart) => cart._id === id).forEach((cart) => {
         products.filter((product) => product._id === id).map((product) => {
-          if(product.productQuantity - cart.productQuantity >= 0){
+          if (product.productQuantity - cart.productQuantity >= 0) {
             dispatch(incrementCartItem(id))
-          }else{
+          } else {
             toast.error("Not enough products in stock!!")
           }
         })
-        
+
       })
     } else {
-        products.filter((product) => product._id === id).map((product) => {
-          if(product.productQuantity > 0){
-            productTemp.filter((product) => product._id === id).forEach((product) => {
-              _id = product._id
-              productTitle = product.productTitle
-              productQuantity = 1
-              productUnitPrice = product.productUnitPrice
-              productUnitCost = product.productUnitCost
-              productTotal = productQuantity * productUnitPrice
-            })
-            payload = {
-              _id,
-              productTitle,
-              productQuantity,
-              productUnitPrice,
-              productUnitCost,
-              productTotal,
-            }
-      
-            dispatch(insertProductSale(payload))
-          }else{
-            toast.error("Not enough products in stock!!")
+      products.filter((product) => product._id === id).map((product) => {
+        if (product.productQuantity > 0) {
+          productTemp.filter((product) => product._id === id).forEach((product) => {
+            _id = product._id
+            productTitle = product.productTitle
+            productQuantity = 1
+            productUnitPrice = product.productUnitPrice
+            productUnitCost = product.productUnitCost
+            productTotal = productQuantity * productUnitPrice
+          })
+          payload = {
+            _id,
+            productTitle,
+            productQuantity,
+            productUnitPrice,
+            productUnitCost,
+            productTotal,
           }
-        })
-        
-      
+
+          dispatch(insertProductSale(payload))
+        } else {
+          toast.error("Not enough products in stock!!")
+        }
+      })
+
+
     }
 
   }
@@ -247,35 +252,35 @@ function Sale() {
   const handleConfirm = () => {
 
     let saleTime, saleDate, payload, products
-        saleTime = new Date().toLocaleTimeString()
-        saleDate = new Date().toLocaleDateString()
+    saleTime = new Date().toLocaleTimeString()
+    saleDate = new Date().toLocaleDateString()
 
-        payload = {
-          saleTime,
-          saleDate
-        }
+    payload = {
+      saleTime,
+      saleDate
+    }
 
-        dispatch(insertTimeDate(payload))
+    dispatch(insertTimeDate(payload))
 
-        products = [...cartItems]
-        salePayload = {
-          products,
-          saleSubTotal,
-          saleVAT,
-          saleDiscount,
-          saleTotal,
-          saleTotalCost,
-          salePayType,
-          salePayByCard,
-          salePayByCash,
-          saleTime,
-          saleDate,
-          saleServedBy,
-          saleLessAdjustment,
-          saleVATAmount,
-          saleDiscountAmount,
-        }
-    
+    products = [...cartItems]
+    salePayload = {
+      products,
+      saleSubTotal,
+      saleVAT,
+      saleDiscount,
+      saleTotal,
+      saleTotalCost,
+      salePayType,
+      salePayByCard,
+      salePayByCash,
+      saleTime,
+      saleDate,
+      saleServedBy,
+      saleLessAdjustment,
+      saleVATAmount,
+      saleDiscountAmount,
+    }
+
     Swal.fire({
       title: 'Confirm Sale?',
       showDenyButton: true,
@@ -292,7 +297,7 @@ function Sale() {
 
       } else if (result.isDenied) {
         Swal.fire('Not Confirmed', '', 'info')
-      } 
+      }
     })
 
 
@@ -303,39 +308,39 @@ function Sale() {
   /* Function to load all the sale data. */
   const handleSaleLoad = () => {
     let saleTime, saleDate, payload, products
-        saleTime = new Date().toLocaleTimeString()
-        saleDate = new Date().toLocaleDateString()
+    saleTime = new Date().toLocaleTimeString()
+    saleDate = new Date().toLocaleDateString()
 
-        payload = {
-          saleTime,
-          saleDate
-        }
+    payload = {
+      saleTime,
+      saleDate
+    }
 
-        dispatch(insertTimeDate(payload))
+    dispatch(insertTimeDate(payload))
 
-        products = [...cartItems]
-        salePayload = {
-          products,
-          saleSubTotal,
-          saleVAT,
-          saleDiscount,
-          saleTotal,
-          saleTotalCost,
-          salePayType,
-          salePayByCard,
-          salePayByCash,
-          saleTime,
-          saleDate,
-          saleServedBy,
-          saleLessAdjustment,
-          saleVATAmount,
-          saleDiscountAmount,
-        }
+    products = [...cartItems]
+    salePayload = {
+      products,
+      saleSubTotal,
+      saleVAT,
+      saleDiscount,
+      saleTotal,
+      saleTotalCost,
+      salePayType,
+      salePayByCard,
+      salePayByCash,
+      saleTime,
+      saleDate,
+      saleServedBy,
+      saleLessAdjustment,
+      saleVATAmount,
+      saleDiscountAmount,
+    }
 
-        setSalePayloadState(salePayload)
+    setSalePayloadState(salePayload)
   }
 
-  
+
 
 
 
@@ -349,32 +354,33 @@ function Sale() {
   })
 
   const handleReceipt = () => {
-        handleSaleLoad()
-        setIsReceiptOpen(true)
+    handleSaleLoad()
+    setIsReceiptOpen(true)
   }
 
   const handleKeyPress = (e) => {
-    if (searchRef === 'container-column'&& e.key === 'Enter' && e.key !== ' '  ){
+    if (searchRef === 'container-column' && e.key === 'Enter' && e.key !== ' ') {
       e.preventDefault()
-       handleConfirm();
+      handleConfirm();
     }
   }
 
-  const handleDispatch =()=>{
+  const handleDispatch = () => {
     dispatch(setSearchRef(elementRef.current.className))
   }
 
   /* Function to handle receipt print*/
   const handlePrint = useReactToPrint({
     content: () => printRef.current,
+    pageStyle: () => "align-items: center margin: 0px justify-content: center",
   });
 
   return (
-    
+
     <div className='container-column' ref={elementRef} onClick={handleDispatch}>
 
-     {
-     isReceiptOpen && <Receipt payload={salePayloadState} closeReceipt={() => {setIsReceiptOpen(false)}} ref = {printRef}/>}
+      {
+        isReceiptOpen && <Receipt payload={salePayloadState} closeReceipt={() => { setIsReceiptOpen(false) }} ref={printRef} />}
       {
         productBarcode && productTemp.filter((product) => product.productBarcode === productBarcode).forEach((product) => {
           if (cartItems?.some((cart) => cart._id === product._id && cartItems !== [])) {
@@ -571,9 +577,19 @@ function Sale() {
 
           <button className='sale-options-btn-clear' onClick={handleClearCart}> Clear </button>
           <button className='sale-options-btn-confirm' onClick={(e) => { handleConfirm(e) }}>Confirm</button>
-          <button className='sale-options-btn-receipt-preview' onClick={e => handleReceipt(e)  }>Reciept Preview</button>
-         
+          <button className='sale-options-btn-receipt-preview' onClick={e => handleReceipt(e)}>Reciept</button>
+
+          <div className='input-wrapper'>
+            <label htmlFor='customerName'>Customer Name</label>
+            <input value={customerName} onChange={e => setCustomerName(e.target.value)} name='customerName'></input>
+            <label htmlFor='customerPhoneNumber'>Customer Mobile No.</label>
+            <input value={customerPhoneNumber} onChange={e => setCustomerPhoneNumber(e.target.value)} name='customerPhoeNumber'></input>
+            <label htmlFor='customerCashPaid'>Cash Paid</label>
+            <input value={customerCashPaid} onChange={e => setCustomerName(e.target.value)} name='customerCashPaid'></input>
+          </div>
+
         </div>
+
       </div>
     </div>
   )
