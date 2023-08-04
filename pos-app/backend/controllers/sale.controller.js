@@ -1,12 +1,12 @@
-const asyncHandler = require('express-async-handler') 
+const asyncHandler = require('express-async-handler')
 const Sales = require('../model/sale.model')
 
 //@desc GET sales
 //@route GET/api/sales
 //@access Private
-const getSales = asyncHandler( async (req, res) => {
-    const sales = await Sales.find()
-    res.status(200).json(sales)
+const getSales = asyncHandler( async (res) => {
+  const sales = await Sales.find()
+  res.status(200).json(sales)
 })
 
 
@@ -14,7 +14,7 @@ const getSales = asyncHandler( async (req, res) => {
 //@route POST/api/sales
 //@access Private
 const setSales = asyncHandler( async (req, res) => {
-     if(!req.body.products &&  
+  if (!req.body.products &&
     !req.body.saleSubTotal &&
     !req.body.saleVAT &&
     !req.body.saleDiscount &&
@@ -22,20 +22,20 @@ const setSales = asyncHandler( async (req, res) => {
     !req.body.saleTotalCost &&
     !req.body.salePayType &&
     !req.body.salePayByCard &&
-    !req.body.salePayByCash && 
+    !req.body.salePayByCash &&
     !req.body.saleTime &&
     !req.body.saleServedBy &&
     !req.body.saleLessAdjustment &&
     !req.body.saleVATAmount &&
-    !req.body.saleDiscountAmount ){
-        res.status(400)
-        throw new Error('Product field error!')
-    }
-    const sale = await Sales.create({
+    !req.body.saleDiscountAmount) {
+    res.status(400)
+    throw new Error('Sale field error!')
+  }
+  const sale = await Sales.create({
     products: req.body.products,
-    saleSubTotal: req.body.saleSubTotal, 
+    saleSubTotal: req.body.saleSubTotal,
     saleVAT: req.body.saleVAT,
-    saleDiscount: req.body.saleDiscount, 
+    saleDiscount: req.body.saleDiscount,
     saleTotal: req.body.saleTotal,
     saleTotalCost: req.body.saleTotalCost,
     salePayType: req.body.salePayType,
@@ -47,45 +47,49 @@ const setSales = asyncHandler( async (req, res) => {
     saleLessAdjustment: req.body.saleLessAdjustment,
     saleVATAmount: req.body.saleVATAmount,
     saleDiscountAmount: req.body.saleDiscountAmount,
-    }) 
-    res.status(200).json(sale)
+    saleCustomerName: req.body.saleCustomername,
+    saleCustomerPhoneNumber: req.body.customerPhoneNumber,
+    saleCashPaid: req.body.saleCashPaid,
+    saleChange: req.body.saleChange,
+  })
+  res.status(200).json(sale)
 })
 
 
 //@desc Upadate sales
 //@route PUT/api/sales/:id
 //@access Private
-const updateSales = asyncHandler( async (req, res) => {
-    const sale = Sales.findById(req.params.id)
+const updateSales = asyncHandler(async (req, res) => {
+  const sale = Sales.findById(req.params.id)
 
-    if(!sale){
-      res.status(400)
-      throw new Error('Product not found!')
-    }
+  if (!sale) {
+    res.status(400)
+    throw new Error('Sale not found!')
+  }
 
-    const updatedSale = await Sales.findByIdAndUpdate(req.params.id, req.body, {new: true,})
-    res.status(200).json(updatedSale)
- })
+  const updatedSale = await Sales.findByIdAndUpdate(req.params.id, req.body, { new: true, })
+  res.status(200).json(updatedSale)
+})
 
 //@desc Delete sales
 //@route DELETE/api/sales/:id
 //@access Private
-const deleteSale = asyncHandler( async (req, res) => {
-    const sale = Sales.findById(req.params.id)
+const deleteSale = asyncHandler(async (req, res) => {
+  const sale = Sales.findById(req.params.id)
 
-    if(!sale){
-      res.status(400)
-      throw new Error('Product not found!')
-    }
+  if (!sale) {
+    res.status(400)
+    throw new Error('Sale not found!')
+  }
 
-    await sale.deleteOne()
+  await sale.deleteOne()
 
-    res.status(200).json({message: `Deleted Sale ${req.params.id}`})
- })
+  res.status(200).json({ message: `Deleted Sale ${req.params.id}` })
+})
 
- module.exports = {
-    getSales,
-    setSales,
-    updateSales,
-    deleteSale
- }
+module.exports = {
+  getSales,
+  setSales,
+  updateSales,
+  deleteSale
+}

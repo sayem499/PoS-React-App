@@ -16,6 +16,10 @@ const saleSchema = mongoose.Schema({
     saleLessAdjustment: { type: String },
     saleVATAmount: { type: Number, required: true},
     saleDiscountAmount: { type: Number, required: true},
+    saleCustomerName: { type: String, },
+    saleCustomerPhoneNumber: { type: String, },
+    saleCashPaid: { type: Number },
+    saleChange: {type: Number},
 },{
     timestamps: true,
 })

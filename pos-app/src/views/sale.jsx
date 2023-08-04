@@ -22,6 +22,9 @@ import {
   insertTimeDate,
   registerSale,
   cartTotalCost,
+  insertCustomerInfo,
+  insertCashPaid,
+  calculateChange,
 } from '../redux/sale/saleSlice';
 import { toast } from 'react-toastify'
 import Loading from '../components/loading';
@@ -581,11 +584,11 @@ function Sale() {
 
           <div className='input-wrapper'>
             <label htmlFor='customerName'>Customer Name</label>
-            <input value={customerName} onChange={e => setCustomerName(e.target.value)} name='customerName'></input>
+            <input className='customer-name-input' value={customerName} onChange={e => setCustomerName(e.target.value)} name='customerName'></input>
             <label htmlFor='customerPhoneNumber'>Customer Mobile No.</label>
-            <input value={customerPhoneNumber} onChange={e => setCustomerPhoneNumber(e.target.value)} name='customerPhoeNumber'></input>
+            <input className='customer-phone-number-input' value={customerPhoneNumber} onChange={e => setCustomerPhoneNumber(e.target.value)} name='customerPhoeNumber'></input>
             <label htmlFor='customerCashPaid'>Cash Paid</label>
-            <input value={customerCashPaid} onChange={e => setCustomerName(e.target.value)} name='customerCashPaid'></input>
+            <input className='cash-paid-input' value={customerCashPaid} onChange={e => setCustomerName(e.target.value)} name='customerCashPaid'></input>
           </div>
 
         </div>

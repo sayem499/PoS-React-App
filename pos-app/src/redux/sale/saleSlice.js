@@ -19,6 +19,10 @@ const initialState = {
     saleLessAdjustment: 0,
     saleVATAmount: 0,
     saleDiscountAmount: 0,
+    saleCustomerName: '',
+    saleCustomerPhoneNumber: '',
+    saleCashPaid: 0,
+    saleChange: 0,
     totalSale: 0,
     averageSale: 0,
     saleTotalCost: 0,
@@ -201,7 +205,21 @@ export const saleSlice = createSlice({
             state.grossMargin = 0
 
             state.grossMargin = (state.grossProfit / state.totalSale) * 100
-        }
+        },
+
+        insertCustomerInfo:(state, action) => {
+            const { customerName, customerPhoneNumber } = action.payload
+            state.saleCustomerName = customerName
+            state.saleCustomerPhoneNumber = customerPhoneNumber
+        },
+
+        insertCashPaid: (state, action) => {
+            state.saleCashPaid = action.payload
+        },
+
+        calculateChange: (state) => {
+            state.saleChange = state.saleCashPaid - state.saleTotal
+        },
 
 
         
@@ -260,5 +278,8 @@ export const {
     cartTotalCost,
     calculateGrossProfit,
     calculateGrossMargin,
+    insertCustomerInfo,
+    insertCashPaid,
+    calculateChange,
 } = saleSlice.actions
 export default saleSlice.reducer
