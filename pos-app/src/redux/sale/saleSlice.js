@@ -218,7 +218,13 @@ export const saleSlice = createSlice({
         },
 
         calculateChange: (state) => {
-            state.saleChange = state.saleCashPaid - state.saleTotal
+            if(state.saleCashPaid === 0 || state.saleCashPaid === '' || state.saleCashPaid < state.saleTotal || state.cartItems.length === 0){
+                state.saleChange = 0
+            } else {
+                state.saleChange = state.saleCashPaid - state.saleTotal
+            }
+              
+           
         },
 
 

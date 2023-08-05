@@ -306,7 +306,7 @@ hr {
 
 }
 
-.button-container {
+.bottom-container {
     width: 99%;
     height: 30%;
     display: flex;
@@ -316,12 +316,14 @@ hr {
     
 }
 
-.button-wrapper {
+
+
+.bottom-wrapper {
     width: 100%;
     height: 99%;
     display: flex;
     flex-direction: row;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     margin: 0px;
     border-style: outset;
@@ -329,11 +331,21 @@ hr {
 
 }
 
+.button-wrapper {
+    margin-left: 50px;
+    height: 100%;
+    width: 30%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
 .input-wrapper {
     display:flex;
     flex-direction: column;
     width: 30%;
-    height: 80%;
+    height: 90%;
     margin-left: 30px;
     
 }
@@ -348,6 +360,13 @@ hr {
 }
 
 
+.change-show-wrapper {
+    height: 100%;
+    width: 20%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
 
 
 

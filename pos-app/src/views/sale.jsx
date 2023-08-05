@@ -5,7 +5,9 @@ import { useNavigate } from 'react-router-dom';
 import { allProducts, reset, updateProducts } from '../redux/products/productSlice';
 import { setSearchRef } from '../redux/search/searchSlice';
 import { useReactToPrint } from 'react-to-print';
+import { setCustomers } from '../redux/customer/customerSlice';
 import {
+
   resetSale,
   insertProductSale,
   incrementCartItem,
@@ -25,6 +27,7 @@ import {
   insertCustomerInfo,
   insertCashPaid,
   calculateChange,
+
 } from '../redux/sale/saleSlice';
 import { toast } from 'react-toastify'
 import Loading from '../components/loading';
@@ -57,6 +60,10 @@ function Sale() {
     saleVATAmount,
     saleDiscountAmount,
     saleLessAdjustmentToggle,
+    saleCustomerName,
+    saleCustomerPhoneNumber,
+    saleCashPaid,
+    saleChange,
     isSaleLoading,
     isSaleError,
     isSaleSuccess,
@@ -97,6 +104,7 @@ function Sale() {
         saleDiscount,
         saleLessAdjustmentToggle,
       }
+
       dispatch(setSaleSettings(payload))
     }
 
@@ -117,6 +125,8 @@ function Sale() {
     if (isSaleError) {
       toast.error("Sale Confirmation Error!!")
     }
+    dispatch(insertCashPaid(customerCashPaid)) 
+    dispatch(calculateChange())
 
     if (isSaleSuccess) {
 
@@ -152,11 +162,10 @@ function Sale() {
       })
       setTimeout(() => {
         toast.success("Sale Confirmed Successfully!!")
-        dispatch(resetSale())
+        //dispatch(resetSale())
       }, 2000)
 
     }
-    console.log(printRef)
 
     document.addEventListener('keydown', handleKeyPress)
 
@@ -164,7 +173,7 @@ function Sale() {
       document.removeEventListener('keydown', handleKeyPress)
     }
 
-  }, [user, navigate, dispatch, searchRef, productBarcode, cartItems, saleTotal, paymentMethod, isSaleLoading])
+  }, [user, navigate, dispatch, searchRef, productBarcode, cartItems, saleTotal, paymentMethod, isSaleLoading, customerCashPaid])
 
   if (products && products.length !== productTemp.length) {
     productTemp = products
@@ -247,6 +256,7 @@ function Sale() {
   }
 
   const handleClearCart = () => {
+    setCustomerCashPaid(0)
     dispatch(resetSale())
   }
 
@@ -254,7 +264,7 @@ function Sale() {
   /* Function to handle confirm button click */
   const handleConfirm = () => {
 
-    let saleTime, saleDate, payload, products
+    let saleTime, saleDate, payload, products, customerPayload
     saleTime = new Date().toLocaleTimeString()
     saleDate = new Date().toLocaleDateString()
 
@@ -264,6 +274,13 @@ function Sale() {
     }
 
     dispatch(insertTimeDate(payload))
+
+    customerPayload = {
+      customerName,
+      customerPhoneNumber,
+    }
+
+    dispatch(insertCustomerInfo(customerPayload))
 
     products = [...cartItems]
     salePayload = {
@@ -282,6 +299,10 @@ function Sale() {
       saleLessAdjustment,
       saleVATAmount,
       saleDiscountAmount,
+      saleCustomerName,
+      saleCustomerPhoneNumber,
+      saleCashPaid,
+      saleChange,
     }
 
     Swal.fire({
@@ -310,7 +331,7 @@ function Sale() {
 
   /* Function to load all the sale data. */
   const handleSaleLoad = () => {
-    let saleTime, saleDate, payload, products
+    let saleTime, saleDate, payload, products, customerPayload
     saleTime = new Date().toLocaleTimeString()
     saleDate = new Date().toLocaleDateString()
 
@@ -320,6 +341,13 @@ function Sale() {
     }
 
     dispatch(insertTimeDate(payload))
+
+    customerPayload = {
+      customerName,
+      customerPhoneNumber,
+    }
+
+    dispatch(insertCustomerInfo(customerPayload))
 
     products = [...cartItems]
     salePayload = {
@@ -338,6 +366,10 @@ function Sale() {
       saleLessAdjustment,
       saleVATAmount,
       saleDiscountAmount,
+      saleCustomerName,
+      saleCustomerPhoneNumber,
+      saleCashPaid,
+      saleChange,
     }
 
     setSalePayloadState(salePayload)
@@ -365,6 +397,9 @@ function Sale() {
     if (searchRef === 'container-column' && e.key === 'Enter' && e.key !== ' ') {
       e.preventDefault()
       handleConfirm();
+    }else if(searchRef === 'container-column' && e.key === 'Escape' && e.key !== ' '){
+      e.preventDefault()
+      handleClearCart()
     }
   }
 
@@ -568,8 +603,9 @@ function Sale() {
         </div>
 
       </div>
-      <div className='button-container'>
-        <div className='button-wrapper'>
+      <div className='bottom-container'>
+        <div className='bottom-wrapper'>
+          <div className='button-wrapper'>
           {
             user.userType === 'admin' ? <button className='sale-options-btn' onClick={handleSaleSettings}>Settings</button> : ''
           }
@@ -581,14 +617,21 @@ function Sale() {
           <button className='sale-options-btn-clear' onClick={handleClearCart}> Clear </button>
           <button className='sale-options-btn-confirm' onClick={(e) => { handleConfirm(e) }}>Confirm</button>
           <button className='sale-options-btn-receipt-preview' onClick={e => handleReceipt(e)}>Reciept</button>
+          </div>
+          
 
           <div className='input-wrapper'>
             <label htmlFor='customerName'>Customer Name</label>
-            <input className='customer-name-input' value={customerName} onChange={e => setCustomerName(e.target.value)} name='customerName'></input>
+            <input className='customer-name-input' value={customerName} onChange={e => setCustomerName(e.target.value)} name='customerName' type='text'></input>
             <label htmlFor='customerPhoneNumber'>Customer Mobile No.</label>
-            <input className='customer-phone-number-input' value={customerPhoneNumber} onChange={e => setCustomerPhoneNumber(e.target.value)} name='customerPhoeNumber'></input>
+            <input className='customer-phone-number-input' value={customerPhoneNumber} onChange={e => setCustomerPhoneNumber(e.target.value)} name='customerPhoeNumber' type='text'></input>
             <label htmlFor='customerCashPaid'>Cash Paid</label>
-            <input className='cash-paid-input' value={customerCashPaid} onChange={e => setCustomerName(e.target.value)} name='customerCashPaid'></input>
+            <input className='cash-paid-input' value={customerCashPaid} onChange={e => {setCustomerCashPaid(e.target.value)}} name='customerCashPaid' type='number'></input>
+          </div>
+
+          <div className='change-show-wrapper'>
+            <h2>CHANGE :</h2>
+            <span><h1>৳&nbsp;{saleChange}</h1></span>
           </div>
 
         </div>

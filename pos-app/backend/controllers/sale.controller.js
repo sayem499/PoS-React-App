@@ -47,8 +47,8 @@ const setSales = asyncHandler( async (req, res) => {
     saleLessAdjustment: req.body.saleLessAdjustment,
     saleVATAmount: req.body.saleVATAmount,
     saleDiscountAmount: req.body.saleDiscountAmount,
-    saleCustomerName: req.body.saleCustomername,
-    saleCustomerPhoneNumber: req.body.customerPhoneNumber,
+    saleCustomerName: req.body.saleCustomerName,
+    saleCustomerPhoneNumber: req.body.saleCustomerPhoneNumber,
     saleCashPaid: req.body.saleCashPaid,
     saleChange: req.body.saleChange,
   })

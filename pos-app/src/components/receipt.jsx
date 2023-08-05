@@ -79,6 +79,14 @@ export const Receipt = forwardRef(({ payload, closeReceipt}, ref) => {
             <span>Pay By Cash:</span>
             <span>{payload.salePayByCash}</span>
           </div>
+          <div className='receipt-sale-info'>
+            <span>Cash Paid:</span>
+            <span>{payload.saleCashPaid}</span>
+          </div>
+          <div className='receipt-sale-info'>
+            <span>Change:</span>
+            <span>{payload.saleChange}</span>
+          </div>
           <hr></hr>
           <div className='receipt-footer'>
             <span>Software Made by SaMBoY</span>
