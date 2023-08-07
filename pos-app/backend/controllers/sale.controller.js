@@ -4,7 +4,7 @@ const Sales = require('../model/sale.model')
 //@desc GET sales
 //@route GET/api/sales
 //@access Private
-const getSales = asyncHandler( async (res) => {
+const getSales = asyncHandler( async (req, res) => {
   const sales = await Sales.find()
   res.status(200).json(sales)
 })
@@ -31,6 +31,7 @@ const setSales = asyncHandler( async (req, res) => {
     res.status(400)
     throw new Error('Sale field error!')
   }
+
   const sale = await Sales.create({
     products: req.body.products,
     saleSubTotal: req.body.saleSubTotal,

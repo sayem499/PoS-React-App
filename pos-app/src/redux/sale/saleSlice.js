@@ -208,9 +208,8 @@ export const saleSlice = createSlice({
         },
 
         insertCustomerInfo:(state, action) => {
-            const { customerName, customerPhoneNumber } = action.payload
-            state.saleCustomerName = customerName
-            state.saleCustomerPhoneNumber = customerPhoneNumber
+            state.saleCustomerName = action.payload.customerName
+            state.saleCustomerPhoneNumber = action.payload.customerPhoneNumber
         },
 
         insertCashPaid: (state, action) => {

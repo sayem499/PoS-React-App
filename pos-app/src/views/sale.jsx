@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { allProducts, reset, updateProducts } from '../redux/products/productSlice';
 import { setSearchRef } from '../redux/search/searchSlice';
 import { useReactToPrint } from 'react-to-print';
-import { setCustomers } from '../redux/customer/customerSlice';
+import { getCustomers, setCustomers, updateCustomer } from '../redux/customer/customerSlice';
 import {
 
   resetSale,
@@ -46,6 +46,7 @@ function Sale() {
   const { user } = useSelector((state) => state.auth)
   const { products } = useSelector((state) => state.products)
   const { searchInput, searchRef } = useSelector((state) => state.search)
+  const { customers } = useSelector((state) => state.customerState)
   const { cartItems,
     saleSubTotal,
     saleVAT,
@@ -60,8 +61,6 @@ function Sale() {
     saleVATAmount,
     saleDiscountAmount,
     saleLessAdjustmentToggle,
-    saleCustomerName,
-    saleCustomerPhoneNumber,
     saleCashPaid,
     saleChange,
     isSaleLoading,
@@ -91,6 +90,7 @@ function Sale() {
 
       navigate('/login')
     }
+    dispatch(getCustomers())
     if (productTemp.length === 0 || products.length > productTemp || products.length < productTemp)
       dispatch(allProducts())
     dispatch(cartProductTotal())
@@ -129,7 +129,7 @@ function Sale() {
     dispatch(calculateChange())
 
     if (isSaleSuccess) {
-
+      console.log(printRef.current)
       handlePrint()
       cartItems?.forEach((cartProduct) => {
         products?.filter((product) => product._id === cartProduct._id).forEach((product) => {
@@ -162,7 +162,7 @@ function Sale() {
       })
       setTimeout(() => {
         toast.success("Sale Confirmed Successfully!!")
-        //dispatch(resetSale())
+        dispatch(resetSale())
       }, 2000)
 
     }
@@ -256,15 +256,26 @@ function Sale() {
   }
 
   const handleClearCart = () => {
+    setCustomerName('')
+    setCustomerPhoneNumber('')
     setCustomerCashPaid(0)
     dispatch(resetSale())
   }
 
 
   /* Function to handle confirm button click */
-  const handleConfirm = () => {
+  const handleConfirm = (e) => {
+    e.preventDefault()
+    let saleTime, saleDate, payload, products, customerPayload, saleCustomerName, saleCustomerPhoneNumber,flag = false, updateCustomerPayload, newCustomerPayload
+    customerPayload = {
+      customerName,
+      customerPhoneNumber,
+    }
 
-    let saleTime, saleDate, payload, products, customerPayload
+    saleCustomerName = customerName
+    saleCustomerPhoneNumber = customerPhoneNumber
+      dispatch(insertCustomerInfo(customerPayload))
+
     saleTime = new Date().toLocaleTimeString()
     saleDate = new Date().toLocaleDateString()
 
@@ -275,12 +286,51 @@ function Sale() {
 
     dispatch(insertTimeDate(payload))
 
-    customerPayload = {
-      customerName,
-      customerPhoneNumber,
-    }
+    if(customers.filter((customer) => customer.customePhoneNumbr === customerPhoneNumber)){
 
-    dispatch(insertCustomerInfo(customerPayload))
+      customers.filter((customer) => customer.customerPhoneNumber === customerPhoneNumber).map((customer) => {
+      
+        let customerID, customerName, customerPhoneNumber, customerTotalExpenditure = 0, customerTotalTrades = 0
+        customerID = customer._id
+        customerName = customer.customerName
+        customerPhoneNumber = customer.customerPhoneNumber
+        customerTotalExpenditure = customer.customerTotalExpenditure + saleTotal
+        customerTotalTrades = customer.customerTotalTrades + 1
+  
+        const updatedCustomerData ={
+          customerName,
+          customerPhoneNumber,
+          customerTotalExpenditure,
+          customerTotalTrades
+        }
+        
+        updateCustomerPayload = {
+          customerID,
+          updatedCustomerData,
+        }
+        flag = true
+  
+      })
+    } else {
+
+      if(customerPhoneNumber !== ''){
+        let customerTotalExpenditure = 0, customerTotalTrades = 0
+
+        customerTotalExpenditure = customerTotalExpenditure + saleTotal
+        customerTotalTrades = customerTotalTrades + 1
+
+        newCustomerPayload = {
+          customerName,
+          customerPhoneNumber,
+          customerTotalExpenditure,
+          customerTotalTrades
+        }
+        flag = false
+      }
+    }
+    
+     
+      
 
     products = [...cartItems]
     salePayload = {
@@ -315,7 +365,15 @@ function Sale() {
     }).then((result) => {
       /* Read more about isConfirmed, isDenied below */
       if (result.isConfirmed) {
+        handleSaleLoad()
         setIsReceiptOpen(true)
+        if(flag){
+          dispatch(updateCustomer(updateCustomerPayload))
+        }else {
+          dispatch(setCustomers(newCustomerPayload))
+        }
+        
+        
         dispatch(registerSale(salePayload))
         Swal.fire('Confirmed!', '', 'success')
 
@@ -331,7 +389,9 @@ function Sale() {
 
   /* Function to load all the sale data. */
   const handleSaleLoad = () => {
-    let saleTime, saleDate, payload, products, customerPayload
+    console.log(printRef.current)
+    let saleTime, saleDate, payload, products, customerPayload, saleCustomerName, saleCustomerPhoneNumber
+    
     saleTime = new Date().toLocaleTimeString()
     saleDate = new Date().toLocaleDateString()
 
@@ -348,6 +408,9 @@ function Sale() {
     }
 
     dispatch(insertCustomerInfo(customerPayload))
+
+    saleCustomerName = customerName
+    saleCustomerPhoneNumber = customerPhoneNumber
 
     products = [...cartItems]
     salePayload = {

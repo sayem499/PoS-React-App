@@ -11,13 +11,15 @@ import { useEffect, useState } from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import '../css/tablecustomer.css'
-import { getCustomers, deleteCustomer} from '../redux/customer/customerSlice';
+import { getCustomers, deleteCustomer, updateCustomer} from '../redux/customer/customerSlice';
 import UpdateCustomer from './updatecustomer';
+import { getSales } from '../redux/sale/saleSlice';
 
 
 export default function BasicTable() {
     const {searchInput} = useSelector( (state) => state.search)
     const {customers, isCustomerError, message} = useSelector((state) => state.customerState) 
+    const { sales } = useSelector( (state) => state.sale)
 
     
     const navigate = useNavigate()
@@ -37,6 +39,7 @@ export default function BasicTable() {
       }
 
       dispatch(getCustomers())
+      dispatch(getSales())
       
   
     }, [user, isCustomerError, message, navigate, dispatch])
@@ -56,6 +59,7 @@ export default function BasicTable() {
   
     return (
       <div className='table-container-customer'>
+       
         <TableContainer component={Paper}>
           <Table sx={{ minWidth: 650 }} aria-label="simple table">
             <TableHead>
