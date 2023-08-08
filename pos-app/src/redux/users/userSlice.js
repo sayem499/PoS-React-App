@@ -2,26 +2,50 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import userService from "./userService";
 
 const initialState = {
-    users:  [],
-    isError:  false,
-    isLoading:  false,
-    isSuccess:  false,
-    message:  '',
+    users: [],
+    isError: false,
+    isLoading: false,
+    isSuccess: false,
+    message: '',
 }
 
 //Get All Users
-export const allUsers = createAsyncThunk('users/allUsers', async (_,thunkAPI) => {
-    try{
+export const allUsers = createAsyncThunk('users/allUsers', async (_, thunkAPI) => {
+    try {
         return await userService.allUsers()
-    }catch (error){
+    } catch (error) {
         const message = (error.response && error.response.data && error.response.data.message)
-        || error.message || error.toString()
+            || error.message || error.toString()
 
         return thunkAPI.rejectWithValue(message)
     }
 })
 
-export const userSlice = createSlice ({
+export const updateUser = createAsyncThunk('users/updateUser', async (payload, thunkAPI) => {
+    try {
+        const { userID, updatedUserData } = payload
+        const token = thunkAPI.getState().auth.user.token
+        return await userService.updateUser(userID, updatedUserData, token)
+    } catch (error) {
+        const message = (error.response || error.response.data || error.response.data.message)
+        || error.message || error.toString()
+    }
+})
+
+export const deleteUser = createAsyncThunk('users/deleteUser', async (userID, thunkAPI) => {
+    try{
+        const token = thunkAPI.getState().auth.user.token
+        return await userService.deleteCustomer(userID, token)
+
+    }catch(error){
+        const message = (error.response && error.response.data && error.response.data.message)
+        || error.message || error.toString()
+
+        return thunkAPI.rejectWithValue(message)
+    } 
+})
+
+export const userSlice = createSlice({
     name: 'users',
     initialState,
     reducers: {

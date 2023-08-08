@@ -8,7 +8,7 @@ const Users = require('../model/user.model')
 //@acess Private
 const getUsers = asyncHandler( async (req, res) => {
     const users = await Users.find()
-    res.status(200).json({users})
+    res.status(200).json(users)
 })
 
 
@@ -79,6 +79,48 @@ const loginUser = asyncHandler( async (req, res) => {
     
 })
 
+//desc Update user
+//@route PUT/api/users/:id
+//@access Private
+const updateUser = asyncHandler( async(req, res) => {
+    const user = Users.findById(req.params.id)
+
+    if(!user){
+        res.status(400)
+        throw new Error('User not found!')
+    }
+    const {userName, userType, userPassword} = req.body
+
+    //Generate Salt & Password hash.
+    const salt = await bcrypt.genSalt(10)
+    const hashedPassword = await bcrypt.hash(userPassword, salt)
+    
+    const incryptedPasswordData = {
+        userName: userName,
+        userPassword: hashedPassword,
+        userType: userType,
+
+    }
+
+    const updatedUser = await Users.findByIdAndUpdate(req.params.id, incryptedPasswordData, {new: true})
+    res.status(200).json(updatedUser)
+})
+
+//desc Delete user
+//@route DELETE /api/users/:id
+//@access Private
+const deleteUser = asyncHandler( async(req, res) => {
+    const user = Users.findById(req.params.id)
+    if(!user){
+        res.status(400)
+        throw new Error('User not found!')
+    }
+
+    await user.deleteOne()
+    res.status(200).json({message: `Deleted user ${req.params.id}`})
+
+})
+
 //@desc Get current user
 //@route Get /api/users/me
 //@access Private
@@ -104,4 +146,6 @@ module.exports = {
     registerUser,
     loginUser,
     getCurrentUser,
+    updateUser,
+    deleteUser,
 }
