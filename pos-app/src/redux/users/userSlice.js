@@ -49,7 +49,7 @@ export const userSlice = createSlice({
     name: 'users',
     initialState,
     reducers: {
-        reset: (state) => initialState
+        reset: () => initialState
     },
 
     extraReducers: (builder) => {
@@ -63,6 +63,38 @@ export const userSlice = createSlice({
                 state.users = action.payload
             })
             .addCase(allUsers.rejected, (state, action) => {
+                state.isLoading = false
+                state.isError = true
+                state.message = action.payload
+            })
+            .addCase(updateUser.pending, (state) => {
+                state.isLoading = true
+            })
+            .addCase(updateUser.fulfilled, (state, action) => {
+                state.isLoading = false
+                state.isSuccess = true
+                state.users.map((user) => {
+                    if(user._id === action.payload._id){
+                        user.userName = action.payload.userName
+                        user.userType = action.payload.userType
+                        user.userPassword = action.payload.userPassword
+                    }
+                }) 
+            })
+            .addCase(updateUser.rejected, (state, action) => {
+                state.isLoading = false
+                state.isError = true
+                state.message = action.payload
+            })
+            .addCase(deleteUser.pending, (state, action) => {
+                state.isLoading = true
+            })
+            .addCase(deleteUser.fulfilled, (state, action) => {
+                state.isLoading = false
+                state.isSuccess = true
+                state.users = state.users.filter((person) => person._id !== action.payload._id)
+            })
+            .addCase(deleteUser.rejected, (state, action) => {
                 state.isLoading = false
                 state.isError = true
                 state.message = action.payload

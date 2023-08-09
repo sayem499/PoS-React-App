@@ -1,12 +1,12 @@
 import '../css/users.css'
-import { DataGrid } from '@mui/x-data-grid';
 import Registeruser  from '../components/registeruser.jsx'
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { allUsers, reset } from '../redux/users/userSlice';
 import Loading from '../components/loading';
 import { toast } from 'react-toastify'
+import BasicTable from '../components/tableuser'
+import { allUsers } from '../redux/users/userSlice';
 
 function Users(){
     const dispatch = useDispatch()
@@ -25,22 +25,19 @@ function Users(){
         navigate('/login')
       }
 
+      
       dispatch(allUsers())
       
-
-      return() => {
-        dispatch(reset())
-      }
 
       
 
     }, [user, isError, message, navigate, dispatch])
 
-    const columns = [
+    /* const columns = [
         { field: 'id', headerName: 'ID', width: 70 },
         { field: 'userName', headerName: 'Username', width: 130 },
         { field: 'userType', headerName: 'User Type', width: 130 },
-        /* {
+        {
           field: 'fullName',
           headerName: 'Full name',
           description: 'This column has a value getter and is not sortable.',
@@ -48,7 +45,7 @@ function Users(){
           width: 160,
           valueGetter: (params) =>
             `${params.row.firstName || ''} ${params.row.lastName || ''}`, 
-        },*/
+        },
       ];
 
   
@@ -61,7 +58,7 @@ function Users(){
           return { ...values, id: i}
           
         })
-      }
+      } */
 
       const handleClick = (e) => {
         e.preventDefault()
@@ -82,13 +79,7 @@ function Users(){
         <div className='activeuser'><span >Active Users</span></div>
         
         <div className='usertable'>
-          {users.users ? <DataGrid
-            rows={rows}
-            columns={columns}
-            pageSize={5}
-            rowsPerPageOptions={[5]}
-            checkboxSelection
-          /> : <Loading/>}
+          {users && <BasicTable/>}
         </div>
       </div>
     )

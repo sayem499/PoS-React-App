@@ -37,7 +37,6 @@ function Registeruser({closeAddUser}) {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    console.log(userName + "\n" + userPassword + "\n" + passWord2)
     if (userName === '' || userPassword === '' || passWord2 === '') {
       toast.error('Please fill the required fields!')
     } else if (userType !== "admin" && userType !== "regular") {

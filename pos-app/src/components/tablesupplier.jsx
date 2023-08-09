@@ -200,15 +200,14 @@ export default function BasicTable() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {updateProductID && rows?.filter((row) => updateProductID === row._id).map((row, key) => {
+              {updateProductID && rows?.filter((row) => updateProductID === row._id).map((row) => {
                 return (
                   <>
                     {row.supplierProducts.map((product, key) => {
                       return (
                         <TableRow
                           key={key}
-                          sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                        >
+                          sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                           <TableCell component="th" scope="row">
                             {product.productTitle}
                           </TableCell>
