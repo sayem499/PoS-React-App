@@ -95,14 +95,14 @@ const updateUser = asyncHandler( async(req, res) => {
     const salt = await bcrypt.genSalt(10)
     const hashedPassword = await bcrypt.hash(userPassword, salt)
     
-    const incryptedPasswordData = {
+    const encryptedPasswordData = {
         userName: userName,
         userPassword: hashedPassword,
         userType: userType,
 
     }
 
-    const updatedUser = await Users.findByIdAndUpdate(req.params.id, incryptedPasswordData, {new: true})
+    const updatedUser = await Users.findByIdAndUpdate(req.params.id, encryptedPasswordData, {new: true})
     res.status(200).json(updatedUser)
 })
 

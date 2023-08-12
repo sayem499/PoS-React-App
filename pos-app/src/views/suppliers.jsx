@@ -79,8 +79,8 @@ function Suppliers() {
   return (
     <div className='supplier-container'>
       <div className='button-container-supplier'>
-        <button className='add-supplier-btn' onClick={handleButtonClick}>Add Supplier</button>
-        <button className='push-supplier-btn' onClick={pushSupplierProduct}>Push Products</button>
+        { user.userType === 'admin' && <button className='add-supplier-btn' onClick={handleButtonClick}>Add Supplier</button>}
+        { user.userType === 'admin' && <button className='push-supplier-btn' onClick={pushSupplierProduct}>Push Products</button>}
       </div>
 
       {

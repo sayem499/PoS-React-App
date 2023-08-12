@@ -22,7 +22,7 @@ import { toast } from 'react-toastify'
 
 export default function BasicTable() {
   const { searchInput } = useSelector((state) => state.search)
-  const { suppliers,isSupplierSuccess, isSupplierError, message } = useSelector((state) => state.supplierState)
+  const { suppliers, isSupplierSuccess, isSupplierError, message } = useSelector((state) => state.supplierState)
 
 
   const navigate = useNavigate()
@@ -46,7 +46,7 @@ export default function BasicTable() {
       console.log(message)
     }
 
-    if(rows.length === 0 || rows.length > suppliers || rows.length < suppliers)
+    if (rows.length === 0 || rows.length > suppliers || rows.length < suppliers)
       dispatch(getSupplier())
 
 
@@ -107,7 +107,7 @@ export default function BasicTable() {
   }
 
   const handleName = (name) => {
-    supplierNameForProductTable.current = name 
+    supplierNameForProductTable.current = name
   }
 
   const handleAddSupplierProduct = () => {
@@ -145,10 +145,10 @@ export default function BasicTable() {
                   <TableCell align="left">{row.supplierAddress}</TableCell>
                   <TableCell align="left">{row.supplierEmail}</TableCell>
                   <TableCell align="left">
-                    <InventoryIcon onClick={() => {handleUpdateProduct(row._id);handleName(row.supplierName);handleSupplierID(row._id);}} />
-                    <EditIcon onClick={() => { handleClick(); handleUpdate(row._id); }} />
-                    <DeleteIcon onClick={() => { dispatch(deleteSupplier(row._id)); dispatch(getSupplier()); }} />
-                    {isUpdateSupplierOpen && updateID === row._id && <UpdateSupplier row={row} closeUpdateSupplier={() => { setIsUpdateSupplierOpen(false); }} />}
+                    {user.userType === 'admin' && <InventoryIcon onClick={() => { handleUpdateProduct(row._id); handleName(row.supplierName); handleSupplierID(row._id); }} />}
+                    {user.userType === 'admin' && <EditIcon onClick={() => { handleClick(); handleUpdate(row._id); }} />}
+                    {user.userType === 'admin' && <DeleteIcon onClick={() => { dispatch(deleteSupplier(row._id)); dispatch(getSupplier()); }} />}
+                    {isUpdateSupplierOpen && updateID === row._id && user.userType === 'admin' && <UpdateSupplier row={row} closeUpdateSupplier={() => { setIsUpdateSupplierOpen(false); }} />}
                   </TableCell>
                 </TableRow>
               )) : rows.filter((row) => row.supplierName.toLowerCase().includes(searchInput.toLowerCase())).map((row, key) => (
@@ -163,10 +163,10 @@ export default function BasicTable() {
                   <TableCell align="left">{row.supplierAddress}</TableCell>
                   <TableCell align="left">{row.supplierEmail}</TableCell>
                   <TableCell align="left">
-                    <InventoryIcon onClick={() => {handleUpdateProduct(row._id); handleName(row.supplierName);handleSupplierID(row._id);} } />
-                    <EditIcon onClick={() => { handleClick(); handleUpdate(row._id); }} />
-                    <DeleteIcon onClick={() => { dispatch(deleteSupplier(row._id)); dispatch(getSupplier()); }} />
-                    {isUpdateSupplierOpen && updateID === row._id && <UpdateSupplier row={row} closeUpdateSupplier={() => { setIsUpdateSupplierOpen(false); }} />}
+                    {user.userType === 'admin' && <InventoryIcon onClick={() => { handleUpdateProduct(row._id); handleName(row.supplierName); handleSupplierID(row._id); }} />}
+                    {user.userType === 'admin' && <EditIcon onClick={() => { handleClick(); handleUpdate(row._id); }} />}
+                    {user.userType === 'admin' && <DeleteIcon onClick={() => { dispatch(deleteSupplier(row._id)); dispatch(getSupplier()); }} />}
+                    {isUpdateSupplierOpen && updateID === row._id && user.userType === 'admin' && <UpdateSupplier row={row} closeUpdateSupplier={() => { setIsUpdateSupplierOpen(false); }} />}
                   </TableCell>
                 </TableRow>
               ))}
@@ -174,62 +174,66 @@ export default function BasicTable() {
           </Table>
         </TableContainer>
       </div>
-
-
       <div className='supplier-product-table-container'>
+        { user.userType === 'admin' &&
         <div className='supplier-product-table-option'>
-        <section>
-          <button className='add-supplier-product-button' onClick={handleAddSupplierProduct}>Add Product</button>
-          {isAddSupplierProductOpen &&  supplierID.current && <AddSupplierProduct id={supplierID.current} closeAddSupplierProduct={() => {setIsAddSupplierProductOpen(false)}}/>}
-        </section>
+          <section>
+            <button className='add-supplier-product-button' onClick={handleAddSupplierProduct}>Add Product</button>
+            {isAddSupplierProductOpen && supplierID.current && <AddSupplierProduct id={supplierID.current} closeAddSupplierProduct={() => { setIsAddSupplierProductOpen(false) }} />}
+          </section>
         </div>
+        }
+       { user.userType === 'admin' &&
         <section>
           <span><h4>Product Table of {supplierNameForProductTable.current}</h4></span>
         </section>
-        <div className='supplier-product-table'> 
-        <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 650 }} aria-label="simple table">
-            <TableHead>
-              <TableRow>
-                <TableCell align="left">Product Title</TableCell>
-                <TableCell align="left">Product Brand</TableCell>
-                <TableCell align="left">Quantity</TableCell>
-                <TableCell align="left">Category</TableCell>
-                <TableCell align="left">Unit Price (Tk.)</TableCell>
-                <TableCell align="left">Actions</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {updateProductID && rows?.filter((row) => updateProductID === row._id).map((row) => {
-                return (
-                  <>
-                    {row.supplierProducts.map((product, key) => {
-                      return (
-                        <TableRow
-                          key={key}
-                          sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                          <TableCell component="th" scope="row">
-                            {product.productTitle}
-                          </TableCell>
-                          <TableCell align="left">{product.productBrand}</TableCell>
-                          <TableCell align="left">{product.productQuantity}</TableCell>
-                          <TableCell align="left">{product.productType}</TableCell>
-                          <TableCell align="left">{product.productUnitPrice}</TableCell>
-                          <TableCell align="left">
-                            <EditIcon onClick={() => { handleUpdateSupplierProductClick(); }} />
-                            <DeleteIcon onClick={(e) => { handleDelete(key, row, e) }} />
-                            {isUpdateSupplierProductOpen && <UpdateSupplierProduct i={key} product={product} row={row} closeUpdateSupplierProduct={() => { setIsUpdateSupplierProductOpen(false); }} />}
-                          </TableCell>
-                        </TableRow>
-                      )
-                    })}
-                  </>
-                )
-              })}
-            </TableBody>
-          </Table>
-        </TableContainer>
+      } 
+      { user.userType === 'admin' &&
+        <div className='supplier-product-table'>
+          <TableContainer component={Paper}>
+            <Table sx={{ minWidth: 650 }} aria-label="simple table">
+              <TableHead>
+                <TableRow>
+                  <TableCell align="left">Product Title</TableCell>
+                  <TableCell align="left">Product Brand</TableCell>
+                  <TableCell align="left">Quantity</TableCell>
+                  <TableCell align="left">Category</TableCell>
+                  <TableCell align="left">Unit Price (Tk.)</TableCell>
+                  <TableCell align="left">Actions</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {updateProductID && rows?.filter((row) => updateProductID === row._id).map((row) => {
+                  return (
+                    <>
+                      {row.supplierProducts.map((product, key) => {
+                        return (
+                          <TableRow
+                            key={key}
+                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                            <TableCell component="th" scope="row">
+                              {product.productTitle}
+                            </TableCell>
+                            <TableCell align="left">{product.productBrand}</TableCell>
+                            <TableCell align="left">{product.productQuantity}</TableCell>
+                            <TableCell align="left">{product.productType}</TableCell>
+                            <TableCell align="left">{product.productUnitPrice}</TableCell>
+                            <TableCell align="left">
+                              {user.userType === 'admin' && <EditIcon onClick={() => { handleUpdateSupplierProductClick(); }} />}
+                              {user.userType === 'admin' && <DeleteIcon onClick={(e) => { handleDelete(key, row, e) }} />}
+                              {isUpdateSupplierProductOpen && user.userType === 'admin' && <UpdateSupplierProduct i={key} product={product} row={row} closeUpdateSupplierProduct={() => { setIsUpdateSupplierProductOpen(false); }} />}
+                            </TableCell>
+                          </TableRow>
+                        )
+                      })}
+                    </>
+                  )
+                })}
+              </TableBody>
+            </Table>
+          </TableContainer>
         </div>
+        }
       </div>
     </div>
   );

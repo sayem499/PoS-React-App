@@ -81,7 +81,7 @@ export default function BasicTable() {
                 <TableCell align="right">{row.productQuantity}</TableCell>
                 <TableCell align="right">{row.productType}</TableCell>
                 <TableCell align="right">{row.productUnitPrice}</TableCell>
-                <TableCell align="right"> <EditIcon onClick={() => { handleClick(); handleUpdate(row._id); }} /> <DeleteIcon onClick={() => { dispatch(deleteProduct(row._id)); dispatch(allProducts()); }} />
+                <TableCell align="right"> {user.userType === 'admin' && <EditIcon onClick={() => { handleClick(); handleUpdate(row._id); }} />} {user.userType === 'admin' && <DeleteIcon onClick={() => { dispatch(deleteProduct(row._id)); dispatch(allProducts()); }} />}
                   {isUpdateProductOpen && updateID === row._id && <Updateproduct row={row} closeUpdateProduct={() => { setIsUpdateProductOpen(false); }} />}
                 </TableCell>
               </TableRow>
@@ -97,7 +97,7 @@ export default function BasicTable() {
                 <TableCell align="right">{row.productQuantity}</TableCell>
                 <TableCell align="right">{row.productType}</TableCell>
                 <TableCell align="right">{row.productUnitPrice}</TableCell>
-                <TableCell align="right"> <EditIcon onClick={() => { handleClick(); handleUpdate(row._id); }} /> <DeleteIcon onClick={() => { dispatch(deleteProduct(row._id)); dispatch(allProducts()); }} />
+                <TableCell align="right"> {user.userType === 'admin' && <EditIcon onClick={() => { handleClick(); handleUpdate(row._id); }} />} {user.userType === 'admin' && <DeleteIcon onClick={() => { dispatch(deleteProduct(row._id)); dispatch(allProducts()); }} />}
                   {isUpdateProductOpen && updateID === row._id && <Updateproduct row={row} closeUpdateProduct={() => { setIsUpdateProductOpen(false); }} />}
                 </TableCell>
               </TableRow>

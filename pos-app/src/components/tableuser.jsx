@@ -81,7 +81,7 @@ function BasicTable() {
                                 </TableCell>
                                 <TableCell align="right">{row.userType}</TableCell>
                                 <TableCell align="right"> <EditIcon onClick={() => { handleClick(); handleUpdate(row._id); }} /> <DeleteIcon onClick={() => { dispatch(deleteUser(row._id)); dispatch(allUsers()); }} />
-                                    {isUpdateUserOpen && updateID === row._id && <Updateuser row={row} closeUpdateUser={() => { setIsUpdateUserOpen(false); }} />}
+                                    {isUpdateUserOpen && updateID === row._id && user.userType === 'admin' && <Updateuser row={row} closeUpdateUser={() => { setIsUpdateUserOpen(false); }} />}
                                 </TableCell>
                             </TableRow>
                         )) : rows.filter((row) => row.userName.toLowerCase().includes(searchInput.toLowerCase())).map((row, key) => (
@@ -94,7 +94,7 @@ function BasicTable() {
                                 </TableCell>
                                 <TableCell align="right">{row.userType}</TableCell>
                                 <TableCell align="right"> <EditIcon onClick={() => { handleClick(); handleUpdate(row._id); }} /> <DeleteIcon onClick={() => { dispatch(deleteUser(row._id)); dispatch(allUsers()); }} />
-                                    {isUpdateUserOpen && updateID === row._id && <Updateuser row={row} closeUpdateCustomer={() => { setIsUpdateUserOpen(false); }} />}
+                                    {isUpdateUserOpen && updateID === row._id && user.userType === 'admin' && <Updateuser row={row} closeUpdateCustomer={() => { setIsUpdateUserOpen(false); }} />}
                                 </TableCell>
                             </TableRow>
                         ))}

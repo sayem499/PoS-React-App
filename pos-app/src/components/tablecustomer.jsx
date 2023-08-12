@@ -83,7 +83,7 @@ export default function BasicTable() {
                   <TableCell align="right">{row.customerPhoneNumber}</TableCell>
                   <TableCell align="right">{row.customerTotalExpenditure}</TableCell>
                   <TableCell align="right">{row.customerTotalTrades}</TableCell>
-                  <TableCell align="right"> <EditIcon onClick={() => { handleClick(); handleUpdate(row._id); }} /> <DeleteIcon onClick={() => { dispatch(deleteCustomer(row._id)); dispatch(getCustomers()); }} />
+                  <TableCell align="right"> {user.userType === 'admin' && <EditIcon onClick={() => { handleClick(); handleUpdate(row._id); }} />} {user.userType === 'admin' && <DeleteIcon onClick={() => { dispatch(deleteCustomer(row._id)); dispatch(getCustomers()); }} />}
                     {isUpdateCustomerOpen && updateID === row._id && <UpdateCustomer row={row} closeUpdateCustomer={() => { setIsUpdateCustomerOpen(false); }} />}
                   </TableCell>
                 </TableRow>
@@ -98,7 +98,7 @@ export default function BasicTable() {
                   <TableCell align="right">{row.customerPhoneNumber}</TableCell>
                   <TableCell align="right">{row.customerTotalExpenditure}</TableCell>
                   <TableCell align="right">{row.customerToalTrades}</TableCell>
-                  <TableCell align="right"> <EditIcon onClick={() => { handleClick(); handleUpdate(row._id); }} /> <DeleteIcon onClick={() => { dispatch(deleteCustomer(row._id)); dispatch(getCustomers()); }} />
+                  <TableCell align="right"> {user.userType === 'admin' && <EditIcon onClick={() => { handleClick(); handleUpdate(row._id); }} />} {user.userType === 'admin' && <DeleteIcon onClick={() => { dispatch(deleteCustomer(row._id)); dispatch(getCustomers()); }} />}
                     {isUpdateCustomerOpen && updateID === row._id && <UpdateCustomer row={row} closeUpdateCustomer ={() => { setIsUpdateCustomerOpen(false); }} />}
                   </TableCell>
                 </TableRow>
