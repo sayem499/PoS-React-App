@@ -1,0 +1,90 @@
+.dashboard-container {
+    height:100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.top-display-container {
+    height: 20%;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    /* background-color: aqua; */
+}
+
+.display-total-sale {
+    height: 70%;
+    width: 20%;
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+    justify-content:flex-end;
+    background-color: rgb(232, 41, 41);
+    margin: 10px;
+}
+.display-total-sale span {
+    margin-left: 20px;
+    margin-bottom: 20px;
+}
+
+
+.display-avarage-sale {
+    height: 70%;
+    width: 20%;
+    display:flex;
+    flex-direction:column;
+    align-items: flex-start ;
+    justify-content:flex-end;
+    background-color: rgb(138, 46, 244);
+    margin: 10px;
+}
+.display-avarage-sale span {
+    margin-left: 20px;
+    margin-bottom: 20px;
+}
+
+
+.display-gross-profit {
+    height: 70%;
+    width: 20%;
+    display:flex;
+    flex-direction:column;
+    align-items: flex-start ;
+    justify-content:flex-end;
+    background-color: rgb(52, 118, 240);
+    margin: 10px;
+}
+.display-gross-profit span {
+    margin-left: 20px;
+    margin-bottom: 20px;
+}
+
+
+.display-gross-margin {
+    height: 70%;
+    width: 20%;
+    display:flex;
+    flex-direction:column;
+    align-items: flex-start ;
+    justify-content:flex-end;
+    background-color: rgb(9, 200, 159);
+    margin: 10px;
+}
+.display-gross-margin span {
+    margin-left: 20px;
+    margin-bottom: 20px;
+}
+
+
+.display-text {
+    color: white;
+    font-size: large;
+
+}
+
+.display-value {
+    color: white;
+    font-size: x-large;
+}

@@ -1,0 +1,36 @@
+.productpage {
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.add-product-btn {
+    font-size: medium;
+    font-weight: bold;
+    background-color: #1E90FF;
+    width: 100px;
+    height: 40px;
+    text-align: center;
+    text-decoration: none;
+    text-transform: capitalize;
+    border: none;
+    color:white;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.add-product-btn:hover, .add-product-btn:focus {
+    font-size: medium;
+    font-weight: bold;
+    background-color: #1E90FF;
+    width: 100px;
+    height: 40px;
+    text-align: center;
+    text-decoration: none;
+    border: none;
+    color:white;
+    border-radius: 5px;
+    cursor: pointer;
+    box-shadow: 0 0 6px cornflowerblue;
+}

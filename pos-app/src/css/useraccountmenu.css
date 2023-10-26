@@ -1,0 +1,95 @@
+.Useraccountmenu {
+     position: absolute;
+     top: 85px;
+     right: 30px;
+     background-color: #fff;
+     border-radius: 5px;
+     padding: 10px 20px;
+     border: 1px solid #0f1c33;
+     height: fit-content;
+
+    }
+
+.Useraccountmenu::before {
+    content: '';
+    position: absolute;
+    top: -11px;
+    right: 15px;
+    height: 20px;
+    width: 20px;
+    background: #fff;
+    border-left: 1px solid #0f1c33;
+    border-top: 1px solid #0f1c33;
+    transform: rotate(45deg);
+
+
+
+
+}
+.Useraccountmenu.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    transition: 0.2 ease;
+
+}
+
+.Useraccountmenu ul {
+    list-style: none;
+    padding: 0;
+    
+
+}
+
+.Useraccountmenu li {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: 30px;
+
+    
+}
+
+.Useraccountmenu .icon1{
+    display: grid;
+    padding-right: 10px;
+    place-items: center;
+}
+
+.Useraccountmenu .icon2{
+    display: grid;
+    padding-right: 10px;
+    place-items: center;
+}
+
+
+.Useraccountmenu .title {
+    display: flex;
+    align-items: center;
+}
+.Useraccountmenu.inactive {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-20px);
+    transition: 0.2 ease;
+
+}
+
+.Userimage {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.Userid {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10px;
+
+}
+
+.Userimage img{
+    height: 40px;
+    width: 40px;
+}

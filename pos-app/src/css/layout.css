@@ -1,0 +1,119 @@
+.Wrapper {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  display: flex;
+}
+
+.Sidebar {
+    height: 100%;
+    width: 275px;
+    background-color: #0f1c33;
+    float:left;
+    margin-top: 0px;
+}
+
+.SidebarList {
+   height:auto;
+   padding:0;
+   width:100%;
+   
+   
+
+}
+
+
+
+.SidebarList .row{
+   height:70px;
+   list-style-type: none;
+   margin:0%;
+   display:flex;
+   flex-direction: row;
+   color:white;
+   justify-content: center;
+   align-items: center;
+   transition :0.2s cubic-bezier(0.6, -0.28, 0.735, 0.045);
+   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; 
+   border-right: 2px solid transparent;
+}
+
+.SidebarList #active {
+    background-color:#010920 ;
+    border-right: 2px solid #c2bebeb8;
+}
+
+.SidebarList .row:hover {
+    border-right: 2px solid white;
+    transition :0.2s cubic-bezier(0.6, -0.28, 0.735, 0.045);
+    cursor: pointer; 
+    background-color:#686666 ;
+    
+}
+
+
+
+.row #icon{
+    flex: 30%;
+    display: grid;
+    place-items: center;
+}
+
+.row #title{
+    flex: 70%;
+}
+
+.Outlet{
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+}
+
+.Outlet-Inner {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    margin-top: 10px;
+}
+
+.Outlet-Inner img{
+    width: 100%;
+    height: fit-content;
+
+}
+
+.top-section {
+    height: 100px;
+    display: flex;
+    flex-direction: row;
+    padding: 0;
+    margin: 2px;
+    justify-content: center;
+    align-items: center;
+    border-bottom: 1px solid white;
+    
+}
+.logo {
+    display: grid;
+    color: white;
+    place-items: center;
+    flex: 80%;
+}
+
+.menu-icon {
+    display: grid;
+    color: white;
+    place-items: center;
+    flex:auto;
+}
+
+.row.visible {
+    opacity: 1;
+    visibility: visible;
+} 
+
+.row.invisible {
+    opacity: 0;
+    visibility: hidden;
+} 
