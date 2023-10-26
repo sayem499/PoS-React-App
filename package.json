@@ -21,7 +21,6 @@
     "react-dom": "^18.2.0",
     "react-loader-spinner": "^5.3.4",
     "react-redux": "^8.0.5",
-    "react-router-dom": "^6.8.1",
     "react-scripts": "5.0.1",
     "react-to-print": "^2.14.13",
     "react-toastify": "^9.1.2",
@@ -64,6 +63,7 @@
   },
   "devDependencies": {
     "concurrently": "^8.2.2",
-    "nodemon": "^3.0.1"
+    "nodemon": "^3.0.1",
+    "react-router-dom": "^6.8.1"
   }
 }
