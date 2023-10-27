@@ -209,7 +209,7 @@ function Sale() {
 
     e.preventDefault()
     let payload, productTitle, productQuantity, productUnitPrice, productUnitCost, productTotal, _id
-    if (cartItems?.some((cart) => cart._id === id && cartItems !== [])) {
+    if (cartItems?.some((cart) => cart._id === id && cartItems.length > 0 )) {
       cartItems?.filter((cart) => cart._id === id).forEach((cart) => {
         products.filter((product) => product._id === id).map((product) => {
           if (product.productQuantity - cart.productQuantity >= 0) {
@@ -484,7 +484,7 @@ function Sale() {
         isReceiptOpen && <Receipt payload={salePayloadState} closeReceipt={() => { setIsReceiptOpen(false) }} ref={printRef} />}
       {
         productBarcode && productTemp.filter((product) => product.productBarcode === productBarcode).forEach((product) => {
-          if (cartItems?.some((cart) => cart._id === product._id && cartItems !== [])) {
+          if (cartItems?.some((cart) => cart._id === product._id && cartItems.length > 0 )) {
             cartItems?.filter((cart) => cart._id === product._id).forEach((cart) => {
               dispatch(incrementCartItem(product._id))
               setProductBarcode('')

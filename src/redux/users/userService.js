@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 
-const API_URL_USERS = '/api/users/'
+const API_URL_USERS = 'https://pos-app-backend.onrender.com/api/users/'
 
 
 //Get All Users

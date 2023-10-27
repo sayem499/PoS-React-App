@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const API_URL = '/api/products/'
+const API_URL = 'https://pos-app-backend.onrender.com/api/products/'
 
 
 const allProducts = async (token) => {

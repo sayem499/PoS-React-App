@@ -3,12 +3,19 @@ import '../css/dashboard.css'
 import { getSales, resetSale } from '../redux/sale/saleSlice'
 import { useSelector, useDispatch } from 'react-redux'
 import { calculateTotalSale, calculateAverageSale, calculateGrossProfit, calculateGrossMargin } from '../redux/sale/saleSlice'
+import { useNavigate } from 'react-router-dom'
 
 
 function Dashboard(){
+const {user} = useSelector(state => state.auth)   
 const {sales, totalSale, averageSale, grossProfit, grossMargin, isFetchSaleSuccess} = useSelector((state) => state.sale)
 const dispatch = useDispatch()
+const navigate = useNavigate()
   useEffect(()=>{
+
+    if(!user){
+      navigate('/login')
+    }
 
     if(sales.length === 0){
       dispatch(getSales())

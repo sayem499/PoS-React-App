@@ -1,7 +1,7 @@
 import axios from 'axios'
 
-const API_URL_REGISTER = '/api/users/register'
-const API_URL_LOGIN = '/api/users/login'
+const API_URL_REGISTER = 'https://pos-app-backend.onrender.com/api/users/register'
+const API_URL_LOGIN = 'https://pos-app-backend.onrender.com/api/users/login'
 
 
 //Login User
