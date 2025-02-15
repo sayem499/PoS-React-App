@@ -556,35 +556,39 @@ function Sale() {
           <hr></hr>
           <div className='payment-selector-btn'>
             <div className='cash-div'>
-              <input
+
+              <div className={`logo-tile logo-tile-hover ${paymentMethod === "Cash" ? "payment-checked"  : "" }`}
+              onClick={(e) => setPaymentMethod("Cash")}>
+{/*               <input
                 id='cash'
                 type='radio'
                 name='payment-method'
                 value='Cash'
                 defaultChecked={paymentMethod}
                 onClick={(e) => setPaymentMethod(e.target.value)}
-              ></input>
-              <div className='logo-tile'>
-                <MoneyIcon className='btn-icon' />
-                <label for='cash'>
+              ></input> */}
+                <MoneyIcon className={`${paymentMethod === "Cash" ? "btn-icon-checked" : "btn-icon-unchecked" }`} />
+                <span className={` ${paymentMethod === "Cash" ? "checked-span"  : "unchecked-span" }`}>
                   Cash
-                </label>
+                </span>
               </div>
             </div>
 
             <div className='credit-div'>
-              <input
+
+              <div className={`logo-tile logo-tile-hover ${paymentMethod === "Credit" ? "payment-checked"  : "" }`}
+              onClick={(e) => setPaymentMethod("Credit")}>
+{/*               <input
                 id='credit'
                 type='radio'
                 name='payment-method'
                 value='Credit'
                 onClick={(e) => setPaymentMethod(e.target.value)}
-              ></input>
-              <div className='logo-tile'>
-                <CreditCardIcon className='btn-icon' />
-                <label for='credit'>
+              ></input> */}
+                <CreditCardIcon className={`${paymentMethod === "Credit" ? "btn-icon-checked" : "btn-icon-unchecked" }`} />
+                <span className={` ${paymentMethod === "Credit" ? "checked-span"  : "unchecked-span" }`}>
                   Credit
-                </label>
+                </span>
               </div>
 
             </div>

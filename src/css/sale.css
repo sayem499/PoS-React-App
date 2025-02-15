@@ -121,7 +121,7 @@
     
 }
 
-.payment-selector-btn input {
+/* .payment-selector-btn input {
     margin: 0px 5px 0px 5px;
     position: absolute;
     width: 10%;
@@ -129,7 +129,7 @@
     cursor:pointer;
     z-index: 100;
     opacity: 0;
-}
+} */
 
 .cash-div {
     width:50%;
@@ -162,33 +162,41 @@
     transition:all 300ms ease;
 }
 
-.logo-tile .btn-icon {
+.btn-icon-unchecked {
     color:cornflowerblue;
-    font-size: 2rem;;
+    font-size: 2rem;
 }
 
-.logo-tile label {
+.btn-icon-checked {
+    color:white;
+    font-size: 2rem;
+}
+
+.unchecked-span {
     color:cornflowerblue;
     font-size: 0.8rem;
     font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 1px;;
+    letter-spacing: 1px;
 
 }
 
-input:checked + .logo-tile{
+.payment-checked {
     background-color: cornflowerblue;
     box-shadow: 0 0 6px cornflowerblue;
 
 }
 
-input:hover + .logo-tile {
+.logo-tile-hover:hover {
     box-shadow: 0 0 6px cornflowerblue; 
 }
 
-input:checked + .logo-tile .btn-icon,
-input:checked + .logo-tile label {
+.checked-span {
     color: white;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 hr {
