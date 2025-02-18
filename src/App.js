@@ -29,8 +29,6 @@ function App() {
                 <Route path="/profile" element={<Profile/>}></Route>
                 <Route path="/users" element={<Users/>}></Route>
             </Route>
-
-
         </Routes>
        </BrowserRouter>
        <ToastContainer/>

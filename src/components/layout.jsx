@@ -22,6 +22,8 @@ function Layout (){
     useEffect(() => {
         if(!user){
              navigate("/login")
+        }else{
+            navigate("/dashboard")
         }
     }, [user, navigate])
     return (
