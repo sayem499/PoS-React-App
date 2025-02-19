@@ -21,7 +21,7 @@ form{
     justify-content: center;
 }
 
-label{
+.login-label{
     width: 28%;
     position: relative;
     top: 10px;
@@ -33,7 +33,7 @@ label{
     font-weight: 500;
 }
 
-input {
+.login-input {
     margin: 2px 0 2px 0; /* Fixed syntax issue */
     padding: 7px 5px;
     border-width: 2px;
@@ -43,14 +43,14 @@ input {
     transition: box-shadow 0.2s ease-in-out, border-color 0.2s ease-in-out;
 }
 
-input::placeholder {
+.login-input::placeholder {
     font-size: 12px; /* Smaller placeholder text */
     color: #a0a0a0; /* Light gray color */
     opacity: 0.8; /* Slightly transparent */
 }
 
 
-input:focus {
+.login-input:focus {
     border-color: #3b82f6; /* Soft blue border */
     box-shadow: 0 0 5px rgba(59, 130, 246, 0.5); /* Thin drop shadow */
 }

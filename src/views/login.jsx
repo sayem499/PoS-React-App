@@ -25,7 +25,7 @@ function Login() {
   
   useEffect(() => {
     if(isSuccess || user){
-      navigate("/")
+      navigate("/dashboard")
     }
 
 
@@ -72,14 +72,14 @@ function Login() {
       <form onSubmit={handleSubmit}>
         <img src={PosLogo} alt='PoS logo' className='Poslogo'></img>
         <section className = 'login-title'><h3>Login</h3></section>
-        <label htmlform="Username">Username </label>
-        <input value={userName} onChange={(e) => setUserName(e.target.value)} type="username" placeholder="Username" id="Username" name="Username"></input>
-        <label htmlform="Password">Password </label>
-        <input value={userPassword} onChange={(e) => setPassWord(e.target.value)} type={visibility ? 'text' : 'password'} placeholder="Password" id="Password" name="Password"></input>
+        <label className='login-label' htmlform="Username">Username </label>
+        <input className='login-input' value={userName} onChange={(e) => setUserName(e.target.value)} type="username" placeholder="Username" id="Username" name="Username"></input>
+        <label className='login-label' htmlform="Password">Password </label>
+        <input className='login-input' value={userPassword} onChange={(e) => setPassWord(e.target.value)} type={visibility ? 'text' : 'password'} placeholder="Password" id="Password" name="Password"></input>
         {visibility ? <VisibilityOffOutlinedIcon onClick={handleVisibility} id='visibility-icon'/>  : <RemoveRedEyeOutlinedIcon onClick={handleVisibility} id='visibility-icon'/> }
         <button className = 'login-button' type="submit">Login</button>
       </form>
-    </div>
+    </div> 
 
   
   )
