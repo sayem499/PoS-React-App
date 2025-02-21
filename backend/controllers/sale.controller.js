@@ -32,8 +32,11 @@ const setSales = asyncHandler( async (req, res) => {
     throw new Error('Sale field error!')
   }
 
+  const userIdV = req.users._id;
+
   const sale = await Sales.create({
     products: req.body.products,
+    userId: userIdV,
     saleSubTotal: req.body.saleSubTotal,
     saleVAT: req.body.saleVAT,
     saleDiscount: req.body.saleDiscount,

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = 'https://pos-app-backend.onrender.com/api/customers/'
+const API_URL = process.env.REACT_APP_ORIGIN_URL + '/api/customers/'
 
 const getCustomers = async (token) => {
     const config = {
