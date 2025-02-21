@@ -9,7 +9,7 @@ import Searchbar from './searchbar';
 import { useSelector} from 'react-redux'
 import PosWelcomeLogo from '../assets/pos-welcome-logo.jpg'
 
-function Layout (){
+function Layout ({children}){
     const {user} = useSelector((state) => state.auth )
     const [isOpen, setIsOpen] = useState(false); 
     const toggle = () => setIsOpen(!isOpen)
@@ -58,14 +58,7 @@ function Layout (){
          <motion.div animate = {{marginLeft: isOpen ? "0px" : "0px"}} className='Outlet'>
          <Searchbar/>
          <div className='Outlet-Inner'>
-            {
-              window.location.pathname === '/' ? 
-                <div>   
-                    <img src={PosWelcomeLogo} alt='PosWelcomeLogo' className='PosWelcomeLogo'></img> 
-                </div>
-              
-              : <Outlet/>
-            }
+             <Outlet/>
          </div>
          
          </motion.div>
