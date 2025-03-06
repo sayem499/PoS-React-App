@@ -22,8 +22,12 @@ const setProducts = asyncHandler( async (req, res) => {
         res.status(400)
         throw new Error('Product field error!') 
     }
+
+    const invoiceId = generateInvoiceId();
+
     const product = await Products.create({
       productTitle: req.body.productTitle,
+      invoiceId: invoiceId,
       productBrand: req.body.productBrand,
       productQuantity: req.body.productQuantity,
       productType: req.body.productType,
@@ -66,6 +70,15 @@ const deleteProduct = asyncHandler( async (req, res) => {
 
     res.status(200).json({message: `Deleted Product ${req.params.id}`})
  })
+
+ const generateInvoiceId = () => {
+  const date = new Date();
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  const randomNumber = Math.floor(1000 + Math.random() * 9000); // 4-digit random number
+  return `SALE${year}${month}${day}${randomNumber}`;
+};
 
  module.exports = {
     getProducts,

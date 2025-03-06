@@ -3,6 +3,7 @@ const mongoose = require('mongoose')
 const saleSchema = mongoose.Schema({
     products:{ type: Array, required:true},
     userId:{ type:String, required:true },
+    invoiceId: { type:String, requred:true},
     saleSubTotal: {type: Number, required: true},
     saleVAT: {type:Number, required: true},
     saleDiscount: {type:Number, required: true},
