@@ -208,7 +208,7 @@ function Sale() {
   const handleProductClick = (id, e) => {
 
     e.preventDefault()
-    let payload, productTitle, productQuantity, productUnitPrice, productUnitCost, productTotal, _id
+    let payload, productTitle, productQuantity, productUnitPrice, productUnitCost, productTotal, _id, productCurrentPurchaseId
     if (cartItems?.some((cart) => cart._id === id && cartItems.length > 0 )) {
       cartItems?.filter((cart) => cart._id === id).forEach((cart) => {
         products.filter((product) => product._id === id).map((product) => {
@@ -230,6 +230,7 @@ function Sale() {
             productUnitPrice = product.productUnitPrice
             productUnitCost = product.productUnitCost
             productTotal = productQuantity * productUnitPrice
+            productCurrentPurchaseId = product?.productCurrentPurchaseId ? product?.productCurrentPurchaseId : null
           })
           payload = {
             _id,
@@ -238,6 +239,7 @@ function Sale() {
             productUnitPrice,
             productUnitCost,
             productTotal,
+            productCurrentPurchaseId,
           }
 
           dispatch(insertProductSale(payload))
@@ -491,13 +493,14 @@ function Sale() {
             })
 
           } else {
-            let payload, productTitle, productQuantity, productUnitPrice, productUnitCost, productTotal, _id
+            let payload, productTitle, productQuantity, productUnitPrice, productUnitCost, productTotal, _id, productCurrentPurchaseId
             _id = product._id
             productTitle = product.productTitle
             productQuantity = 1
             productUnitPrice = product.productUnitPrice
             productUnitCost = product.productUnitCost
             productTotal = productQuantity * productUnitPrice
+            productCurrentPurchaseId = product?.productCurrentPurchaseId ? product?.productCurrentPurchaseId : null
 
             payload = {
               _id,
@@ -506,6 +509,7 @@ function Sale() {
               productUnitPrice,
               productUnitCost,
               productTotal,
+              productCurrentPurchaseId,
             }
 
             dispatch(insertProductSale(payload))

@@ -33,10 +33,12 @@ const setSales = asyncHandler( async (req, res) => {
   }
 
   const userIdV = req.users._id;
+  const invoiceId = generateInvoiceId();
 
   const sale = await Sales.create({
     products: req.body.products,
     userId: userIdV,
+    invoiceId: invoiceId,
     saleSubTotal: req.body.saleSubTotal,
     saleVAT: req.body.saleVAT,
     saleDiscount: req.body.saleDiscount,
@@ -56,6 +58,9 @@ const setSales = asyncHandler( async (req, res) => {
     saleCashPaid: req.body.saleCashPaid,
     saleChange: req.body.saleChange,
   })
+
+  
+
   res.status(200).json(sale)
 })
 
@@ -90,6 +95,15 @@ const deleteSale = asyncHandler(async (req, res) => {
 
   res.status(200).json({ message: `Deleted Sale ${req.params.id}` })
 })
+
+const generateInvoiceId = () => {
+  const date = new Date();
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  const randomNumber = Math.floor(1000 + Math.random() * 9000); // 4-digit random number
+  return `SALE${year}${month}${day}${randomNumber}`;
+};
 
 module.exports = {
   getSales,

@@ -1,5 +1,7 @@
 const asyncHandler = require('express-async-handler')
 const Purchases = require('../model/purchase.model.js')
+const Products = require('../model/product.model.js')
+
 
 //@desc Get purchase
 //@route GET/api/purchase
@@ -34,12 +36,27 @@ const setPurchase = asyncHandler( async (req, res) => {
         userId: req.users._id, // Assuming the user is authenticated and `req.users` contains user info
         productSupplierId: req.body.productSupplierId,
         productQuantity: req.body.productQuantity,
+        productQuantitySold: 0,
         productUnitCost: req.body.productUnitCost,
         productTotalCost: req.body.productTotalCost,
         purchaseVat: req.body.purchaseVat || 0,
         purchaseVatAmount: req.body.purchaseVatAmount || 0,
         purchaseDiscount: req.body.purchaseDiscount || 0,
     });
+
+    // Find the product and update its quantity & latest cost
+    const product = await Products.findById(req.body.productId);
+    if (!product) {
+      res.status(404);
+      throw new Error('Product not found');
+    }
+    
+    // Update the product's quantity and latest purchase price
+    product.productQuantity += req.body.productQuantity;
+    if(product.productQuantity === 0){
+      product.productCurrentPurcahseId =  purchase?._id;
+    }
+    await product.save(); // Save the updated product
     
     res.status(200).json(purchase);
 })

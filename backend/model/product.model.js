@@ -9,7 +9,8 @@ const  productSchema = mongoose.Schema({
     productUnitPrice: {type: Number, required: true},
     productUnitCost: { type: Number, requird: true},
     productBarcode:{type: String},
-    productSupplierID: {type: String}
+    productSupplierId: {type: String},
+    productCurrentPurchaseId: {type: mongoose.Schema.Types.ObjectId},
 
 }, {
     timestamps: true
