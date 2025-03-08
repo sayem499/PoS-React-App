@@ -4,7 +4,7 @@ import purchasesService from "./purchaseService";
 
 const initialState = {
     purchases: [],
-    purcahse: [],
+    purchase: [],
     isLoading: false,
     isSuccess: false,
     isError: false,
@@ -148,6 +148,19 @@ export const purchaseSlice = createSlice({
                 })
             })
             .addCase(updatePurchases.rejected, (state, action) => {
+                state.isLoading = false
+                state.isError = true
+                state.message = action.payload
+            })
+            .addCase(getPurchaseById.pending, (state) => {
+                state.isLoading = true
+            })
+            .addCase(getPurchaseById.fulfilled, (state, action) => {
+                state.isLoading = false
+                state.isSuccess = true
+                state.purchase = action.payload
+            })
+            .addCase(getPurchaseById.rejected, (state, action) => {
                 state.isLoading = false
                 state.isError = true
                 state.message = action.payload

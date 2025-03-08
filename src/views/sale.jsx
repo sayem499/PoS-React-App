@@ -29,7 +29,7 @@ import {
   calculateChange,
 
 } from '../redux/sale/saleSlice';
-import { getPurchaseById } from '../redux/purchase/purchaseSlice';
+import { getPurchaseById, allPurchases, updatePurchases } from '../redux/purchase/purchaseSlice';
 import { toast } from 'react-toastify'
 import Loading from '../components/loading';
 import MoneyIcon from '@mui/icons-material/Money';
@@ -46,6 +46,7 @@ function Sale() {
   const navigate = useNavigate()
   const { user } = useSelector((state) => state.auth)
   const { products } = useSelector((state) => state.products)
+  const { purchase } = useSelector((state) => state.purchases)
   const { searchInput, searchRef } = useSelector((state) => state.search)
   const { customers } = useSelector((state) => state.customerState)
   const { cartItems,
@@ -126,50 +127,12 @@ function Sale() {
     if (isSaleError) {
       toast.error("Sale Confirmation Error!!")
     }
-    dispatch(insertCashPaid(customerCashPaid)) 
+    dispatch(insertCashPaid(customerCashPaid))
     dispatch(calculateChange())
 
     if (isSaleSuccess) {
-      console.log(printRef.current)
       handlePrint()
-      const updatedProducts = [];
-
-      cartItems?.forEach((cartProduct) => {
-        products?.filter((product) => product._id === cartProduct._id).forEach((product) => {
-          let productID = product._id,
-            productTitle = product.productTitle,
-            productBrand = product.productBrand,
-            productQuantity = product.productQuantity - cartProduct.productQuantity,
-            productType = product.productType,
-            productUnitPrice = product.productUnitPrice,
-            productUnitCost = product.productUnitCost,
-            productBarcode = product.productBarcode,
-            productCurrentPurchaseId = '';
-            
-
-            const purchaseData = getPurchaseById(productCurrentPurchaseId);
-
-
-          let updatedProductData = {
-            productID,
-            productTitle,
-            productBrand,
-            productQuantity,
-            productType,
-            productUnitPrice,
-            productUnitCost,
-            productBarcode,
-            productCurrentPurchaseId,
-          };
-      
-          updatedProducts.push(updatedProductData);
-        });
-      });
-
-      // Dispatch only once with all updated products
-      if (updatedProducts.length > 0) {
-        dispatch(updateProducts(updatedProducts));
-      }
+      handleQuantityUpdate();
       setIsReceiptOpen(false);
       setTimeout(() => {
         toast.success("Sale Confirmed Successfully!!")
@@ -189,6 +152,86 @@ function Sale() {
   if (products && products.length !== productTemp.length) {
     productTemp = products
   }
+
+  const handleQuantityUpdate = async () => {
+    const updatedProducts = await Promise.all(
+      cartItems.map(async (cartProduct) => {
+        const product = products.find((p) => p._id === cartProduct._id);
+        if (!product) return null;
+
+        try {
+          let purchase = await dispatch(getPurchaseById(product.productCurrentPurchaseId)).unwrap();
+
+          // Update productQuantitySold for the matching purchase product
+          let updatedPurchase = {
+            ...purchase,
+            purchaseProducts: purchase.purchaseProducts.map((purchaseProduct) => {
+              if (purchaseProduct._id === product._id) {
+                return {
+                  ...purchaseProduct,
+                  productQuantitySold: purchaseProduct.productQuantitySold + cartProduct.productQuantity,
+                };
+              }
+              return purchaseProduct;
+            }),
+          };
+
+          // Update the purchase record in the database
+          await dispatch(updatePurchases({ purchaseID: purchase._id, updatedPurchaseData: updatedPurchase })).unwrap();
+
+          // Get updated product stock data
+          const currentProductData = updatedPurchase.purchaseProducts.find((p) => p._id === product._id);
+          let productCurrentPurchaseId = product.productCurrentPurchaseId;
+
+          // If the current purchase is fully sold, find a new one
+          if (currentProductData.productQuantitySold === currentProductData.productQuantity) {
+            let allPurchases = await dispatch(allPurchases()).unwrap(); // Fetch all purchases
+
+            let newPurchase = allPurchases.find((p) =>
+              p.purchaseProducts.some(
+                (prod) => prod._id === product._id && prod.productQuantitySold < prod.productQuantity
+              )
+            );
+
+            if (newPurchase) {
+              productCurrentPurchaseId = newPurchase._id;
+            }
+          }
+
+          return {
+            productID: product._id,
+            productTitle: product.productTitle,
+            productBrand: product.productBrand,
+            productQuantity: product.productQuantity - cartProduct.productQuantity,
+            productType: product.productType,
+            productUnitPrice: product.productUnitPrice,
+            productUnitCost: product.productUnitCost,
+            productBarcode: product.productBarcode,
+            productCurrentPurchaseId,
+          };
+        } catch (error) {
+          console.error("Error updating purchase:", error);
+          return null;
+        }
+      })
+    );
+
+    // Filter out null values before dispatching
+    const validUpdatedProducts = updatedProducts.filter((p) => p !== null);
+
+    // Create the payload for each product
+    const payload = validUpdatedProducts.map((product) => {
+      return {
+        productID: product.productID,  // unique ID
+        updatedProductData: product,   // updated data for the product
+      };
+    });
+
+    // Dispatch each product individually
+    payload.forEach((productPayload) => {
+      dispatch(updateProducts(productPayload));
+    });
+  };
 
   const handleDecrement = (id, e) => {
     e.preventDefault()
@@ -220,7 +263,7 @@ function Sale() {
 
     e.preventDefault()
     let payload, productTitle, productQuantity, productUnitPrice, productUnitCost, productTotal, _id, productCurrentPurchaseId
-    if (cartItems?.some((cart) => cart._id === id && cartItems.length > 0 )) {
+    if (cartItems?.some((cart) => cart._id === id && cartItems.length > 0)) {
       cartItems?.filter((cart) => cart._id === id).forEach((cart) => {
         products.filter((product) => product._id === id).map((product) => {
           if (product.productQuantity - cart.productQuantity >= 0) {
@@ -279,7 +322,7 @@ function Sale() {
   /* Function to handle confirm button click */
   const handleConfirm = (e) => {
     e.preventDefault()
-    let saleTime, saleDate, payload, products, customerPayload, saleCustomerName, saleCustomerPhoneNumber,flag = false, updateCustomerPayload, newCustomerPayload
+    let saleTime, saleDate, payload, products, customerPayload, saleCustomerName, saleCustomerPhoneNumber, flag = false, updateCustomerPayload, newCustomerPayload
     customerPayload = {
       customerName,
       customerPhoneNumber,
@@ -287,7 +330,7 @@ function Sale() {
 
     saleCustomerName = customerName
     saleCustomerPhoneNumber = customerPhoneNumber
-      dispatch(insertCustomerInfo(customerPayload))
+    dispatch(insertCustomerInfo(customerPayload))
 
     saleTime = new Date().toLocaleTimeString()
     saleDate = new Date().toLocaleDateString()
@@ -299,34 +342,34 @@ function Sale() {
 
     dispatch(insertTimeDate(payload))
 
-    if(customers.filter((customer) => customer.customePhoneNumbr === customerPhoneNumber)){
+    if (customers.filter((customer) => customer.customePhoneNumbr === customerPhoneNumber)) {
 
       customers.filter((customer) => customer.customerPhoneNumber === customerPhoneNumber).map((customer) => {
-      
+
         let customerID, customerName, customerPhoneNumber, customerTotalExpenditure = 0, customerTotalTrades = 0
         customerID = customer._id
         customerName = customer.customerName
         customerPhoneNumber = customer.customerPhoneNumber
         customerTotalExpenditure = customer.customerTotalExpenditure + saleTotal
         customerTotalTrades = customer.customerTotalTrades + 1
-  
-        const updatedCustomerData ={
+
+        const updatedCustomerData = {
           customerName,
           customerPhoneNumber,
           customerTotalExpenditure,
           customerTotalTrades
         }
-        
+
         updateCustomerPayload = {
           customerID,
           updatedCustomerData,
         }
         flag = true
-  
+
       })
     } else {
 
-      if(customerPhoneNumber !== ''){
+      if (customerPhoneNumber !== '') {
         let customerTotalExpenditure = 0, customerTotalTrades = 0
 
         customerTotalExpenditure = customerTotalExpenditure + saleTotal
@@ -341,9 +384,9 @@ function Sale() {
         flag = false
       }
     }
-    
-     
-      
+
+
+
 
     products = [...cartItems]
     salePayload = {
@@ -380,13 +423,13 @@ function Sale() {
       if (result.isConfirmed) {
         handleSaleLoad()
         setIsReceiptOpen(true)
-        if(flag){
+        if (flag) {
           dispatch(updateCustomer(updateCustomerPayload))
-        }else {
+        } else {
           dispatch(setCustomers(newCustomerPayload))
         }
-        
-        
+
+
         dispatch(registerSale(salePayload))
         Swal.fire('Confirmed!', '', 'success')
 
@@ -404,7 +447,7 @@ function Sale() {
   const handleSaleLoad = () => {
     console.log(printRef.current)
     let saleTime, saleDate, payload, products, customerPayload, saleCustomerName, saleCustomerPhoneNumber
-    
+
     saleTime = new Date().toLocaleTimeString()
     saleDate = new Date().toLocaleDateString()
 
@@ -473,7 +516,7 @@ function Sale() {
     if (searchRef === 'container-column' && e.key === 'Enter' && e.key !== ' ') {
       e.preventDefault()
       handleConfirm();
-    }else if(searchRef === 'container-column' && e.key === 'Escape' && e.key !== ' '){
+    } else if (searchRef === 'container-column' && e.key === 'Escape' && e.key !== ' ') {
       e.preventDefault()
       handleClearCart()
     }
@@ -497,7 +540,7 @@ function Sale() {
         isReceiptOpen && <Receipt payload={salePayloadState} closeReceipt={() => { setIsReceiptOpen(false) }} ref={printRef} />}
       {
         productBarcode && productTemp.filter((product) => product.productBarcode === productBarcode).forEach((product) => {
-          if (cartItems?.some((cart) => cart._id === product._id && cartItems.length > 0 )) {
+          if (cartItems?.some((cart) => cart._id === product._id && cartItems.length > 0)) {
             cartItems?.filter((cart) => cart._id === product._id).forEach((cart) => {
               dispatch(incrementCartItem(product._id))
               setProductBarcode('')
@@ -572,9 +615,9 @@ function Sale() {
           <div className='payment-selector-btn'>
             <div className='cash-div'>
 
-              <div className={`logo-tile logo-tile-hover ${paymentMethod === "Cash" ? "payment-checked"  : "" }`}
-              onClick={(e) => setPaymentMethod("Cash")}>
-{/*               <input
+              <div className={`logo-tile logo-tile-hover ${paymentMethod === "Cash" ? "payment-checked" : ""}`}
+                onClick={(e) => setPaymentMethod("Cash")}>
+                {/*               <input
                 id='cash'
                 type='radio'
                 name='payment-method'
@@ -582,8 +625,8 @@ function Sale() {
                 defaultChecked={paymentMethod}
                 onClick={(e) => setPaymentMethod(e.target.value)}
               ></input> */}
-                <MoneyIcon className={`${paymentMethod === "Cash" ? "btn-icon-checked" : "btn-icon-unchecked" }`} />
-                <span className={` ${paymentMethod === "Cash" ? "checked-span"  : "unchecked-span" }`}>
+                <MoneyIcon className={`${paymentMethod === "Cash" ? "btn-icon-checked" : "btn-icon-unchecked"}`} />
+                <span className={` ${paymentMethod === "Cash" ? "checked-span" : "unchecked-span"}`}>
                   Cash
                 </span>
               </div>
@@ -591,17 +634,17 @@ function Sale() {
 
             <div className='credit-div'>
 
-              <div className={`logo-tile logo-tile-hover ${paymentMethod === "Credit" ? "payment-checked"  : "" }`}
-              onClick={(e) => setPaymentMethod("Credit")}>
-{/*               <input
+              <div className={`logo-tile logo-tile-hover ${paymentMethod === "Credit" ? "payment-checked" : ""}`}
+                onClick={(e) => setPaymentMethod("Credit")}>
+                {/*               <input
                 id='credit'
                 type='radio'
                 name='payment-method'
                 value='Credit'
                 onClick={(e) => setPaymentMethod(e.target.value)}
               ></input> */}
-                <CreditCardIcon className={`${paymentMethod === "Credit" ? "btn-icon-checked" : "btn-icon-unchecked" }`} />
-                <span className={` ${paymentMethod === "Credit" ? "checked-span"  : "unchecked-span" }`}>
+                <CreditCardIcon className={`${paymentMethod === "Credit" ? "btn-icon-checked" : "btn-icon-unchecked"}`} />
+                <span className={` ${paymentMethod === "Credit" ? "checked-span" : "unchecked-span"}`}>
                   Credit
                 </span>
               </div>
@@ -688,19 +731,19 @@ function Sale() {
       <div className='bottom-container'>
         <div className='bottom-wrapper'>
           <div className='button-wrapper'>
-          {
-            user.userType === 'admin' ? <button className='sale-options-btn' onClick={handleSaleSettings}>Settings</button> : ''
-          }
+            {
+              user.userType === 'admin' ? <button className='sale-options-btn' onClick={handleSaleSettings}>Settings</button> : ''
+            }
 
-          {
-            isSaleSettingsOpen && <Salesettings closeSaleSettings={() => { setIsSaleSettingsOpen(false) }} />
-          }
+            {
+              isSaleSettingsOpen && <Salesettings closeSaleSettings={() => { setIsSaleSettingsOpen(false) }} />
+            }
 
-          <button className='sale-options-btn-clear' onClick={handleClearCart}> Clear </button>
-          <button className='sale-options-btn-confirm' onClick={(e) => { handleConfirm(e) }}>Confirm</button>
-          <button className='sale-options-btn-receipt-preview' onClick={e => handleReceipt(e)}>Reciept</button>
+            <button className='sale-options-btn-clear' onClick={handleClearCart}> Clear </button>
+            <button className='sale-options-btn-confirm' onClick={(e) => { handleConfirm(e) }}>Confirm</button>
+            <button className='sale-options-btn-receipt-preview' onClick={e => handleReceipt(e)}>Reciept</button>
           </div>
-          
+
 
           <div className='input-wrapper'>
             <label htmlFor='customerName'>Customer Name</label>
@@ -708,7 +751,7 @@ function Sale() {
             <label htmlFor='customerPhoneNumber'>Customer Mobile No.</label>
             <input className='customer-phone-number-input' value={customerPhoneNumber} onChange={e => setCustomerPhoneNumber(e.target.value)} name='customerPhoeNumber' type='text'></input>
             <label htmlFor='customerCashPaid'>Cash Paid</label>
-            <input className='cash-paid-input' value={customerCashPaid} onChange={e => {setCustomerCashPaid(e.target.value)}} name='customerCashPaid' type='number'></input>
+            <input className='cash-paid-input' value={customerCashPaid} onChange={e => { setCustomerCashPaid(e.target.value) }} name='customerCashPaid' type='number'></input>
           </div>
 
           <div className='change-show-wrapper'>

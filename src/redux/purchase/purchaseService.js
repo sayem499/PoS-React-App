@@ -27,24 +27,24 @@ const setPurchases = async (data, token) => {
 
 }
 
-const deleteProduct = async (productID, token) => {
+const deleteProduct = async ( purchaseID, token) => {
     const config = {
         headers: {
             Authorization: `Bearer ${token}`
         }
     }
 
-    const response = await axios.delete(API_URL + productID, config)
+    const response = await axios.delete(API_URL +  purchaseID, config)
     return response.data
 }
 
-const updatePurchases = async (productID, data, token) => {
+const updatePurchases = async ( purchaseID, data, token) => {
     const config = {
        headers: {
            Authorization: `Bearer ${token}`
        }
     }
-    const response = await axios.put(API_URL + productID, data, config)
+    const response = await axios.put(API_URL +  purchaseID, data, config)
    
     return response.data
    
