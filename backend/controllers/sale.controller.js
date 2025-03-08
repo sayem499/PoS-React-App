@@ -96,6 +96,9 @@ const deleteSale = asyncHandler(async (req, res) => {
   res.status(200).json({ message: `Deleted Sale ${req.params.id}` })
 })
 
+//@desc Generates invoices
+//@route no route
+//@access no access
 const generateInvoiceId = () => {
   const date = new Date();
   const year = date.getFullYear();

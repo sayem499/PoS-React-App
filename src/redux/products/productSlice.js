@@ -126,6 +126,7 @@ export const productSlice = createSlice({
                         product.productQuantity = action.payload.productQuantity
                         product.productType = action.payload.productType
                         product.productUnitPrice = action.payload.productUnitPrice
+                        product.productCurrentPurchaseId = action.payload.productCurrentPurchaseId
                     }
                 })
             })

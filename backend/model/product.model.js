@@ -9,8 +9,11 @@ const  productSchema = mongoose.Schema({
     productUnitPrice: {type: Number, required: true},
     productUnitCost: { type: Number, requird: true},
     productBarcode:{type: String},
-    productSupplierId: {type: String},
-    productCurrentPurchaseId: {type: mongoose.Schema.Types.ObjectId},
+    productCurrentPurchaseId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Purchases",
+        default: null, // Ensures no empty string issues
+    }
 
 }, {
     timestamps: true

@@ -2,11 +2,12 @@ const mongoose = require("mongoose");
 
 const purchaseSchema = new mongoose.Schema(
   {
-    productId: {
+/*     productId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Product", // Reference to the Product model
       required: true,
-    },
+    }, */
+    purchaseProducts: { type: Array, required:true},
     invoiceId: {
       type: String,
       required: true,
@@ -14,15 +15,15 @@ const purchaseSchema = new mongoose.Schema(
     },
     userId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User", // Reference to the User model
+      ref: "Users", // Reference to the User model
       required: true,
     },
     productSupplierId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Supplier", // Reference to the Supplier model
+      ref: "Suppliers", // Reference to the Supplier model
       required: true,
     },
-    productQuantity: {
+/*     productQuantity: {
       type: Number,
       required: true,
       min: 1, // Ensures at least 1 quantity
@@ -36,7 +37,12 @@ const purchaseSchema = new mongoose.Schema(
       type: Number,
       required: true,
       min: 0,
-    },
+    }, */
+    purchaseTotalCost: {
+      type: Number,
+      required: true,
+      min: 0,
+    }, 
     purchaseVat: {
       type: Number,
       default: 0, // VAT percentage (e.g., 5 for 5%)

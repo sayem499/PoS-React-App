@@ -18,12 +18,7 @@ const getPurchase = asyncHandler(async (req, res) => {
 //@route POST/api/purchase
 //@access Private
 const setPurchase = asyncHandler( async (req, res) => {
-    if(!req.body.productId && 
-      !req.body.productQuantity && 
-      !req.body.productSupplierId && 
-      !req.body.productTotalCost &&
-      !req.body.productUnitCost ){
-      
+    if(!req.body.purchaseProducts){
         res.status(400)
         throw new Error('Product field error!') 
     }
@@ -31,32 +26,41 @@ const setPurchase = asyncHandler( async (req, res) => {
     const invoiceId = generateInvoiceId();
 
     const purchase = await Purchases.create({
-        productId: req.body.productId,
+        purchaseProducts: req.body.purchaseProducts,
         invoiceId: invoiceId,
         userId: req.users._id, // Assuming the user is authenticated and `req.users` contains user info
         productSupplierId: req.body.productSupplierId,
-        productQuantity: req.body.productQuantity,
-        productQuantitySold: 0,
-        productUnitCost: req.body.productUnitCost,
-        productTotalCost: req.body.productTotalCost,
+        // productQuantity: req.body.productQuantity,
+        // productQuantitySold: 0,
+        // productUnitCost: req.body.productUnitCost,
+        // productTotalCost: req.body.productTotalCost,
+        purchaseTotalCost: req.body.purchaseTotalCost,
         purchaseVat: req.body.purchaseVat || 0,
         purchaseVatAmount: req.body.purchaseVatAmount || 0,
         purchaseDiscount: req.body.purchaseDiscount || 0,
     });
+    console.log(purchase);
+    for (const purchaseProduct of req.body.purchaseProducts) {
+      // Find the product and update its quantity & latest cost
+      const product = await Products.findById(purchaseProduct._id);
+      
+      if (!product) {
+          res.status(404);
+          throw new Error(`Product with ID ${purchaseProduct._id} not found`);
+      }
 
-    // Find the product and update its quantity & latest cost
-    const product = await Products.findById(req.body.productId);
-    if (!product) {
-      res.status(404);
-      throw new Error('Product not found');
+      if (product.productQuantity === 0) {
+        console.log(purchase._id)
+        product.productCurrentPurchaseId = purchase ? purchase._id : null; // Use null, NOT ""
+      }
+  
+      // Update the product's quantity and latest purchase price
+      product.productQuantity += purchaseProduct.productQuantity;
+  
+
+  
+      await product.save(); // Save the updated product
     }
-    
-    // Update the product's quantity and latest purchase price
-    product.productQuantity += req.body.productQuantity;
-    if(product.productQuantity === 0){
-      product.productCurrentPurcahseId =  purchase?._id;
-    }
-    await product.save(); // Save the updated product
     
     res.status(200).json(purchase);
 })
@@ -95,6 +99,19 @@ const deletePurchase = asyncHandler(async (req, res) => {
     res.status(200).json({ message: `Deleted Purchase ${req.params.id}` });
 });
 
+//@desc Get purchase by Id
+//@route GET/api/purchase/:id
+//@access Private
+const getPurchaseById = asyncHandler(async (req, res) => {  
+  
+  const purchase = await Purchases.findById(req.params.id);
+  res.status(200).json(purchase);
+
+});
+
+//@desc Generates invoices
+//@route no route
+//@access no access
 const generateInvoiceId = () => {
     const date = new Date();
     const year = date.getFullYear();
@@ -104,4 +121,4 @@ const generateInvoiceId = () => {
     return `PURCHASE${year}${month}${day}${randomNumber}`;
 };
 
-module.exports = {getPurchase, setPurchase, updatePurchase, deletePurchase}
+module.exports = {getPurchase, setPurchase, updatePurchase, deletePurchase, getPurchaseById}

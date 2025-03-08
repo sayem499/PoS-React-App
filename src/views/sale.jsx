@@ -29,6 +29,7 @@ import {
   calculateChange,
 
 } from '../redux/sale/saleSlice';
+import { getPurchaseById } from '../redux/purchase/purchaseSlice';
 import { toast } from 'react-toastify'
 import Loading from '../components/loading';
 import MoneyIcon from '@mui/icons-material/Money';
@@ -131,6 +132,8 @@ function Sale() {
     if (isSaleSuccess) {
       console.log(printRef.current)
       handlePrint()
+      const updatedProducts = [];
+
       cartItems?.forEach((cartProduct) => {
         products?.filter((product) => product._id === cartProduct._id).forEach((product) => {
           let productID = product._id,
@@ -140,9 +143,15 @@ function Sale() {
             productType = product.productType,
             productUnitPrice = product.productUnitPrice,
             productUnitCost = product.productUnitCost,
-            productBarcode = product.productBarcode
+            productBarcode = product.productBarcode,
+            productCurrentPurchaseId = '';
+            
+
+            const purchaseData = getPurchaseById(productCurrentPurchaseId);
+
 
           let updatedProductData = {
+            productID,
             productTitle,
             productBrand,
             productQuantity,
@@ -150,16 +159,18 @@ function Sale() {
             productUnitPrice,
             productUnitCost,
             productBarcode,
-          }
+            productCurrentPurchaseId,
+          };
+      
+          updatedProducts.push(updatedProductData);
+        });
+      });
 
-          let payload = {
-            productID,
-            updatedProductData
-          }
-          dispatch(updateProducts(payload))
-          setIsReceiptOpen(false)
-        })
-      })
+      // Dispatch only once with all updated products
+      if (updatedProducts.length > 0) {
+        dispatch(updateProducts(updatedProducts));
+      }
+      setIsReceiptOpen(false);
       setTimeout(() => {
         toast.success("Sale Confirmed Successfully!!")
         dispatch(resetSale())
