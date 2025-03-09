@@ -5,7 +5,14 @@ import Inventory2Icon from '@mui/icons-material/Inventory2';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import GroupAddTwoToneIcon from '@mui/icons-material/GroupAddTwoTone';
 import StorefrontOutlinedIcon from '@mui/icons-material/StorefrontOutlined';
+import PurchaseIcon from '../assets/box.png';
 export const SidebarData = [
+
+    {
+        title: "Dashboard",
+        icon:  <GridViewIcon/>,
+        link:  "/dashboard"
+    },
     {
         title: "Sale",
         icon:  <StorefrontOutlinedIcon/>,
@@ -13,9 +20,10 @@ export const SidebarData = [
 
     },
     {
-        title: "Dashboard",
-        icon:  <GridViewIcon/>,
-        link:  "/dashboard"
+        title: "Purchase",
+        icon:  <img src={PurchaseIcon} alt="Purchase Icon" style={{ width: 26, height: 26}} />,
+        link:  "/purchase"
+
     },
     {
         title: "Customers",

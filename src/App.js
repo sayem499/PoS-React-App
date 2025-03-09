@@ -9,6 +9,7 @@ import Profile from "./views/profile.jsx";
 import Login from "./views/login.jsx";
 import Users from "./views/users.jsx";
 import Sale from "./views/sale.jsx";
+import Purchase from "./views/purchase.jsx";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -21,8 +22,9 @@ function App() {
 
           <Route path="/" element={<Layout />}>
             <Route index element={<Dashboard />} />
-            <Route path="sale" element={<Sale />} />
             <Route path="dashboard" element={<Dashboard />} />
+            <Route path="sale" element={<Sale />} />
+            <Route path="purchase" element={<Purchase />} />
             <Route path="customers" element={<Customers />} />
             <Route path="products" element={<Products />} />
             <Route path="suppliers" element={<Suppliers />} />
