@@ -60,8 +60,8 @@ function Addproduct({closeAddProduct}) {
         }
       }
       
-      productImageUrl = await dispatch(imageUpload(payload)).unwrap()
-      console.log("productImageUrl ", productImageUrl)
+      const response = await dispatch(imageUpload(payload)).unwrap()
+      productImageUrl = response.filePath
       if( productTitle === '' || productBrand === '' || productType === '')
         toast.error('Please fill the required fields!')
 
@@ -76,12 +76,12 @@ function Addproduct({closeAddProduct}) {
           productImageUrl
         }
 
-        /* try{
+        try{
           dispatch(setProducts(productData))
 
         }catch (error){
           console.log(error)
-        } */
+        }
         
         if(isSuccess){
           toast.success('Product created successfully!')

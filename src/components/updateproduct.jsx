@@ -20,6 +20,7 @@ function Updateproduct({ row, closeUpdateProduct}) {
     const [productUnitPrice, setProductUnitPrice] = useState(row.productUnitPrice)
     const [productUnitCost, setProductUnitCost] = useState(row.productUnitCost) 
     const [productBarcode, setProductBarcode ] = useState(row.productBarcode ? row.productBarcode :'')
+    const [productImage, setProductImage] = useState(null)
 
     useEffect(() => {
         
@@ -39,6 +40,7 @@ function Updateproduct({ row, closeUpdateProduct}) {
 
   const handleSubmit = (e) =>{
     e.preventDefault()
+    let productImageUrl = row.productImageUrl
 
     if (productTitle === '' || productBrand === '' || productType === '')
       toast.error('Please fill the required fields!')
@@ -50,7 +52,8 @@ function Updateproduct({ row, closeUpdateProduct}) {
         productType,
         productUnitPrice,
         productUnitCost,
-        productBarcode
+        productBarcode,
+        productImageUrl
       }
       let productID = row._id
       const payload = {

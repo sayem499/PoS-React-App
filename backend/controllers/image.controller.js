@@ -13,10 +13,17 @@ const imageCategories = ['logos', 'profiles', 'products'];
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         const category = req.params.category; // Get category from URL
+        console.log(category)
         if (!imageCategories.includes(category)) {
             return cb(new Error('Invalid image category'), null);
         }
-        cb(null, `uploads/${category}/`);
+        const uploadPath = path.join(__dirname, '..', 'uploads', category);
+
+        // ✅ Ensure the directory exists before saving the file
+        if (!fs.existsSync(uploadPath)) {
+            fs.mkdirSync(uploadPath, { recursive: true }); // Create folder recursively
+        }
+        cb(null, uploadPath);
     },
     filename: (req, file, cb) => {
         cb(null, Date.now() + path.extname(file.originalname)); // Unique filename
