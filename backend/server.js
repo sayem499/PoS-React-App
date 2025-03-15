@@ -29,6 +29,7 @@ app.use('/api/users', require('./routes/user.routes'))
 app.use('/api/customers', require('./routes/customer.routes'))
 app.use('/api/suppliers', require('./routes/supplier.routes'))
 app.use('/api/uploads', require('./routes/image.routes'))
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 
 if(process.env.NODE_ENV === "production"){

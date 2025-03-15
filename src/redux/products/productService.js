@@ -14,6 +14,17 @@ const allProducts = async (token) => {
     return response.data
 }
 
+const getProductById = async (productID, token) => {
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    }
+
+    const response = await axios.get(API_URL + productID, config)
+    return response.data
+}
+
 const setProducts = async (data, token) => {
  const config = {
     headers: {
@@ -56,6 +67,7 @@ const productService = {
     setProducts,
     deleteProduct,
     updateProducts,
+    getProductById
 }
 
 export default productService

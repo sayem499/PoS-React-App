@@ -38,9 +38,30 @@ const imageUpload = asyncHandler( async (req, res) => {
             return res.status(400).json({ error: 'No file uploaded' });
         }
 
+        // Construct the full file URL
+        const fileUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+
+        // ✅ Delete previous image if provided and valid
+        if (req.body.previousImageUrl) {
+            try {
+                const previousImagePath = path.join(
+                    __dirname,
+                    '..',
+                    req.body.previousImageUrl.replace(`${req.protocol}://${req.get('host')}/`, '')
+                );
+
+                if (fs.existsSync(previousImagePath)) {
+                    fs.unlinkSync(previousImagePath);
+                    console.log('Previous image deleted:', previousImagePath);
+                }
+            } catch (error) {
+                console.error('Error deleting previous image:', error);
+            }
+        }
+
         res.json({
             message: 'File uploaded successfully',
-            filePath: `/uploads/${req.file.filename}`
+            filePath: fileUrl
         });
     });
 });

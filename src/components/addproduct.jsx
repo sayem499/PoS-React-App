@@ -2,6 +2,7 @@ import '../css/addproduct.css'
 import { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { setProducts, reset , allProducts} from '../redux/products/productSlice'
+import { imageUpload } from '../redux/upload/uploadSlice'
 import { toast } from 'react-toastify'
 import { Blocks } from 'react-loader-spinner'
 import { useNavigate } from 'react-router-dom'
@@ -19,6 +20,7 @@ function Addproduct({closeAddProduct}) {
     const [productUnitPrice, setProductUnitPrice] = useState(0)
     const [productUnitCost, setProductUnitCost] = useState(0)
     const [productBarcode, setProductBarcode ] = useState('')
+    const [productImage, setProductImage ] = useState('')
 
    
     const  { user } = useSelector( (state) => state.auth)
@@ -41,11 +43,25 @@ function Addproduct({closeAddProduct}) {
 
     },[ isError, message, dispatch ])
 
+    useEffect(()=>{
+      console.log("Imgae Uploaded ", productImage)
+    },[productImage])
+
   
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
       e.preventDefault()
-    
+      let productImageUrl = null;
+      const payload = {
+        type: 'products',
+        file: productImage,
+        data: {
+          previousImageUrl: null
+        }
+      }
+      
+      productImageUrl = await dispatch(imageUpload(payload)).unwrap()
+      console.log("productImageUrl ", productImageUrl)
       if( productTitle === '' || productBrand === '' || productType === '')
         toast.error('Please fill the required fields!')
 
@@ -57,14 +73,15 @@ function Addproduct({closeAddProduct}) {
           productUnitPrice,
           productUnitCost,
           productBarcode,
+          productImageUrl
         }
 
-        try{
+        /* try{
           dispatch(setProducts(productData))
 
         }catch (error){
           console.log(error)
-        }
+        } */
         
         if(isSuccess){
           toast.success('Product created successfully!')
@@ -76,6 +93,7 @@ function Addproduct({closeAddProduct}) {
         setProductType('')
         setProductUnitPrice(0)
         setProductBarcode('No Code Entered!')
+        setProductImage(null)
 
 
     }
@@ -103,6 +121,13 @@ function Addproduct({closeAddProduct}) {
           <input value={productUnitCost} onChange={ e => setProductUnitCost(e.target.value)} placeholder='Product Unit Cost' type='number' name='productUnitCost'/>
           <label htmlFor='productBarcode'>Product Barcode</label>
           <input value={productBarcode} onChange={e => setProductBarcode(e.target.value)} placeholder='Product Barcode' type='text' name='productBarcode'/>
+          <label htmlFor="productImage">Product Image</label>
+          <input
+            type="file"
+            accept="image/*"
+            name="productImage"
+            onChange={e => setProductImage(e.target.files[0])}
+          />
           <button type='submit' className='btn'>Submit</button>
         </form>
       </div>

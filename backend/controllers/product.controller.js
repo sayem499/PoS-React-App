@@ -29,6 +29,7 @@ const setProducts = asyncHandler( async (req, res) => {
       productUnitPrice: req.body.productUnitPrice,
       productUnitCost: req.body.productUnitCost,
       productBarcode: req.body.productBarcode,
+      productImageUrl: req.body.productImageUrl,
       productCurrentPurcahseId: null
     })
     res.status(200).json(product)
@@ -50,6 +51,18 @@ const updateProduct = asyncHandler( async (req, res) => {
     res.status(200).json(updatedProduct)
  })
 
+//@desc get product by id
+//@route GET/api/products/:id
+//@access Private 
+const getProductById = asyncHandler( async (req, res) => {
+  const product = Products.findById(req.params.id)
+  if(!product){
+    res.status(400)
+    throw new Error('Product not found!')
+  }
+  res.status(200).json(product)
+})
+
 //@desc Delete products
 //@route DELETE/api/products/:id
 //@access Private
@@ -70,5 +83,6 @@ const deleteProduct = asyncHandler( async (req, res) => {
     getProducts,
     setProducts,
     updateProduct,
+    getProductById,
     deleteProduct
  }
