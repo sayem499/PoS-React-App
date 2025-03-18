@@ -46,7 +46,8 @@ const imageUpload = asyncHandler( async (req, res) => {
         }
 
         // Construct the full file URL
-        const fileUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+        const category = req.params.category; // Get category from URL
+        const fileUrl = `${req.protocol}://${req.get('host')}/uploads/${category}/${req.file.filename}`;
 
         // ✅ Delete previous image if provided and valid
         if (req.body.previousImageUrl) {
@@ -54,7 +55,8 @@ const imageUpload = asyncHandler( async (req, res) => {
                 const previousImagePath = path.join(
                     __dirname,
                     '..',
-                    req.body.previousImageUrl.replace(`${req.protocol}://${req.get('host')}/`, '')
+                    'uploads', // Explicitly include the 'uploads' directory
+                    req.body.previousImageUrl.replace(`${req.protocol}://${req.get('host')}/uploads/`, '') // Remove base URL up to 'uploads/'
                 );
 
                 if (fs.existsSync(previousImagePath)) {
