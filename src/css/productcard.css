@@ -1,0 +1,37 @@
+.product-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%; /* Ensures it fits inside grid */
+    min-height: 280px; /* Adjust height dynamically */
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 16px;
+    text-align: center;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .product-image {
+    width: 100%;
+    height: auto; /* Prevents distortion */
+    max-height: 180px; /* Adjust as needed */
+    object-fit: contain;
+  }
+  
+  .product-info {
+    margin-top: 10px;
+  }
+  
+  .product-name {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .product-price {
+    font-size: 14px;
+    color: #666;
+    margin-top: 4px;
+  }
