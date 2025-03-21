@@ -23,61 +23,79 @@ function InfiniteProductList() {
     //const [loading, setLoading] = useState(false);
     const [hasMore, setHasMore] = useState(true);
     const observer = useRef < IntersectionObserver | null > (null);
+    const productContainerRef = useRef(null);
     const lastProductRef = useRef(null);
 
     //   useEffect(() => {
     //     fetchProducts();
     //   }, [page]);
-    
+
     useEffect(() => {
+        dragBasedScroll();
         if (!user) {
             navigate('/login')
         }
-        if (products.length === 0 )
+        if (products.length === 0)
             dispatch(allProducts())
     }, [user, navigate, dispatch]);
 
-    //   const fetchProducts = async () => {
-    //     if (!hasMore) return;
-    //     setLoading(true);
-
-    //     try {
-    //       const { data } = await axios.get(`/api/products?page=${page}&limit=10`); // Adjust your API
-    //       setProducts((prev) => [...prev, ...data.products]);
-    //       setHasMore(data.hasMore);
-    //     } catch (error) {
-    //       console.error("Error fetching products", error);
-    //     } finally {
-    //       setLoading(false);
-    //     }
-    //   };
-
-    //   useEffect(() => {
-    //     if (loading) return;
-    //     observer.current = new IntersectionObserver(
-    //       (entries) => {
-    //         if (entries[0].isIntersecting) {
-    //           setPage((prev) => prev + 1);
-    //         }
-    //       },
-    //       { threshold: 1.0 }
-    //     );
-    //     if (lastProductRef.current) {
-    //       observer.current.observe(lastProductRef.current);
-    //     }
-    //     return () => observer.current?.disconnect();
-    //   }, [loading]);
+    const dragBasedScroll = () => {
+        const productContainer = productContainerRef.current;
+        if (!productContainer) return;
+        console.log(productContainer)
+        let isDown = false;
+        let startY;
+        let scrollTop;
+    
+        // Mouse Events
+        productContainer.addEventListener("mousedown", (e) => {
+            isDown = true;
+            productContainer.classList.add("active");
+            startY = e.pageY - productContainer.offsetTop;
+            scrollTop = productContainer.scrollTop;
+        });
+    
+        productContainer.addEventListener("mouseleave", () => {
+            isDown = false;
+            productContainer.classList.remove("active");
+        });
+    
+        productContainer.addEventListener("mouseup", () => {
+            isDown = false;
+            productContainer.classList.remove("active");
+        });
+    
+        productContainer.addEventListener("mousemove", (e) => {
+            if (!isDown) return;
+            e.preventDefault();
+            const y = e.pageY - productContainer.offsetTop;
+            const walk = (y - startY) * 2; // Adjust speed
+            productContainer.scrollTop = scrollTop - walk;
+        });
+    
+        // Touch Support
+        let startTouchY, startScrollTop;
+    
+        productContainer.addEventListener("touchstart", (e) => {
+            startTouchY = e.touches[0].pageY;
+            startScrollTop = productContainer.scrollTop;
+        });
+    
+        productContainer.addEventListener("touchmove", (e) => {
+            const touchY = e.touches[0].pageY;
+            const move = (touchY - startTouchY) * 2; // Adjust speed
+            productContainer.scrollTop = startScrollTop - move;
+        });
+    };
 
     return (
-        <div className="product-container">
-            {console.log("products ", products)}
+        <div className="product-container" ref={productContainerRef}>
             {products.map((product, index) => (
                 <div key={product._id} ref={index === products.length - 1 ? lastProductRef : null}>
-                    {console.log("product ", product)}
                     <ProductCard image={product.productImageUrl} name={product.productTitle} price={product.productUnitPrice} />
                 </div>
             ))}
-            { isLoading && <p>Loading more products...</p>}
+            {isLoading && <p>Loading more products...</p>}
         </div>
     );
 }

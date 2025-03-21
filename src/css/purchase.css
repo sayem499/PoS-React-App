@@ -3,17 +3,26 @@
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    height: 100%;
+    height: 100vh;
     width: 100%;
+    overflow: hidden;
 }
 
 .purchase-product-list {
-    display: flex;  
+    display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
+    padding: 10px;
     height: 100%;
     width: 60%;
+    overflow: auto; /* Enables scrolling */
+    scrollbar-width: thin; /* Firefox scrollbar */
+    -ms-overflow-style: none; /* IE scrollbar */
+}
+
+.purchase-product-list::-webkit-scrollbar {
+    width: 6px; /* Small scrollbar */
 }
 
 .purchase-billing {

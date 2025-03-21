@@ -1,11 +1,26 @@
 .product-container {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 16px;
-    padding: 20px;
-    /* max-width: 1200px; */
+    gap: 13px;
+    /* padding: 5px; */
+    max-width: 1200px;
     margin: auto;
     width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    cursor: grab;
+    user-select: none;
+    scroll-behavior: smooth;
+    scrollbar-width: none; /* Hides scrollbar in Firefox */
+    -ms-overflow-style: none; /* Hides scrollbar in IE/Edge */
+}
+
+.product-container::-webkit-scrollbar {
+    display: none; /* Hides scrollbar in Chrome/Safari */
+}
+
+.product-container:active {
+    cursor: grabbing;
 }
 
 .product-container > div {

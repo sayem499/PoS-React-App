@@ -61,7 +61,9 @@ export const getSales = createAsyncThunk('sale/getSales', async (_, thunkAPI) =>
     } catch (error) {
         const message = (error.response && error.response.data && error.response.data.message)
         || error.message || error.toString()
-
+        if(message === 'Invalid token'){
+            localStorage.removeItem('users');
+        }
         return thunkAPI.rejectWithValue(message)
     }
 })

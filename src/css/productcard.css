@@ -4,11 +4,11 @@
     justify-content: space-between;
     align-items: center;
     width: 100%; /* Ensures it fits inside grid */
-    min-height: 280px; /* Adjust height dynamically */
+    min-height: 200px; /* Adjust height dynamically */
     background: #fff;
     border: 1px solid #ddd;
     border-radius: 8px;
-    padding: 16px;
+    padding: 13px;
     text-align: center;
     box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
   }
@@ -16,7 +16,7 @@
   .product-image {
     width: 100%;
     height: auto; /* Prevents distortion */
-    max-height: 180px; /* Adjust as needed */
+    max-height: 120px; /* Adjust as needed */
     object-fit: contain;
   }
   
