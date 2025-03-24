@@ -9,22 +9,65 @@ const initialState = {
     isSuccess: false,
     isError: false,
     message: '',
+    page: '',
+    limit: '',
+    total: '',
+    totalPages: '',
+    hasMore: false,
 
 }
 
-export const allProducts = createAsyncThunk('products/allProducts', async (_, thunkAPI) => {
+export const allProducts = createAsyncThunk('products/allProducts', async (pageObj, thunkAPI) => {
     try {
+        const { page } = pageObj
         const token = thunkAPI.getState().auth.user.token 
-        return await productService.allProducts(token)
-        
+        const response = await productService.allProducts(page, token)
+        const existingProducts = thunkAPI.getState().products.products || [];
+        console.log("thunkApi products", thunkAPI.getState().products)
+        console.log("response products", response)
+        return {
+            products: page === 1 ? response.products : [...existingProducts, ...response.products],
+            hasMore: response.page < response.totalPages,  // Check if more pages exist
+            page: response.page,
+            limit: response.limit,
+            total: response.total,
+            totalPages: response.totalPages
+        };
     } catch (error){
         const message = (error.response && error.response.data && error.response.data.message)
         || error.message || error.toString()
-
+        if(message === 'Invalid token'){
+            localStorage.removeItem('users');
+        }
         return thunkAPI.rejectWithValue(message)
     }
 } )
 
+export const loadMoreProducts = createAsyncThunk('products/loadMoreProducts', async (pageObj, thunkAPI) => {
+    try {
+        const { page } = pageObj
+        const token = thunkAPI.getState().auth.user.token 
+        const response = await productService.allProducts(page, token)
+        const existingProducts = thunkAPI.getState().products.products || [];
+
+        return {
+            products: page === 1 ? response.products : [...existingProducts, ...response.products],
+            hasMore: response.page < response.totalPages,  // Check if more pages exist
+            page: response.page,
+            limit: response.limit,
+            total: response.total,
+            totalPages: response.totalPages
+        };
+
+    } catch (error){
+        const message = (error.response && error.response.data && error.response.data.message)
+        || error.message || error.toString()
+        if(message === 'Invalid token'){
+            localStorage.removeItem('users');
+        }
+        return thunkAPI.rejectWithValue(message)
+    }
+} )
 
 export const getProductById = createAsyncThunk('products/getProductById', async (productID, thunkAPI) => {
     try{
@@ -93,12 +136,20 @@ export const productSlice = createSlice({
             .addCase(allProducts.fulfilled, (state, action) => {
                 state.isLoading = false
                 state.isSuccess = true
-                state.products = action.payload
+                state.products = action.payload.products
+                state.page = action.payload.page
+                state.limit = action.payload.limit
+                state.total = action.payload.total
+                state.totalPages = action.payload.totalPages
             })
             .addCase(allProducts.rejected, (state, action) => {
                 state.isLoading = false
                 state.isError = true
                 state.message = action.payload
+            })
+            .addCase(loadMoreProducts.fulfilled, (state, action) => {
+                state.products = [...state.products, ...action.payload.products];
+                state.hasMore = action.payload.hasMore;
             })
             .addCase(getProductById.pending, (state) => {
                 state.isLoading = true

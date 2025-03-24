@@ -1,13 +1,25 @@
  const asyncHandler = require('express-async-handler')
  const Products = require('../model/product.model.js')
  
- //@desc Get products
- //@route GET/api/products
- //@access Private
- const getProducts = asyncHandler( async (req, res) => {
-    const products = await Products.find()
-    res.status(200).json(products)
- })
+//@desc Get paginated products
+//@route GET /api/products
+//@access Private
+const getProducts = asyncHandler(async (req, res) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 20;
+  const skip = (page - 1) * limit;
+
+  const total = await Products.countDocuments();
+  const products = await Products.find().skip(skip).limit(limit);
+
+  res.status(200).json({
+      page,
+      limit,
+      total,
+      totalPages: Math.ceil(total / limit),
+      products,
+  });
+});
 
 //@desc Set products
 //@route POST/api/products

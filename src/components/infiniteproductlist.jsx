@@ -14,12 +14,12 @@ function InfiniteProductList() {
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const { user } = useSelector((state) => state.auth)
-    const { products, isLoading } = useSelector((state) => state.products)
+    const { products, isLoading, page, limit, total, totalPages} = useSelector((state) => state.products)
     //const { purchase } = useSelector((state) => state.purchases)
     const { searchInput, searchRef } = useSelector((state) => state.search)
     const { customers } = useSelector((state) => state.customerState)
     //const [products, setProducts] = useState([]);
-    const [page, setPage] = useState(1);
+    //const [page, setPage] = useState(1);
     //const [loading, setLoading] = useState(false);
     const [hasMore, setHasMore] = useState(true);
     const observer = useRef < IntersectionObserver | null > (null);
@@ -36,7 +36,7 @@ function InfiniteProductList() {
             navigate('/login')
         }
         if (products.length === 0)
-            dispatch(allProducts())
+            dispatch(allProducts({page:1}))
     }, [user, navigate, dispatch]);
 
     const dragBasedScroll = () => {
