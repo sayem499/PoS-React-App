@@ -23,8 +23,6 @@ export const allProducts = createAsyncThunk('products/allProducts', async (pageO
         const token = thunkAPI.getState().auth.user.token 
         const response = await productService.allProducts(page, token)
         const existingProducts = thunkAPI.getState().products.products || [];
-        console.log("thunkApi products", thunkAPI.getState().products)
-        console.log("response products", response)
         return {
             products: page === 1 ? response.products : [...existingProducts, ...response.products],
             hasMore: response.page < response.totalPages,  // Check if more pages exist
@@ -136,7 +134,7 @@ export const productSlice = createSlice({
             .addCase(allProducts.fulfilled, (state, action) => {
                 state.isLoading = false
                 state.isSuccess = true
-                state.products = action.payload.products
+                state.products = state.products.length > 40 ? action.payload.products : [...state.products, ...action.payload.products];
                 state.page = action.payload.page
                 state.limit = action.payload.limit
                 state.total = action.payload.total
@@ -148,8 +146,8 @@ export const productSlice = createSlice({
                 state.message = action.payload
             })
             .addCase(loadMoreProducts.fulfilled, (state, action) => {
-                state.products = [...state.products, ...action.payload.products];
-                state.hasMore = action.payload.hasMore;
+                state.products = state.products.length > 40 ? action.payload.products : [...state.products, ...action.payload.products];
+                state.hasMore = action.payload.page < action.payload.totalPages || action.payload.totalPages === 1;
             })
             .addCase(getProductById.pending, (state) => {
                 state.isLoading = true
