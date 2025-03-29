@@ -22,6 +22,7 @@ function InfiniteProductList() {
     const productContainerRef = useRef(null);
     const lastProductRef = useRef(null);
     const observer = useRef(null);
+    const resetTriggered = useRef(false);
 
     useEffect(() => {
         dragBasedScroll();
@@ -31,7 +32,6 @@ function InfiniteProductList() {
         }
         if (products.length === 0) {
             dispatch(allProducts({ page: 1 }));
-            console.log("called 1")
         }
     }, [user, products.length, navigate, dispatch]);
 
@@ -43,20 +43,21 @@ function InfiniteProductList() {
         observer.current = new IntersectionObserver(
             (entries) => {
                 if (entries[0].isIntersecting) {
-                    console.log("isLoading 2", isLoading)
-                    console.log("hasmore 2", hasMore)
                     if (hasMore) {
                         setPage((prevPage) => prevPage + 1);
                     } else {
-                        setTimeout(() => {
-                            setPage(1); // Restart pagination when reaching the end
-                            dispatch(allProducts({ page: 1 })); // Fetch products from the beginning
-                            console.log("called 2")
-                        }, 500);
+                        if (!resetTriggered.current) {
+                            resetTriggered.current = true 
+                            setPage(1);
+                            dispatch(allProducts({ page: 1 }));
+                            setTimeout(() => {
+                                resetTriggered.current = false;
+                            }, 1000);
+                        }    
                     }
                 }
             },
-            { threshold: 1.0 }
+            { threshold: 0.95 }
         );
 
         if (lastProductRef.current) {
@@ -65,24 +66,6 @@ function InfiniteProductList() {
 
         return () => observer.current?.disconnect();
     }, [products, isLoading, hasMore, dispatch]);
-
-    // useEffect(() => {
-    //     if (page > 1 && !isFetching) {
-    //         setIsFetching(true);  // Set fetching flag to true
-    //         dispatch(loadMoreProducts({ page }))
-    //             .then((response) => {
-    //                 if (response.payload?.products?.length === 0) {
-    //                     setPage(1);  // If no products on this page, reset to first page
-    //                     dispatch(loadMoreProducts({ page: 1 })); // Fetch from the beginning
-    //                     console.log("called 4")
-    //                 }
-    //             })
-    //             .finally(() => {
-    //                 setIsFetching(false);  // Reset the fetching flag
-    //             });
-    //             console.log("called 3")
-    //     }
-    // }, [page, dispatch, isFetching]);
 
     useEffect(() => {
         if (page > 1) {
@@ -149,8 +132,7 @@ function InfiniteProductList() {
 
     return (
         <div className="product-container" ref={productContainerRef}>
-            {console.log("hasmore ", hasMore)}
-            {products.map((product, index) => (
+            {products && products?.map((product, index) => (
                 <div key={product._id} ref={index === products.length - 1 ? lastProductRef : null}>
                     <ProductCard image={product.productImageUrl} name={product.productTitle} price={product.productUnitPrice} />
                 </div>

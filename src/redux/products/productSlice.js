@@ -130,11 +130,12 @@ export const productSlice = createSlice({
         builder
             .addCase(allProducts.pending, (state) => {
                 state.isLoading = true
+                state.isSuccess = false
             })
             .addCase(allProducts.fulfilled, (state, action) => {
                 state.isLoading = false
                 state.isSuccess = true
-                state.products = state.products.length > 40 ? action.payload.products : [...state.products, ...action.payload.products];
+                state.products = state.products.length > 80 ? [...action.payload.products] : [...state.products, ...action.payload.products];
                 state.page = action.payload.page
                 state.limit = action.payload.limit
                 state.total = action.payload.total
@@ -145,9 +146,19 @@ export const productSlice = createSlice({
                 state.isError = true
                 state.message = action.payload
             })
+            .addCase(loadMoreProducts.pending, (state) => {
+                state.isLoading = true
+                state.isSuccess = false
+            })
             .addCase(loadMoreProducts.fulfilled, (state, action) => {
-                state.products = state.products.length > 40 ? action.payload.products : [...state.products, ...action.payload.products];
+                state.isLoading = false
+                state.isSuccess = true
+                state.products = state.products.length > 80 ? [...action.payload.products] : [...state.products, ...action.payload.products];
                 state.hasMore = action.payload.page < action.payload.totalPages || action.payload.totalPages === 1;
+                state.page = action.payload.page
+                state.limit = action.payload.limit
+                state.total = action.payload.total
+                state.totalPages = action.payload.totalPages
             })
             .addCase(getProductById.pending, (state) => {
                 state.isLoading = true

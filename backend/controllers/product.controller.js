@@ -91,10 +91,38 @@ const deleteProduct = asyncHandler( async (req, res) => {
     res.status(200).json({message: `Deleted Product ${req.params.id}`})
  })
 
- module.exports = {
+//@desc Search products
+//@route POST /api/search/search-product
+//@access Private
+const searchProduct = asyncHandler( async (req, res) => {
+  const { searchKey } = req.body;
+  const { users } = req;
+  console.log(users);
+
+  if (!searchKey) {
+    return res.status(400).json({ message: "Search key is required" });
+  }
+
+  try {
+    const products = await Products.find({
+      $or: [
+        { userId: users._id },
+        { productTitle: { $regex: searchKey, $options: "i" } }, // Case-insensitive title search
+        { productBarcode: searchKey } // Exact barcode match
+      ]
+    });
+
+    res.status(200).json(products);
+  } catch (error) {
+    res.status(500).json({ message: "Error searching products", error });
+  }
+})
+
+module.exports = {
     getProducts,
     setProducts,
     updateProduct,
     getProductById,
-    deleteProduct
- }
+    deleteProduct,
+    searchProduct
+}
