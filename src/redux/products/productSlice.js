@@ -14,6 +14,7 @@ const initialState = {
     total: '',
     totalPages: '',
     hasMore: false,
+    pageObjc: '',
 
 }
 
@@ -24,12 +25,13 @@ export const allProducts = createAsyncThunk('products/allProducts', async (pageO
         const response = await productService.allProducts(page, token)
         const existingProducts = thunkAPI.getState().products.products || [];
         return {
-            products: page === 1 ? response.products : [...existingProducts, ...response.products],
+            products: page === 1 || page === undefined ? response.products : [...existingProducts, ...response.products],
             hasMore: response.page < response.totalPages,  // Check if more pages exist
             page: response.page,
             limit: response.limit,
             total: response.total,
-            totalPages: response.totalPages
+            totalPages: response.totalPages,
+            pageObjc: pageObj ? pageObj.page : undefined
         };
     } catch (error){
         const message = (error.response && error.response.data && error.response.data.message)
@@ -135,7 +137,7 @@ export const productSlice = createSlice({
             .addCase(allProducts.fulfilled, (state, action) => {
                 state.isLoading = false
                 state.isSuccess = true
-                state.products = state.products.length > 80 ? [...action.payload.products] : [...state.products, ...action.payload.products];
+                state.products = state.products.length > 80 || action.payload.pageObjc === undefined ? [...action.payload.products] : [...state.products, ...action.payload.products];
                 state.page = action.payload.page
                 state.limit = action.payload.limit
                 state.total = action.payload.total

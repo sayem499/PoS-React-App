@@ -31,6 +31,7 @@ import {
 } from '../redux/sale/saleSlice';
 import { getPurchaseById, allPurchases, updatePurchases } from '../redux/purchase/purchaseSlice';
 import { toast } from 'react-toastify'
+import { useLocation } from "react-router-dom";
 import Loading from '../components/loading';
 import MoneyIcon from '@mui/icons-material/Money';
 import CreditCardIcon from '@mui/icons-material/CreditCard';
@@ -70,6 +71,7 @@ function Sale() {
     isSaleSuccess,
   } = useSelector((state => state.sale))
   const dispatch = useDispatch()
+  const location = useLocation()
   const [paymentMethod, setPaymentMethod] = useState('Cash')
   const [isSaleSettingsOpen, setIsSaleSettingsOpen] = useState(false)
   const [productBarcode, setProductBarcode] = useState('')
@@ -93,8 +95,14 @@ function Sale() {
       navigate('/login')
     }
     dispatch(getCustomers())
-    if (productTemp.length === 0 || products.length > productTemp || products.length < productTemp)
+
+    if (productTemp.length === 0 || products.length > productTemp || products.length < productTemp) {
       dispatch(allProducts())
+    }
+    if (location.pathname === "/sale") {
+      dispatch(allProducts())
+    }
+
     dispatch(cartProductTotal())
     dispatch(cartSubTotal())
     if (fetch !== null)
@@ -147,7 +155,7 @@ function Sale() {
       document.removeEventListener('keydown', handleKeyPress)
     }
 
-  }, [user, navigate, dispatch, searchRef, productBarcode, cartItems, saleTotal, paymentMethod, isSaleLoading, customerCashPaid])
+  }, [user, navigate, dispatch, location.pathname, searchRef, productBarcode, cartItems, saleTotal, paymentMethod, isSaleLoading, customerCashPaid])
 
   if (products && products.length !== productTemp.length) {
     productTemp = products
