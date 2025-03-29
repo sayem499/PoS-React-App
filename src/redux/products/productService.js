@@ -10,8 +10,10 @@ const allProducts = async (page, token) => {
         }
     }
 
-    const response = await axios.get(`${API_URL}?page=${page}`, config)
-    return response.data
+    const url = page ? `${API_URL}?page=${page}` : API_URL;
+
+    const response = await axios.get(url, config);
+    return response.data;
 }
 
 const getProductById = async (productID, token) => {

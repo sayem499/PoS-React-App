@@ -10,7 +10,15 @@ const getProducts = asyncHandler(async (req, res) => {
   const skip = (page - 1) * limit;
 
   const total = await Products.countDocuments();
-  const products = await Products.find().skip(skip).limit(limit);
+  
+  let products = [];
+
+  if(page && limit){
+    products = await Products.find().skip(skip).limit(limit);
+  }else{
+    products = await Products.find();
+  }
+  
 
   res.status(200).json({
       page,

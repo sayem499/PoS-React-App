@@ -19,7 +19,7 @@ const initialState = {
 
 export const allProducts = createAsyncThunk('products/allProducts', async (pageObj, thunkAPI) => {
     try {
-        const { page } = pageObj
+        const page = pageObj ? pageObj.page : undefined;  // Check if pageObj is defined
         const token = thunkAPI.getState().auth.user.token 
         const response = await productService.allProducts(page, token)
         const existingProducts = thunkAPI.getState().products.products || [];
