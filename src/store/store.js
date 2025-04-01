@@ -14,7 +14,7 @@ export const store = configureStore({
         auth: authReducer,
         users: userReducer,
         products: productReducer,
-        purchases: purchaseReducer,
+        purchase: purchaseReducer,
         customerState: customerReducer,
         supplierState: supplierReducer,
         search: searchReducer,

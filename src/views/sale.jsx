@@ -47,7 +47,7 @@ function Sale() {
   const navigate = useNavigate()
   const { user } = useSelector((state) => state.auth)
   const { products } = useSelector((state) => state.products)
-  const { purchase } = useSelector((state) => state.purchases)
+  const { purchase } = useSelector((state) => state.purchase)
   const { searchInput, searchRef } = useSelector((state) => state.search)
   const { customers } = useSelector((state) => state.customerState)
   const { cartItems,
@@ -249,16 +249,16 @@ function Sale() {
 
   const handleIncrement = (id, e) => {
     e.preventDefault()
-    cartItems?.filter((cart) => cart._id === id).forEach((cart) => {
-      products.filter((product) => product._id === id).map((product) => {
-        if (product.productQuantity - cart.productQuantity > 0) {
-          dispatch(incrementCartItem(id))
-        } else {
-          toast.error("Not enough products in stock!!")
-        }
-      })
+    const cartItem = cartItems.find((cart) => cart._id === id);
+    const product = products.find((product) => product._id === id);
 
-    })
+    if (cartItem && product) {
+      if (product.productQuantity - cartItem.productQuantity > 0) {
+        dispatch(incrementCartItem(id));
+      } else {
+        toast.error("Not enough products in stock!!");
+      }
+    }
   }
 
   const handleClose = (id, e) => {
@@ -270,47 +270,35 @@ function Sale() {
   const handleProductClick = (id, e) => {
 
     e.preventDefault()
-    let payload, productTitle, productQuantity, productUnitPrice, productUnitCost, productTotal, _id, productCurrentPurchaseId
-    if (cartItems?.some((cart) => cart._id === id && cartItems.length > 0)) {
-      cartItems?.filter((cart) => cart._id === id).forEach((cart) => {
-        products.filter((product) => product._id === id).map((product) => {
-          if (product.productQuantity - cart.productQuantity >= 0) {
-            dispatch(incrementCartItem(id))
-          } else {
-            toast.error("Not enough products in stock!!")
-          }
-        })
+    const cartItem = cartItems.find((cart) => cart._id === id);
+    const product = products.find((product) => product._id === id);
 
-      })
+    if (cartItem && product) {
+      if (product.productQuantity - cartItem.productQuantity >= 0) {
+        dispatch(incrementCartItem(id));
+      } else {
+        toast.error("Not enough products in stock!!");
+      }
     } else {
-      products.filter((product) => product._id === id).map((product) => {
-        if (product.productQuantity > 0) {
-          productTemp.filter((product) => product._id === id).forEach((product) => {
-            _id = product._id
-            productTitle = product.productTitle
-            productQuantity = 1
-            productUnitPrice = product.productUnitPrice
-            productUnitCost = product.productUnitCost
-            productTotal = productQuantity * productUnitPrice
-            productCurrentPurchaseId = product?.productCurrentPurchaseId ? product?.productCurrentPurchaseId : null
-          })
-          payload = {
-            _id,
-            productTitle,
-            productQuantity,
-            productUnitPrice,
-            productUnitCost,
-            productTotal,
-            productCurrentPurchaseId,
-          }
+      if (product && product.productQuantity > 0) {
+        const productTempItem = productTemp.find((item) => item._id === id);
 
-          dispatch(insertProductSale(payload))
-        } else {
-          toast.error("Not enough products in stock!!")
+        if (productTempItem) {
+          const payload = {
+            _id: productTempItem._id,
+            productTitle: productTempItem.productTitle,
+            productQuantity: 1,
+            productUnitPrice: productTempItem.productUnitPrice,
+            productUnitCost: productTempItem.productUnitCost,
+            productTotal: productTempItem.productUnitPrice,
+            productCurrentPurchaseId: productTempItem.productCurrentPurchaseId || null,
+          };
+
+          dispatch(insertProductSale(payload));
         }
-      })
-
-
+      } else {
+        toast.error("Not enough products in stock!!");
+      }
     }
 
   }

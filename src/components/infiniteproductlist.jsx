@@ -10,11 +10,10 @@ import Loading from '../components/loading';
 import Swal from 'sweetalert2';
 
 
-function InfiniteProductList() {
+function InfiniteProductList({products, isLoading, hasMore, type, handleProductClick}) {
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const { user } = useSelector((state) => state.auth)
-    const { products, isLoading, hasMore} = useSelector((state) => state.products)
     const { searchInput, searchRef } = useSelector((state) => state.search)
     const { customers } = useSelector((state) => state.customerState)
     const [isFetching, setIsFetching] = useState(false);
@@ -133,8 +132,15 @@ function InfiniteProductList() {
     return (
         <div className="product-container" ref={productContainerRef}>
             {products && products?.map((product, index) => (
-                <div key={product._id} ref={index === products.length - 1 ? lastProductRef : null}>
-                    <ProductCard image={product.productImageUrl} name={product.productTitle} price={product.productUnitPrice} />
+                <div key={product._id} ref={index === products.length - 1 ? lastProductRef : null} onClick={(e) => handleProductClick(product._id,e)}>
+                    <ProductCard 
+                        image={product.productImageUrl} 
+                        name={product.productTitle} 
+                        price={product.productUnitPrice} 
+                        quantity={product.productQuantity} 
+                        cost={product.productUnitCost} 
+                        type={type}
+                        />
                 </div>
             ))}
             {isLoading && <Loading />}
