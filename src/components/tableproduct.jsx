@@ -37,8 +37,12 @@ export default function BasicTable() {
     if (isError) {
       console.log(message)
     }
-    dispatch(allProducts())
-
+    let res = dispatch(allProducts()).unwrap()
+    console.log(" message ",res)
+    if(res === 'Invalid token'){
+      localStorage.removeItem('users');
+      navigate('/login')
+    }
   }, [user, isError, message, navigate, dispatch])
 
 

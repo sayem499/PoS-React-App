@@ -18,8 +18,11 @@ const navigate = useNavigate()
     }
 
     if(sales.length === 0){
-      dispatch(getSales())
-      
+      let res = dispatch(getSales()).unwrap()
+      if(res === 'Invalid token'){
+        localStorage.removeItem('users');
+        navigate('/login')
+    }
     }
 
     if(isFetchSaleSuccess){

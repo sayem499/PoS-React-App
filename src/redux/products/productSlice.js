@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit"; 
 import productService from "./productService";
-import { useNavigate } from 'react-router-dom'
 
 
 const initialState = {
@@ -35,13 +34,8 @@ export const allProducts = createAsyncThunk('products/allProducts', async (pageO
             pageObjc: pageObj ? pageObj.page : undefined
         };
     } catch (error){
-        const navigate = useNavigate();
         const message = (error.response && error.response.data && error.response.data.message)
         || error.message || error.toString()
-        if(message === 'Invalid token'){
-            localStorage.removeItem('users');
-            navigate('/login');
-        }
         return thunkAPI.rejectWithValue(message)
     }
 } )
@@ -63,13 +57,8 @@ export const loadMoreProducts = createAsyncThunk('products/loadMoreProducts', as
         };
 
     } catch (error){
-        const navigate = useNavigate();
         const message = (error.response && error.response.data && error.response.data.message)
         || error.message || error.toString()
-        if(message === 'Invalid token'){
-            localStorage.removeItem('users');
-            navigate('/login');
-        }
         return thunkAPI.rejectWithValue(message)
     }
 } )
