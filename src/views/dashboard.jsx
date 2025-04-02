@@ -18,11 +18,17 @@ const navigate = useNavigate()
     }
 
     if(sales.length === 0){
-      let res = dispatch(getSales()).unwrap()
-      if(res === 'Invalid token'){
-        localStorage.removeItem('users');
-        navigate('/login')
-    }
+      dispatch(getSales())
+      .unwrap()
+      .then((res) => {
+        if (res === 'Invalid token') {
+          localStorage.removeItem('users');
+          navigate('/login');
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching sales:", error);
+      });
     }
 
     if(isFetchSaleSuccess){

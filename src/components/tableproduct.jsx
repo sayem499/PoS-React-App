@@ -37,12 +37,17 @@ export default function BasicTable() {
     if (isError) {
       console.log(message)
     }
-    let res = dispatch(allProducts()).unwrap()
-    console.log(" message ",res)
-    if(res === 'Invalid token'){
-      localStorage.removeItem('users');
-      navigate('/login')
-    }
+    dispatch(allProducts())
+    .unwrap()
+    .then((res) => {
+      if (res === 'Invalid token') {
+        localStorage.removeItem('users');
+        navigate('/login');
+      }
+    })
+    .catch((error) => {
+      console.error("Error fetching products:", error);
+    });
   }, [user, isError, message, navigate, dispatch])
 
 
