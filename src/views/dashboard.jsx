@@ -21,13 +21,13 @@ const navigate = useNavigate()
       dispatch(getSales())
       .unwrap()
       .then((res) => {
-        if (res === 'Invalid token') {
-          localStorage.removeItem('users');
-          navigate('/login');
-        }
       })
       .catch((error) => {
         console.error("Error fetching sales:", error);
+        if (error === 'Invalid token') {
+          localStorage.removeItem('users');
+          navigate('/login');
+        }
       });
     }
 

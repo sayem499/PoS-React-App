@@ -40,13 +40,13 @@ export default function BasicTable() {
     dispatch(allProducts())
     .unwrap()
     .then((res) => {
-      if (res === 'Invalid token') {
-        localStorage.removeItem('users');
-        navigate('/login');
-      }
     })
     .catch((error) => {
       console.error("Error fetching products:", error);
+      if (error === 'Invalid token') {
+        localStorage.removeItem('users');
+        navigate('/login');
+      }
     });
   }, [user, isError, message, navigate, dispatch])
 
