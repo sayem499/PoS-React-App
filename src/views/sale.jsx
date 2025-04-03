@@ -42,11 +42,13 @@ import Salesettings from '../components/salesettings';
 import BarcodeReader from 'react-barcode-reader'
 import Swal from 'sweetalert2';
 import Receipt from '../components/receipt';
+import ProductCartListItem from '../components/productcartlistitem';
+import InfiniteProductList from '../components/infiniteproductlist';
 
 function Sale() {
   const navigate = useNavigate()
   const { user } = useSelector((state) => state.auth)
-  const { products } = useSelector((state) => state.products)
+  const { products, isLoading, hasMore } = useSelector((state) => state.products)
   const { purchase } = useSelector((state) => state.purchase)
   const { searchInput, searchRef } = useSelector((state) => state.search)
   const { customers } = useSelector((state) => state.customerState)
@@ -83,7 +85,7 @@ function Sale() {
   const elementRef = useRef(null)
   const printRef = useRef()
   let productTemp = [], fetch = JSON.parse(localStorage.getItem('sale-settings')), salePayload
-
+  const type = 'sale';
 
 
 
@@ -291,6 +293,7 @@ function Sale() {
             productUnitPrice: productTempItem.productUnitPrice,
             productUnitCost: productTempItem.productUnitCost,
             productTotal: productTempItem.productUnitPrice,
+            productImageUrl: productTempItem.productImageUrl,
             productCurrentPurchaseId: productTempItem.productCurrentPurchaseId || null,
           };
 
@@ -570,7 +573,7 @@ function Sale() {
       }
       <div className="container-row">
         <div className='card-container'>
-          <div className='table-header'>
+          {/* <div className='table-header'>
             <BarcodeReader onScan={handleScan} />
             <table className='table-header-table'>
               <tr>
@@ -601,7 +604,13 @@ function Sale() {
                 </ul>
               </div>
             )
-          })}
+          })} */}
+          <InfiniteProductList
+            products={filteredProducts}
+            isLoading={isLoading}
+            hasMore={hasMore}
+            type={type}
+            handleProductClick={handleProductClick} />
 
         </div>
         <div className='cart-container'>
@@ -649,7 +658,7 @@ function Sale() {
 
           </div>
           <hr></hr>
-          <div className='cart-list-header'>
+          {/* <div className='cart-list-header'>
             <table className='cart-list-header-table-header'>
               <tr>
                 <th>Name</th>
@@ -658,8 +667,8 @@ function Sale() {
                 <th>Total</th>
               </tr>
             </table>
-          </div>
-          <div className='product-cart-list-container'>
+          </div> */}
+          {/* <div className='product-cart-list-container'>
             {cartItems && cartItems.map((product, key) => {
 
               return (
@@ -701,7 +710,15 @@ function Sale() {
                 </div>
               )
             })}
-          </div>
+          </div> */}
+          <ProductCartListItem
+            cartItems={cartItems}
+            isLoading={isSaleLoading}
+            handleIncrement={handleIncrement}
+            handleDecrement={handleDecrement}
+            handleClose={handleClose}
+            type={type}
+          />
           <hr></hr>
           <div className='product-total'>
             <section>
