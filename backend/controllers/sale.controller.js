@@ -35,33 +35,35 @@ const setSales = asyncHandler( async (req, res) => {
   const userIdV = req.users._id;
   const invoiceId = generateInvoiceId();
 
-  const sale = await Sales.create({
-    products: req.body.products,
-    userId: userIdV,
-    invoiceId: invoiceId,
-    saleSubTotal: req.body.saleSubTotal,
-    saleVAT: req.body.saleVAT,
-    saleDiscount: req.body.saleDiscount,
-    saleTotal: req.body.saleTotal,
-    saleTotalCost: req.body.saleTotalCost,
-    salePayType: req.body.salePayType,
-    salePayByCard: req.body.salePayByCard,
-    salePayByCash: req.body.salePayByCash,
-    saleTime: req.body.saleTime,
-    saleDate: req.body.saleDate,
-    saleServedBy: req.body.saleServedBy,
-    saleLessAdjustment: req.body.saleLessAdjustment,
-    saleVATAmount: req.body.saleVATAmount,
-    saleDiscountAmount: req.body.saleDiscountAmount,
-    saleCustomerName: req.body.saleCustomerName,
-    saleCustomerPhoneNumber: req.body.saleCustomerPhoneNumber,
-    saleCashPaid: req.body.saleCashPaid,
-    saleChange: req.body.saleChange,
-  })
+  try {
+    const sale = await Sales.create({
+      products: req.body.products,
+      userId: userIdV,
+      invoiceId: invoiceId,
+      saleSubTotal: req.body.saleSubTotal,
+      saleVAT: req.body.saleVAT,
+      saleDiscount: req.body.saleDiscount,
+      saleTotal: req.body.saleTotal,
+      saleTotalCost: req.body.saleTotalCost,
+      salePayType: req.body.salePayType,
+      salePayByCard: req.body.salePayByCard,
+      salePayByCash: req.body.salePayByCash,
+      saleTime: req.body.saleTime,
+      saleDate: req.body.saleDate,
+      saleServedBy: req.body.saleServedBy,
+      saleLessAdjustment: req.body.saleLessAdjustment,
+      saleVATAmount: req.body.saleVATAmount,
+      saleDiscountAmount: req.body.saleDiscountAmount,
+      saleCustomerName: req.body.saleCustomerName,
+      saleCustomerPhoneNumber: req.body.saleCustomerPhoneNumber,
+      saleCashPaid: req.body.saleCashPaid,
+      saleChange: req.body.saleChange,
+    });
 
-  
-
-  res.status(200).json(sale)
+    res.status(200).json(sale)
+  } catch (error) {
+    res.status(200).json(error)
+  }
 })
 
 

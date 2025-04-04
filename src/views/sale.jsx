@@ -166,45 +166,48 @@ function Sale() {
   const handleQuantityUpdate = async () => {
     const updatedProducts = await Promise.all(
       cartItems.map(async (cartProduct) => {
+        let productCurrentPurchaseId = null;
         const product = products.find((p) => p._id === cartProduct._id);
         if (!product) return null;
-
+        
         try {
-          let purchase = await dispatch(getPurchaseById(product.productCurrentPurchaseId)).unwrap();
+          if (product.productCurrentPurchaseId) {
+            let purchase = await dispatch(getPurchaseById(product.productCurrentPurchaseId)).unwrap();
 
-          // Update productQuantitySold for the matching purchase product
-          let updatedPurchase = {
-            ...purchase,
-            purchaseProducts: purchase.purchaseProducts.map((purchaseProduct) => {
-              if (purchaseProduct._id === product._id) {
-                return {
-                  ...purchaseProduct,
-                  productQuantitySold: purchaseProduct.productQuantitySold + cartProduct.productQuantity,
-                };
+            // Update productQuantitySold for the matching purchase product
+            let updatedPurchase = {
+              ...purchase,
+              purchaseProducts: purchase.purchaseProducts.map((purchaseProduct) => {
+                if (purchaseProduct._id === product._id) {
+                  return {
+                    ...purchaseProduct,
+                    productQuantitySold: purchaseProduct.productQuantitySold + cartProduct.productQuantity,
+                  };
+                }
+                return purchaseProduct;
+              }),
+            };
+
+            // Update the purchase record in the database
+            await dispatch(updatePurchases({ purchaseID: purchase._id, updatedPurchaseData: updatedPurchase })).unwrap();
+
+            // Get updated product stock data
+            const currentProductData = updatedPurchase.purchaseProducts.find((p) => p._id === product._id);
+            let productCurrentPurchaseId = product.productCurrentPurchaseId;
+
+            // If the current purchase is fully sold, find a new one
+            if (currentProductData.productQuantitySold === currentProductData.productQuantity) {
+              let allPurchases = await dispatch(allPurchases()).unwrap(); // Fetch all purchases
+
+              let newPurchase = allPurchases.find((p) =>
+                p.purchaseProducts.some(
+                  (prod) => prod._id === product._id && prod.productQuantitySold < prod.productQuantity
+                )
+              );
+
+              if (newPurchase) {
+                productCurrentPurchaseId = newPurchase._id;
               }
-              return purchaseProduct;
-            }),
-          };
-
-          // Update the purchase record in the database
-          await dispatch(updatePurchases({ purchaseID: purchase._id, updatedPurchaseData: updatedPurchase })).unwrap();
-
-          // Get updated product stock data
-          const currentProductData = updatedPurchase.purchaseProducts.find((p) => p._id === product._id);
-          let productCurrentPurchaseId = product.productCurrentPurchaseId;
-
-          // If the current purchase is fully sold, find a new one
-          if (currentProductData.productQuantitySold === currentProductData.productQuantity) {
-            let allPurchases = await dispatch(allPurchases()).unwrap(); // Fetch all purchases
-
-            let newPurchase = allPurchases.find((p) =>
-              p.purchaseProducts.some(
-                (prod) => prod._id === product._id && prod.productQuantitySold < prod.productQuantity
-              )
-            );
-
-            if (newPurchase) {
-              productCurrentPurchaseId = newPurchase._id;
             }
           }
 
@@ -218,7 +221,9 @@ function Sale() {
             productUnitCost: product.productUnitCost,
             productBarcode: product.productBarcode,
             productCurrentPurchaseId,
-          };
+          }
+
+
         } catch (error) {
           console.error("Error updating purchase:", error);
           return null;
@@ -430,6 +435,7 @@ function Sale() {
 
 
         dispatch(registerSale(salePayload))
+        // dispatch(allProducts({page: 1}))
         Swal.fire('Confirmed!', '', 'success')
 
       } else if (result.isDenied) {
