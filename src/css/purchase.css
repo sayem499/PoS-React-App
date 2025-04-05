@@ -1,11 +1,33 @@
 .purchase-container {
     display: flex;  
-    flex-direction: row;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     height: 100vh;
     width: 100%;
+}
+
+.purchase-container-inner {
+    display: flex;  
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    height: 80%;
+    width: 100%;
     overflow: hidden;
+}
+
+.purchase-bottom-wrapper {
+    width: 100%;
+    height: 20%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0px;
+    /* border-style: outset; */
+    /* box-shadow: 0px 2px 20px gray; */
+
 }
 
 .purchase-product-list {
@@ -45,4 +67,90 @@
     /* border-style: outset; */
     /* box-shadow: 0px 2px 20px gray; */
 
+}
+
+.input-supplier-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Align to the start of the column */
+    width: 50%;
+    margin-left: 30px;
+}
+
+.input-supplier-wrapper .row {
+    display: flex;
+    flex-direction: row;  /* Place supplier name and phone in the same row */
+    gap: 20px; /* Adds spacing between the two inputs */
+    width: 100%;
+}
+
+.input-supplier-wrapper label {
+    font-weight: bold;
+}
+
+.supplier-label{
+    width: fit-content;
+    position: relative;
+    top: 10px;
+    left: 10px;
+    text-align: left;
+    background-color: #ffffffff;
+    margin: 2px 0px 2px 0px;
+    font-size: x-small;
+    font-weight: 500;
+    z-index: 10;
+}
+
+/* Basic input styles */
+.supplier-input {
+    width: 210px;
+    margin: 2px 0;
+    padding: 2px 7px;
+    border-width: 2px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    outline: none;
+    transition: box-shadow 0.2s ease-in-out, border-color 0.2s ease-in-out;
+  }
+  
+  /* Placeholder styling */
+  .supplier-input::placeholder {
+    font-size: 12px;
+    color: #a0a0a0;
+    opacity: 0.8;
+  }
+  
+  /* Focus styles for the input itself */
+  .supplier-input:focus {
+    border-color: #3b82f6 !important;
+    box-shadow: 0 0 5px rgba(59, 130, 246, 0.5) !important;
+  }
+  
+  /* Focus styling for the parent input-wrapper if needed */
+  .input-wrapper:focus-within .supplier-input {
+    border-color: #3b82f6;
+    box-shadow: 0 0 5px rgba(59, 130, 246, 0.5);
+  }
+
+
+.supplier-cash-input {
+    width: 200px;
+    margin: 2px 0 2px 0; /* Fixed syntax issue */
+    padding: 7px 5px;
+    border-width: 2px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    outline: none;
+    transition: box-shadow 0.2s ease-in-out, border-color 0.2s ease-in-out;
+}
+
+.supplier-cash-input::placeholder {
+    font-size: 12px; /* Smaller placeholder text */
+    color: #a0a0a0; /* Light gray color */
+    opacity: 0.8; /* Slightly transparent */
+}
+
+.supplier-cash-input:focus {
+    border-color: #3b82f6; /* Soft blue border */
+    box-shadow: 0 0 5px rgba(59, 130, 246, 0.5); /* Thin drop shadow */
 }

@@ -18,26 +18,17 @@ const purchaseSchema = new mongoose.Schema(
       ref: "Users", // Reference to the User model
       required: true,
     },
-    productSupplierId: {
+    purchaseSupplierId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Suppliers", // Reference to the Supplier model
       required: true,
     },
-/*     productQuantity: {
-      type: Number,
-      required: true,
-      min: 1, // Ensures at least 1 quantity
+    purchaseCustomerName: { 
+      type: String, 
     },
-    productUnitCost: {
-      type: Number,
-      required: true,
-      min: 0,
+    purchaseCustomerPhoneNumber: { 
+      type: String, 
     },
-    productTotalCost: {
-      type: Number,
-      required: true,
-      min: 0,
-    }, */
     purchaseTotalCost: {
       type: Number,
       required: true,
@@ -47,6 +38,12 @@ const purchaseSchema = new mongoose.Schema(
       type: Number,
       default: 0, // VAT percentage (e.g., 5 for 5%)
       min: 0,
+    },
+    purchaseTime: {
+      type: String
+    },
+    purchaseDate: { 
+      type: String, default: Date.now
     },
     purchaseVatAmount: {
       type: Number,

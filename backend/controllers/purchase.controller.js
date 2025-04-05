@@ -29,17 +29,17 @@ const setPurchase = asyncHandler( async (req, res) => {
         purchaseProducts: req.body.purchaseProducts,
         invoiceId: invoiceId,
         userId: req.users._id, // Assuming the user is authenticated and `req.users` contains user info
-        productSupplierId: req.body.productSupplierId,
-        // productQuantity: req.body.productQuantity,
-        // productQuantitySold: 0,
-        // productUnitCost: req.body.productUnitCost,
-        // productTotalCost: req.body.productTotalCost,
+        purchaseSupplierId: req.body.purchaseSupplierId,
+        purchaseSupplierName: req.body.purchaseSupplierName,
+        purchaseSupplierPhoneNumber: req.body.purchaseSupplierPhoneNumber,
+        purchaseTime: req.body.purchaseTime,
+        purchaseDate: req.body.purchaseDate,
         purchaseTotalCost: req.body.purchaseTotalCost,
         purchaseVat: req.body.purchaseVat || 0,
         purchaseVatAmount: req.body.purchaseVatAmount || 0,
         purchaseDiscount: req.body.purchaseDiscount || 0,
     });
-    console.log(purchase);
+
     for (const purchaseProduct of req.body.purchaseProducts) {
       // Find the product and update its quantity & latest cost
       const product = await Products.findById(purchaseProduct._id);

@@ -19,8 +19,9 @@ const initialState = {
   purchaseLessAdjustment: 0,
   purchaseVATAmount: 0,
   purchaseDiscountAmount: 0,
-  purchaseCustomerName: "",
-  purchaseCustomerPhoneNumber: "",
+  
+  purchaseSupplierName: "",
+  purchaseSupplierPhoneNumber: "",
   purchaseCashPaid: 0,
   purchaseChange: 0,
   totalPurchase: 0,
@@ -54,7 +55,7 @@ export const allPurchases = createAsyncThunk(
   }
 );
 
-export const setPurchases = createAsyncThunk(
+export const registerPurchase = createAsyncThunk(
   "purchases/setPurchases",
   async (purchases, thunkAPI) => {
     try {
@@ -282,10 +283,14 @@ export const purchaseSlice = createSlice({
       state.grossMargin = (state.grossProfit / state.totalSale) * 100;
     },
 
-    // insertCustomerInfo: (state, action) => {
-    //   state.saleCustomerName = action.payload.customerName;
-    //   state.saleCustomerPhoneNumber = action.payload.customerPhoneNumber;
-    // },
+    insertSupplierName: (state, action) => {
+      console.log(action.payload)
+      state.purchaseSupplierName = action.payload.supplierName;
+    },
+
+    insertSupplierPhoneNumber: (state, action) => {
+      state.purchaseSupplierPhoneNumber = action.payload.supplierPhoneNumber;
+    },
 
     insertCashPaid: (state, action) => {
       state.purchaseCashPaid = action.payload;
@@ -320,15 +325,15 @@ export const purchaseSlice = createSlice({
         state.isError = true;
         state.message = action.payload;
       })
-      .addCase(setPurchases.pending, (state) => {
+      .addCase(registerPurchase.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(setPurchases.fulfilled, (state, action) => {
+      .addCase(registerPurchase.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
         state.purchases = state.purchases.concat(action.payload);
       })
-      .addCase(setPurchases.rejected, (state, action) => {
+      .addCase(registerPurchase.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;
@@ -409,7 +414,8 @@ export const {
     cartTotalCost,
     calculateGrossProfit,
     calculateGrossMargin,
-    insertCustomerInfo,
+    insertSupplierName,
+    insertSupplierPhoneNumber,
     insertCashPaid,
     calculateChange, 
 
