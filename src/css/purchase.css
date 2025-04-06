@@ -120,14 +120,7 @@
     opacity: 0.8;
   }
   
-  /* Focus styles for the input itself */
-  .supplier-input:focus {
-    border-color: #3b82f6 !important;
-    box-shadow: 0 0 5px rgba(59, 130, 246, 0.5) !important;
-  }
-  
-  /* Focus styling for the parent input-wrapper if needed */
-  .input-wrapper:focus-within .supplier-input {
+  .supplier-input.focused {
     border-color: #3b82f6;
     box-shadow: 0 0 5px rgba(59, 130, 246, 0.5);
   }

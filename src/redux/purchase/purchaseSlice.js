@@ -19,7 +19,7 @@ const initialState = {
   purchaseLessAdjustment: 0,
   purchaseVATAmount: 0,
   purchaseDiscountAmount: 0,
-  
+  purchaseSupplierId: "",
   purchaseSupplierName: "",
   purchaseSupplierPhoneNumber: "",
   purchaseCashPaid: 0,
@@ -283,8 +283,11 @@ export const purchaseSlice = createSlice({
       state.grossMargin = (state.grossProfit / state.totalSale) * 100;
     },
 
+    insertSupplierId:(state, action) => {
+      state.purchaseSupplierId = action.payload;
+    },
+
     insertSupplierName: (state, action) => {
-      console.log(action.payload)
       state.purchaseSupplierName = action.payload.supplierName;
     },
 
@@ -313,29 +316,29 @@ export const purchaseSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(allPurchases.pending, (state) => {
-        state.isLoading = true;
+        state.isPurchaseLoading = true;
       })
       .addCase(allPurchases.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.isSuccess = true;
+        state.isPurchaseLoading = false;
+        state.isPurchaseSuccess = true;
         state.purchases = action.payload;
       })
       .addCase(allPurchases.rejected, (state, action) => {
-        state.isLoading = false;
-        state.isError = true;
+        state.isPurchaseLoading = false;
+        state.isPurchaseError = true;
         state.message = action.payload;
       })
       .addCase(registerPurchase.pending, (state) => {
-        state.isLoading = true;
+        state.isPurchaseLoading = true;
       })
       .addCase(registerPurchase.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.isSuccess = true;
+        state.isPurchaseLoading = false;
+        state.isPurchaseSuccess = true;
         state.purchases = state.purchases.concat(action.payload);
       })
       .addCase(registerPurchase.rejected, (state, action) => {
-        state.isLoading = false;
-        state.isError = true;
+        state.isPurchaseLoading = false;
+        state.isPurchaseError = true;
         state.message = action.payload;
       })
       .addCase(deletePurchase.pending, (state) => {
@@ -414,6 +417,7 @@ export const {
     cartTotalCost,
     calculateGrossProfit,
     calculateGrossMargin,
+    insertSupplierId,
     insertSupplierName,
     insertSupplierPhoneNumber,
     insertCashPaid,

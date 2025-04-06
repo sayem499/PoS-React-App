@@ -29,12 +29,14 @@ import {
   insertTimeDate,
   registerPurchase,
   cartTotalCost,
+  insertSupplierId,
   insertSupplierName,
   insertSupplierPhoneNumber,
   insertCashPaid,
   calculateChange,
 
 } from '../redux/purchase/purchaseSlice';
+import { allProducts, reset, updateProducts } from '../redux/products/productSlice';
 import { getSupplier } from '../redux/supplier/supplierSlice';
 import Salesettings from '../components/salesettings';
 import Swal from 'sweetalert2';
@@ -74,6 +76,8 @@ const Purchase = () => {
   } = useSelector((state => state.purchase))
   const [isSaleSettingsOpen, setIsSaleSettingsOpen] = useState(false)
   const [isReceiptOpen, setIsReceiptOpen] = useState(false)
+  const [isFocused, setIsFocused] = useState(false);
+  const [isNameFocused, setIsNameFocused] = useState(false);
 
   let productTemp = [], fetch = JSON.parse(localStorage.getItem('sale-settings')), salePayload
 
@@ -186,7 +190,7 @@ const Purchase = () => {
   /* Function to handle confirm button click */
   const handleConfirm = (e) => {
     e.preventDefault()
-    let purchaseTime, purchaseDate, payload, products, customerPayload, purchasepurchaseSupplierName, purchasesupplierPhoneNumber, flag = false, updateCustomerPayload, newCustomerPayload
+    let purchaseTime, purchaseDate, payload, purchaseProducts, customerPayload, purchasepurchaseSupplierName, purchasesupplierPhoneNumber, flag = false, updateCustomerPayload, newCustomerPayload
     // customerPayload = {
     //   purchaseSupplierName,
     //   supplierPhoneNumber,
@@ -252,12 +256,12 @@ const Purchase = () => {
 
 
 
-    products = [...cartItems]
+    purchaseProducts = [...cartItems]
     let purchasePayload = {
-      products,
+      purchaseProducts,
       purchaseSupplierId,
-      purchasepurchaseSupplierName,
-      purchasesupplierPhoneNumber,
+      purchaseSupplierName,
+      purchaseSupplierPhoneNumber,
       purchaseSubTotal,
       purchaseVAT,
       purchaseDiscount,
@@ -296,7 +300,6 @@ const Purchase = () => {
 
 
         dispatch(registerPurchase(purchasePayload))
-        // dispatch(allProducts({page: 1}))
         Swal.fire('Confirmed!', '', 'success')
 
       } else if (result.isDenied) {
@@ -345,9 +348,13 @@ const Purchase = () => {
     if (isPurchaseError) {
       toast.error("Purchase Confirmation Error!!")
     }
+    if (isPurchaseSuccess){
+      dispatch(resetPurchase())
+      dispatch(allProducts({page: 1}))
+    }
     //dispatch(insertCashPaid(customerCashPaid))
     dispatch(calculateChange())
-  }, [user, navigate, dispatch, cartItems, purchaseTotal, paymentMethod, isPurchaseLoading])
+  }, [user, navigate, dispatch, cartItems, purchaseTotal, paymentMethod, isPurchaseLoading, isPurchaseSuccess])
 
   useEffect(() => {
     if (suppliers.length == 0) {
@@ -383,7 +390,6 @@ const Purchase = () => {
   }
 
   const handleSupplierNameChange = (value) => {
-    console.log(value)
     dispatch(insertSupplierName({ supplierName: value }));
   }
 
@@ -391,8 +397,12 @@ const Purchase = () => {
     dispatch(insertSupplierPhoneNumber({ supplierPhoneNumber: value }));
   }
 
-  const handleCashPaid = (value) => {
+  const handleSupplierIdChange = (value) => {
+    dispatch(insertSupplierId(value));
+  } 
 
+  const handleCashPaid = (value) => {
+    dispatch(insertCashPaid(value));
   }
 
   return (
@@ -598,92 +608,105 @@ const Purchase = () => {
           <div className="row">
             <div>
               <label className='supplier-label' htmlFor='purchaseSupplierName'>Supplier Name</label>
-              <CreatableSelect
-                className='supplier-input'
-                options={supplierOptions}
-                value={supplierOptions.find(opt => opt.value === purchaseSupplierName) || { label: purchaseSupplierName, value: purchaseSupplierName }}
-                onChange={(newValue) => {
-                  console.log('New value:', newValue);
-                  handleSupplierNameChange(newValue?.value || '');
-                  const matched = supplierOptions.find(opt => opt.value === newValue?.value);
-                  if (matched) {
-                    handleSupplierPhoneNumberChange(matched.supplierPhoneNumber);
+              <div className={`supplier-input ${isNameFocused ? 'focused' : ''}`}>
+                <CreatableSelect
+                  className="w-full"
+                  options={supplierOptions}
+                  value={
+                    supplierOptions.find(opt => opt.value === purchaseSupplierName) ||
+                    { label: purchaseSupplierName, value: purchaseSupplierName }
                   }
-                }}
-                placeholder="Select or type supplier name"
-                isClearable
-                styles={{
-                  control: (base, state) => ({
-                    ...base,
-                    backgroundColor: 'transparent',
-                    border: 'none',
-                    boxShadow: 'none',
-                    minHeight: 'auto',
-                  }),
-                  valueContainer: (base) => ({
-                    ...base,
-                    padding: 0,
-                  }),
-                  input: (base) => ({
-                    ...base,
-                    margin: 0,
-                    padding: 0,
-                  }),
-                  indicatorsContainer: (base) => ({
-                    ...base,
-                    padding: 0,
-                  }),
-                  menu: (base) => ({
-                    ...base,
-                    zIndex: 20,
-                  }),
-                }}
-              />
+                  onChange={(newValue) => {
+                    handleSupplierNameChange(newValue?.value || '');
+                    const matched = supplierOptions.find(opt => opt.value === newValue?.value);
+                    if (matched) {
+                      handleSupplierPhoneNumberChange(matched.supplierPhoneNumber);
+                      handleSupplierIdChange(newValue?._id || '');
+                    }
+                  }}
+                  onFocus={() => setIsNameFocused(true)}
+                  onBlur={() => setIsNameFocused(false)}
+                  placeholder="Select or type supplier name"
+                  isClearable
+                  styles={{
+                    control: (base) => ({
+                      ...base,
+                      backgroundColor: 'transparent',
+                      border: 'none',
+                      boxShadow: 'none',
+                      minHeight: 'auto',
+                    }),
+                    valueContainer: (base) => ({
+                      ...base,
+                      padding: 0,
+                    }),
+                    input: (base) => ({
+                      ...base,
+                      margin: 0,
+                      padding: 0,
+                    }),
+                    indicatorsContainer: (base) => ({
+                      ...base,
+                      padding: 0,
+                    }),
+                    menu: (base) => ({
+                      ...base,
+                      zIndex: 20,
+                    }),
+                  }}
+                />
+              </div>
             </div>
 
             <div>
               <label className='supplier-label' htmlFor='supplierPhoneNumber'>Supplier Mobile No.</label>
-              <CreatableSelect
-                className='supplier-input'
-                options={supplierPhoneOptions}
-                value={supplierPhoneOptions.find(opt => opt.value === purchaseSupplierPhoneNumber) || { label: purchaseSupplierPhoneNumber, value: purchaseSupplierPhoneNumber }}
-                onChange={(newValue) => {
-                  console.log('New value phone:', newValue);
-                  handleSupplierPhoneNumberChange(newValue?.value || '');
-                  const matched = supplierPhoneOptions.find(opt => opt.value === newValue?.value);
-                  if (matched) {
-                    handleSupplierNameChange(newValue?.supplierName || '');
+              <div className={`supplier-input ${isFocused ? 'focused' : ''}`}>
+                <CreatableSelect
+                  options={supplierPhoneOptions}
+                  value={
+                    supplierPhoneOptions.find(opt => opt.value === purchaseSupplierPhoneNumber) ||
+                    { label: purchaseSupplierPhoneNumber, value: purchaseSupplierPhoneNumber }
                   }
-                }}
-                placeholder="Select or type supplier phone"
-                isClearable
-                styles={{
-                  control: (base, state) => ({
-                    ...base,
-                    backgroundColor: 'transparent',
-                    border: 'none',
-                    boxShadow: 'none',
-                    minHeight: 'auto',
-                  }),
-                  valueContainer: (base) => ({
-                    ...base,
-                    padding: 0,
-                  }),
-                  input: (base) => ({
-                    ...base,
-                    margin: 0,
-                    padding: 0,
-                  }),
-                  indicatorsContainer: (base) => ({
-                    ...base,
-                    padding: 0,
-                  }),
-                  menu: (base) => ({
-                    ...base,
-                    zIndex: 20,
-                  }),
-                }}
-              />
+                  onChange={(newValue) => {
+                    handleSupplierPhoneNumberChange(newValue?.value || '');
+                    const matched = supplierPhoneOptions.find(opt => opt.value === newValue?.value);
+                    if (matched) {
+                      handleSupplierNameChange(newValue?.supplierName || '');
+                      handleSupplierIdChange(newValue?._id || '');
+                    }
+                  }}
+                  onFocus={() => setIsFocused(true)}
+                  onBlur={() => setIsFocused(false)}
+                  placeholder="Select or type supplier phone"
+                  isClearable
+                  styles={{
+                    control: (base) => ({
+                      ...base,
+                      backgroundColor: 'transparent',
+                      border: 'none',
+                      boxShadow: 'none',
+                      minHeight: 'auto',
+                    }),
+                    valueContainer: (base) => ({
+                      ...base,
+                      padding: 0,
+                    }),
+                    input: (base) => ({
+                      ...base,
+                      margin: 0,
+                      padding: 0,
+                    }),
+                    indicatorsContainer: (base) => ({
+                      ...base,
+                      padding: 0,
+                    }),
+                    menu: (base) => ({
+                      ...base,
+                      zIndex: 20,
+                    }),
+                  }}
+                />
+              </div>
             </div>
           </div>
 
