@@ -1,4 +1,4 @@
-import { useLayoutEffect } from 'react'
+import { useEffect } from 'react'
 import '../css/dashboard.css'
 import { getSales, resetSale } from '../redux/sale/saleSlice'
 import { useSelector, useDispatch } from 'react-redux'
@@ -11,7 +11,7 @@ const {user} = useSelector(state => state.auth)
 const {sales, totalSale, averageSale, grossProfit, grossMargin, isFetchSaleSuccess, message} = useSelector((state) => state.sale)
 const dispatch = useDispatch()
 const navigate = useNavigate()
-  useLayoutEffect(()=>{
+  useEffect(()=>{
 
     if(!user){
       navigate('/login')
