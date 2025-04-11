@@ -5,8 +5,9 @@ const Sale = require("../models/sale.model");
 const Customer = require("../models/customer.model");
 const Supplier = require("../models/supplier.model");
 const Purchase = require("../models/purchase.model");
+const Accounts = require('../model/account.model');
 
-const mongoURI = "mongodb://localhost:27017/yourDatabase"; // Change this to your actual DB URI
+const mongoURI = process.env.ATLAS_URI; 
 
 async function migrate() {
   try {
@@ -20,7 +21,8 @@ async function migrate() {
     await Sale.create({}).then((doc) => Sale.deleteOne({ _id: doc._id }));
     await Customer.create({}).then((doc) => Customer.deleteOne({ _id: doc._id }));
     await Supplier.create({}).then((doc) => Supplier.deleteOne({ _id: doc._id }));
-    await Purchase.create({}).then((doc) => Product.deleteOne({ _id: doc._id }));
+    await Purchase.create({}).then((doc) => Purchase.deleteOne({ _id: doc._id }));
+    await Accounts.create({}).then((doc) => Accounts.deleteOne({ _id: doc._id }));
 
 
     console.log("Collections created successfully!");
