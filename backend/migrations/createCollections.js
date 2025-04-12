@@ -6,6 +6,8 @@ const Customer = require("../models/customer.model");
 const Supplier = require("../models/supplier.model");
 const Purchase = require("../models/purchase.model");
 const Accounts = require('../model/account.model');
+const PaymentTypes = require('../model/paymenttype.model');
+const PaymentAccounts = require('../model/paymentaccount.model');
 
 const mongoURI = process.env.ATLAS_URI; 
 
@@ -23,6 +25,8 @@ async function migrate() {
     await Supplier.create({}).then((doc) => Supplier.deleteOne({ _id: doc._id }));
     await Purchase.create({}).then((doc) => Purchase.deleteOne({ _id: doc._id }));
     await Accounts.create({}).then((doc) => Accounts.deleteOne({ _id: doc._id }));
+    await PaymentTypes.create({}).then((doc) => PaymentTypes.deleteOne({ _id: doc._id }));
+    await PaymentAccounts.create({}).then((doc) => PaymentAccounts.deleteOne({ _id: doc._id }));
 
 
     console.log("Collections created successfully!");

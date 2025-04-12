@@ -8,7 +8,7 @@ const {
     deleteAccount
 } = require('../controllers/account.controller.js');
 
-const { protect } = require('../middleware/authMiddleware');
+const { protect } = require('../middleware/authMiddleware.js');
 
 router.route('/')
     .get(protect, getAccounts)

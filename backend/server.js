@@ -28,7 +28,9 @@ app.use('/api/products', require('./routes/product.routes'))
 app.use('/api/users', require('./routes/user.routes'))
 app.use('/api/customers', require('./routes/customer.routes'))
 app.use('/api/suppliers', require('./routes/supplier.routes'))
-app.use('/api/accounts', require('./routes/accounts.routes'))
+app.use('/api/accounts', require('./routes/account.routes'))
+app.use('/api/paymenttypes', require('./routes/paymenttype.routes'))
+app.use('/api/paymentaccounts', require('./routes/paymentaccount.routes'))
 app.use('/api/uploads', require('./routes/image.routes'))
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/api/search', require('./routes/search.routes'));
