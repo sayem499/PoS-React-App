@@ -2,7 +2,11 @@ const mongoose = require('mongoose')
 
 const saleSchema = mongoose.Schema({
     products:{ type: Array, required:true},
-    userId:{ type:String, required:true },
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Users", // Reference to the User model
+        required: true,
+    },
     invoiceId: { type:String, requred:true},
     saleSubTotal: {type: Number, required: true},
     saleVAT: {type:Number, required: true},

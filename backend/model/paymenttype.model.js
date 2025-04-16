@@ -2,10 +2,10 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const PaymentTypeSchema = new Schema({
-  user_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    default: null,
+  userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Users", // Reference to the User model
+      required: true,
   },
   type_name: {
     type: String,

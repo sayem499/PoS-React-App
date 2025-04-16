@@ -2,6 +2,11 @@
 const mongoose = require('mongoose')
 
 const  productSchema = mongoose.Schema({
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Users", // Reference to the User model
+        required: true,
+    },
     productTitle: {type: String, required: true},
     productBrand: {type: String},
     productQuantity: {type: Number, required: true},

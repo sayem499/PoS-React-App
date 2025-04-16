@@ -2,10 +2,10 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const AccountSchema = new Schema({
-  user_id: {
+  userId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    default: null,
+    ref: "Users", // Reference to the User model
+    required: true,
   },
   invoice: {
     type: String,
