@@ -6,6 +6,7 @@ import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import GroupAddTwoToneIcon from '@mui/icons-material/GroupAddTwoTone';
 import StorefrontOutlinedIcon from '@mui/icons-material/StorefrontOutlined';
 import PurchaseIcon from '../assets/box.png';
+import SettingsIcon from '@mui/icons-material/Settings';
 export const SidebarData = [
 
     {
@@ -44,5 +45,10 @@ export const SidebarData = [
         title: "Users",
         icon:  <GroupAddTwoToneIcon/>,
         link:  "/users"
+    },
+    {
+        title: "Settings",
+        icon:  <SettingsIcon/>,
+        link:  "/settings"
     },
 ]

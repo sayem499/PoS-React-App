@@ -56,7 +56,9 @@ function Layout ({children}){
            </ul>
          </motion.div>
          <motion.div animate = {{marginLeft: isOpen ? "0px" : "0px"}} className='Outlet'>
-         <Searchbar/>
+         <div className='searchbar-container'>
+            <Searchbar/>
+        </div>
          <div className='Outlet-Inner'>
              <Outlet/>
          </div>

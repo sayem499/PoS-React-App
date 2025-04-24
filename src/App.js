@@ -10,6 +10,7 @@ import Login from "./views/login.jsx";
 import Users from "./views/users.jsx";
 import Sale from "./views/sale.jsx";
 import Purchase from "./views/purchase.jsx";
+import Settings from "./views/settings.jsx";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -30,6 +31,7 @@ function App() {
             <Route path="suppliers" element={<Suppliers />} />
             <Route path="profile" element={<Profile />} />
             <Route path="users" element={<Users />} />
+            <Route path="settings" element={<Settings />} />
           </Route>
         </Routes>
       </BrowserRouter>
