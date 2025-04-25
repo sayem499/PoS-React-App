@@ -8,6 +8,7 @@
 
 .settings-wrapper {
     display: flex;
+    justify-items: center;
     flex-direction: column;
     margin: 10px;
     padding: 30px;
@@ -15,4 +16,81 @@
     background-color: rgb(255, 255, 255);
     border: 1px solid rgba(238, 234, 234, 0.813);
     border-radius: 10px;
+}
+
+.settings-top-bar {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.settings-title {
+    display: flex;
+    width: 100%;
+}
+
+.settings-tabs {
+    display: flex;
+    width: 100%;
+
+}
+
+.settings-tab-list-container {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+}
+
+.settings-tab-list {
+    list-style-type: none;
+    color: rgb(118, 121, 124);
+    font-weight: 400;
+    margin-left: 10px;
+    width: 85px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.settings-tab-list:hover {
+    list-style-type: none;
+    margin-left: 10px;
+    width: 85px;
+    height: 40px;
+    color: rgb(0, 0, 0);
+    font-weight: 400;
+    border: 1px solid transparent;
+    background-color: rgb(245, 245, 245);
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.settings-tab-list-selected {
+    list-style-type: none;
+    margin-left: 10px;
+    width: 85px;
+    height: 40px;
+    color: rgb(0, 0, 0);
+    font-weight: 400;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid transparent;
+    background-color: rgb(245, 245, 245);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.settings-content {
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
 }

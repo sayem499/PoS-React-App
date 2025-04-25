@@ -15,6 +15,7 @@ function Products(){
 
   useEffect(() => {
     if (!user) {
+      localStorage.removeItem('user');
       navigate('/login')
     }
 
@@ -26,20 +27,21 @@ function Products(){
     setIsAddProductOpen(true)
    }
 
-  
-    return(
-        <div className='productpage'>
-          <button className='add-product-btn' onClick={handleButtonClick}>Add Product</button>
-          {isAddProductOpen && <Addproduct closeAddProduct = { () => {
-            setIsAddProductOpen(false)
-          } } />}
-          {user ?  
-           <BasicTable/>
-           :
-           navigate('/login')
-          }
-        </div>
-    )
+   if (!user) return null; // or return a loading spinner
+
+   return (
+     <div className='productpage'>
+       <button className='add-product-btn' onClick={() => setIsAddProductOpen(true)}>
+         Add Product
+       </button>
+ 
+       {isAddProductOpen && (
+         <Addproduct closeAddProduct={() => setIsAddProductOpen(false)} />
+       )}
+ 
+       <BasicTable />
+     </div>
+   );
 }
 
 export default Products
