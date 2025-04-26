@@ -8,7 +8,7 @@ const PaymentAccounts = require('../model/paymentaccount.model');
 const getPaymentTypes = asyncHandler(async (req, res) => {
   const userIdV = req.users._id;
   // First, get the payment types of the user
-  const types = await PaymentTypes.find({ user_id: userIdV });
+  const types = await PaymentTypes.find({ userId: userIdV });
 
   // Then for each type, fetch its related payment accounts
   const typesWithAccounts = await Promise.all(
@@ -21,17 +21,17 @@ const getPaymentTypes = asyncHandler(async (req, res) => {
       };
     })
   );
-  res.status(200).json(types);
+  res.status(200).json(typesWithAccounts);
 });
 
 // @desc    Create new payment type
 // @route   POST /api/payment-types
 // @access  Private
 const setPaymentType = asyncHandler(async (req, res) => {
-  const { user_id, type_name, type_image } = req.body;
-
+  const { type_name, type_image } = req.body;
+  const userId = req.users._id;
   const paymentType = await PaymentTypes.create({
-    user_id,
+    userId,
     type_name,
     type_image
   });

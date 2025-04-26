@@ -3,7 +3,7 @@ import axios from 'axios'
 const API_URL = process.env.REACT_APP_ORIGIN_URL + '/api/uploads/'
 
 const imageUpload = async (type, file, data, token) => {
-    if (!["logos", "profiles", "products"].includes(type)) {
+    if (!["logos", "profiles", "products", "paymentTypes"].includes(type)) {
         throw new Error("Invalid upload type");
     }
     const formData = new FormData();

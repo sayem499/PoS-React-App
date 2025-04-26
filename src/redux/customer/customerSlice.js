@@ -120,7 +120,7 @@ export const customerSlice = createSlice({
                 state.isCustomerError = true
                 state.message = action.payload
             })
-            .addCase(deleteCustomer.pending, (state, action) => {
+            .addCase(deleteCustomer.pending, (state) => {
                 state.isCustomerLoading = true
             })
             .addCase(deleteCustomer.fulfilled, (state, action) => {

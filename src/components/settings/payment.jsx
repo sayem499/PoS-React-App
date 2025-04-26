@@ -1,13 +1,54 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import '../../css/settings/payment.css';
+import { useSelector, useDispatch } from 'react-redux'
+import { imageUpload } from '../../redux/upload/uploadSlice'
+import { allPaymentTypes, setPaymentType } from '../../redux/payment/paymentSlice';
+import { toast } from 'react-toastify'
+import { useNavigate } from 'react-router-dom'
 
 const Payment = () => {
-    const [paymentTypes, setPaymentTypes] = useState([{ type_name: "Bikash", type_image: null }]);
+    const navigate = useNavigate()
+    const dispatch = useDispatch()
+    const { user } = useSelector((state) => state.auth)
+    const { paymentTypes, isPaymentTypesLoading, isPaymentTypesError, isPaymentTypesSuccess, message } = useSelector((state) => state.paymentTypeState)
+    //const [paymentTypes, setPaymentTypes] = useState([]);
     const [showAddPaymentModal, setShowAddPaymentModal] = useState(false);
     const [newTypeName, setNewTypeName] = useState('');
     const [newTypeImage, setNewTypeImage] = useState('');
-    const handleAddPayment = () => {
-        // setPaymentTypes(prev => [...prev, { type_name: newTypeName, type_image: newTypeImage }]);
+    const [newTypeImageFile, setNewTypeImageFile] = useState('');
+    const handleAddPayment = async (e) => {
+        let paymentTypeImageUrl = null;
+        if (newTypeImageFile) {
+            const payload = {
+                type: 'paymentTypes',
+                file: newTypeImageFile,
+                data: {
+                    previousImageUrl: null
+                }
+            }
+
+            const response = await dispatch(imageUpload(payload)).unwrap()
+            paymentTypeImageUrl = response.filePath
+        }
+        if (newTypeName === '')
+            toast.error('Please fill the required fields!')
+
+        let paymentTypeData = {
+            type_name: newTypeName,
+            type_image: paymentTypeImageUrl
+        }
+
+        try {
+            dispatch(setPaymentType(paymentTypeData))
+
+        } catch (error) {
+            console.log(error)
+        }
+
+        if (isPaymentTypesSuccess) {
+            toast.success('Payment type created successfully!')
+        }
+
         setNewTypeName('');
         setNewTypeImage('');
         setShowAddPaymentModal(false);
@@ -17,6 +58,18 @@ const Payment = () => {
         setNewTypeImage('');
         setShowAddPaymentModal(false);
     }
+
+    useEffect(() => {
+        if (!user) {
+            navigate('/login')
+        }
+
+        if(paymentTypes.length === 0){
+            dispatch(allPaymentTypes())
+        }
+        console.log(paymentTypes)
+
+    }, [])
 
     return (
         <div className='settings-payment-container'>
@@ -31,10 +84,10 @@ const Payment = () => {
                     {
                         paymentTypes.map((payment) => (
                             <div className='settings-payment-card-item'>
-                                <span>{payment?.type_name}</span>
+                                <span className='settings-payment-typename'>{payment?.type_name}</span>
                                 <span>
-                                    {payment?.type?.image
-                                        ? <img src={payment.type.image} alt={payment.type_name} />
+                                    {payment?.type_image
+                                        ? <img src={payment.type_image} alt={payment.type_name} style={{ height: '50px', width: '60px' }} />
                                         : payment?.type_name
                                             ?.split(' ')
                                             .map(word => word[0])
@@ -68,6 +121,7 @@ const Payment = () => {
                                     reader.onloadend = () => {
                                         setNewTypeImage(reader.result); // Save base64 image
                                     };
+                                    setNewTypeImageFile(file);
                                     reader.readAsDataURL(file);
                                 }
                             }}
