@@ -1,11 +1,26 @@
 const asyncHandler = require('express-async-handler');
 const PaymentTypes = require('../model/paymenttype.model');
+const PaymentAccounts = require('../model/paymentaccount.model');
 
 // @desc    Get all payment types
 // @route   GET /api/payment-types
 // @access  Private
 const getPaymentTypes = asyncHandler(async (req, res) => {
-  const types = await PaymentTypes.find();
+  const userIdV = req.users._id;
+  // First, get the payment types of the user
+  const types = await PaymentTypes.find({ user_id: userIdV });
+
+  // Then for each type, fetch its related payment accounts
+  const typesWithAccounts = await Promise.all(
+    types.map(async (type) => {
+      const accounts = await PaymentAccounts.find({ payment_type_id: type._id });
+
+      return {
+        ...type._doc, // spread the original payment type fields
+        paymentAccounts: accounts, // add paymentAccounts array
+      };
+    })
+  );
   res.status(200).json(types);
 });
 
