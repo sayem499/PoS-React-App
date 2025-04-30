@@ -7,6 +7,7 @@ import saleReducer from '../redux/sale/saleSlice.js'
 import customerReducer from '../redux/customer/customerSlice.js'
 import supplierReducer from '../redux/supplier/supplierSlice.js'
 import purchaseReducer from '../redux/purchase/purchaseSlice.js'
+import paymentTypeReducer from '../redux/payment/paymentSlice.js'
 import uploadReducer from '../redux/upload/uploadSlice.js'
 
 export const store = configureStore({
@@ -19,6 +20,7 @@ export const store = configureStore({
         supplierState: supplierReducer,
         search: searchReducer,
         sale: saleReducer,
+        paymentTypeState: paymentTypeReducer,
         upload: uploadReducer
 
     },

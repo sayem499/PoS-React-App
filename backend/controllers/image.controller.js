@@ -4,7 +4,7 @@ const path = require('path');
 const fs = require('fs');
 
 
-const imageCategories = ['logos', 'profiles', 'products'];
+const imageCategories = ['logos', 'profiles', 'products', 'paymentTypes'];
 
 
 //@dec Configure Multer Storage for Dynamic Destination
