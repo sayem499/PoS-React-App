@@ -16,6 +16,15 @@
     flex-direction: column;
 }
 
+.settings-payment-card-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 5px;
+  margin: 10px;
+}
+
 .settings-payment-notfound {
     width: 100%;
     display: flex;
@@ -36,6 +45,20 @@
 .settings-payment-typename {
   font-size: 18px;
   font-weight: bold;
+}
+
+.settings-payment-card-item-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.settings-payment-card-item-actions > * + * {
+  margin-left: 0.75rem; /* Equivalent to Tailwind's space-x-3 */
+}
+
+.settings-payment-card-item-actions span {
+  cursor: pointer;
 }
 
 .settings-payment-add {

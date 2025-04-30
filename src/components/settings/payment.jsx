@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react'
 import '../../css/settings/payment.css';
 import { useSelector, useDispatch } from 'react-redux'
 import { imageUpload } from '../../redux/upload/uploadSlice'
-import { allPaymentTypes, setPaymentType } from '../../redux/payment/paymentSlice';
+import { allPaymentTypes, setPaymentType, updatePaymentType, deletePaymentType } from '../../redux/payment/paymentSlice';
 import { toast } from 'react-toastify'
 import { useNavigate } from 'react-router-dom'
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 
 const Payment = () => {
     const navigate = useNavigate()
@@ -16,6 +18,53 @@ const Payment = () => {
     const [newTypeName, setNewTypeName] = useState('');
     const [newTypeImage, setNewTypeImage] = useState('');
     const [newTypeImageFile, setNewTypeImageFile] = useState('');
+    const [isEditMode, setIsEditMode] = useState(false);
+    const [editingPaymentId, setEditingPaymentId] = useState(null);
+
+    const handleUpdatePayment = async () => {
+        let paymentTypeImageUrl = newTypeImage;
+    
+        if (newTypeImageFile) {
+            const payload = {
+                type: 'paymentTypes',
+                file: newTypeImageFile,
+                data: {
+                    previousImageUrl: newTypeImage,
+                },
+            };
+            console.log("newTypeImage ............... ", newTypeImage)
+            const response = await dispatch(imageUpload(payload)).unwrap();
+            paymentTypeImageUrl = response.filePath;
+        }
+    
+        if (newTypeName === '') {
+            toast.error('Please fill the required fields!');
+            return;
+        }
+        
+        console.log("paymentTypeImageUrl ............... ",paymentTypeImageUrl)
+        const paymentTypeData = {
+            type_name: newTypeName,
+            type_image: paymentTypeImageUrl,
+        };
+    
+        try {
+            dispatch(updatePaymentType({ paymentTypeID: editingPaymentId, updatedPaymentTypeData: paymentTypeData }));
+            toast.success('Payment type updated successfully!');
+        } catch (error) {
+            console.log(error);
+            toast.error('Failed to update payment type');
+        }
+    
+        // Reset
+        setNewTypeName('');
+        setNewTypeImage('');
+        setNewTypeImageFile('');
+        setEditingPaymentId(null);
+        setIsEditMode(false);
+        setShowAddPaymentModal(false);
+    };
+
     const handleAddPayment = async (e) => {
         let paymentTypeImageUrl = null;
         if (newTypeImageFile) {
@@ -53,18 +102,32 @@ const Payment = () => {
         setNewTypeImage('');
         setShowAddPaymentModal(false);
     };
+
+    const handleDeletePaymentType = async (id) => {
+        try {
+            await dispatch(deletePaymentType(id)).unwrap(); // assuming createAsyncThunk
+            toast.success('Payment type deleted successfully!');
+        } catch (error) {
+            console.error(error);
+            toast.error('Failed to delete payment type');
+        }
+    };
+
     const handleCancel = () => {
         setNewTypeName('');
         setNewTypeImage('');
+        setNewTypeImageFile('');
+        setEditingPaymentId(null);
+        setIsEditMode(false);
         setShowAddPaymentModal(false);
-    }
+    };
 
     useEffect(() => {
         if (!user) {
             navigate('/login')
         }
 
-        if(paymentTypes.length === 0){
+        if (paymentTypes.length === 0) {
             dispatch(allPaymentTypes())
         }
         console.log(paymentTypes)
@@ -81,6 +144,11 @@ const Payment = () => {
             </div>
             {
                 paymentTypes.length > 0 ? <div className='settings-payment-card'>
+                    <div className='settings-payment-card-header'>
+                        <span>Name</span>
+                        <span>Icon</span>
+                        <span>Action</span>
+                    </div>
                     {
                         paymentTypes.map((payment) => (
                             <div className='settings-payment-card-item'>
@@ -94,6 +162,16 @@ const Payment = () => {
                                             .join('')
                                     }
                                 </span>
+                                <div className='settings-payment-card-item-actions'>
+                                    <span onClick={() => {
+                                        setIsEditMode(true);
+                                        setShowAddPaymentModal(true);
+                                        setNewTypeName(payment.type_name);
+                                        setNewTypeImage(payment.type_image); // show existing image
+                                        setEditingPaymentId(payment._id); // or payment.id based on your data
+                                    }}><EditOutlinedIcon /></span>
+                                    <span onClick={() => handleDeletePaymentType(payment._id)}><DeleteOutlineOutlinedIcon /></span>
+                                </div>
                             </div>
                         )
                         )
@@ -104,7 +182,7 @@ const Payment = () => {
             {showAddPaymentModal && (
                 <div className="modal-overlay">
                     <div className="modal">
-                        <h2>Add Payment Type</h2>
+                        <h2>{isEditMode ? 'Edit Payment Type' : 'Add Payment Type'}</h2>
                         <input
                             type="text"
                             placeholder="Payment Type Name"
@@ -133,7 +211,9 @@ const Payment = () => {
                             </div>
                         )}
                         <div className="modal-buttons">
-                            <button onClick={handleAddPayment}>Add</button>
+                            <button onClick={isEditMode ? handleUpdatePayment : handleAddPayment}>
+                                {isEditMode ? 'Update' : 'Add'}
+                            </button>
                             <button onClick={handleCancel}>Cancel</button>
                         </div>
                     </div>

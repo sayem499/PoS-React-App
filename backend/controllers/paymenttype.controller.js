@@ -1,6 +1,8 @@
 const asyncHandler = require('express-async-handler');
 const PaymentTypes = require('../model/paymenttype.model');
 const PaymentAccounts = require('../model/paymentaccount.model');
+const fs = require('fs');
+const path = require('path');
 
 // @desc    Get all payment types
 // @route   GET /api/payment-types
@@ -60,18 +62,34 @@ const updatePaymentType = asyncHandler(async (req, res) => {
 // @desc    Delete a payment type
 // @route   DELETE /api/payment-types/:id
 // @access  Private
-const deletePaymentType = asyncHandler(async (req, res) => {
-  const paymentType = await PaymentTypes.findById(req.params.id);
+const deletePaymentType = async (req, res) => {
+  try {
+      const paymentType = await PaymentTypes.findById(req.params.id);
+      if (!paymentType) {
+          return res.status(404).json({ message: 'Payment type not found' });
+      }
 
-  if (!paymentType) {
-    res.status(404);
-    throw new Error('Payment type not found!');
+      // Extract filename from URL
+      const imageUrl = paymentType.type_image;
+      if (imageUrl) {
+          const filename = imageUrl.split('/uploads/paymentTypes/')[1]; // Get filename only
+          const filePath = path.join(__dirname, '..', 'uploads', 'paymentTypes', filename);
+
+          // Delete the file if it exists
+          if (fs.existsSync(filePath)) {
+              fs.unlinkSync(filePath);
+          }
+      }
+
+      // Then delete the database document
+      await PaymentTypes.findByIdAndDelete(req.params.id);
+
+      res.status(200).json({ message: 'Payment type and image deleted successfully' });
+  } catch (error) {
+      console.error('Error deleting payment type:', error);
+      res.status(500).json({ message: 'Internal server error' });
   }
-
-  await paymentType.deleteOne();
-
-  res.status(200).json({ message: `Deleted Payment Type ${req.params.id}` });
-});
+};
 
 module.exports = {
   getPaymentTypes,
