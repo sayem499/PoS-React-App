@@ -7,6 +7,8 @@ import { toast } from 'react-toastify'
 import { useNavigate } from 'react-router-dom'
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import FormatListBulletedOutlinedIcon from '@mui/icons-material/FormatListBulletedOutlined';
+import PaymentAccountModal from './paymentaccountmodal';
 
 const Payment = () => {
     const navigate = useNavigate()
@@ -20,6 +22,9 @@ const Payment = () => {
     const [newTypeImageFile, setNewTypeImageFile] = useState('');
     const [isEditMode, setIsEditMode] = useState(false);
     const [editingPaymentId, setEditingPaymentId] = useState(null);
+    const [showPaymentAccountModal, setShowPaymentAccountModal] = useState(false);
+    const [paymentAccounts, setPaymentAccounts] = useState([]);
+    const [paymentTypeId, setPaymentTypeId] = useState("");
 
     const handleUpdatePayment = async () => {
         let paymentTypeImageUrl = newTypeImage;
@@ -134,6 +139,11 @@ const Payment = () => {
 
     }, [])
 
+    useEffect(() => {
+        dispatch(allPaymentTypes())
+    },[showPaymentAccountModal])
+    
+
     return (
         <div className='settings-payment-container'>
             <div className='settings-payment-add'>
@@ -163,6 +173,7 @@ const Payment = () => {
                                     }
                                 </span>
                                 <div className='settings-payment-card-item-actions'>
+                                    <span onClick={() => {setShowPaymentAccountModal(true); setPaymentAccounts(payment.paymentAccounts); setPaymentTypeId(payment._id)}}><FormatListBulletedOutlinedIcon/></span>
                                     <span onClick={() => {
                                         setIsEditMode(true);
                                         setShowAddPaymentModal(true);
@@ -179,6 +190,17 @@ const Payment = () => {
                 </div> :
                     <div className='settings-payment-notfound'>No Payment Type Data Found.</div>
             }
+
+            {showPaymentAccountModal && (
+                <PaymentAccountModal         
+                    isOpen={showPaymentAccountModal}
+                    onClose={() => setShowPaymentAccountModal(false)}
+                    PaymentAccounts={paymentAccounts}
+                    paymentTypeId={paymentTypeId}
+                />
+                
+            )}
+
             {showAddPaymentModal && (
                 <div className="modal-overlay">
                     <div className="modal">
