@@ -14,15 +14,15 @@ const getPaymentAccounts = asyncHandler(async (req, res) => {
 // @access  Private
 const setPaymentAccount = asyncHandler(async (req, res) => {
   const {
-    user_id,
     payment_type_id,
     account_name,
     account_number,
     branch_name
   } = req.body;
 
+  const userId = req.users._id;
   const account = await PaymentAccounts.create({
-    user_id,
+    userId,
     payment_type_id,
     account_name,
     account_number,

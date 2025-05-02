@@ -23,6 +23,8 @@ const Payment = () => {
     const [isEditMode, setIsEditMode] = useState(false);
     const [editingPaymentId, setEditingPaymentId] = useState(null);
     const [showPaymentAccountModal, setShowPaymentAccountModal] = useState(false);
+    const [paymentAccounts, setPaymentAccounts] = useState([]);
+    const [paymentTypeId, setPaymentTypeId] = useState("");
 
     const handleUpdatePayment = async () => {
         let paymentTypeImageUrl = newTypeImage;
@@ -137,6 +139,11 @@ const Payment = () => {
 
     }, [])
 
+    useEffect(() => {
+        dispatch(allPaymentTypes())
+    },[showPaymentAccountModal])
+    
+
     return (
         <div className='settings-payment-container'>
             <div className='settings-payment-add'>
@@ -166,7 +173,7 @@ const Payment = () => {
                                     }
                                 </span>
                                 <div className='settings-payment-card-item-actions'>
-                                    <span onClick={() => setShowPaymentAccountModal(true)}><FormatListBulletedOutlinedIcon/></span>
+                                    <span onClick={() => {setShowPaymentAccountModal(true); setPaymentAccounts(payment.paymentAccounts); setPaymentTypeId(payment._id)}}><FormatListBulletedOutlinedIcon/></span>
                                     <span onClick={() => {
                                         setIsEditMode(true);
                                         setShowAddPaymentModal(true);
@@ -186,11 +193,10 @@ const Payment = () => {
 
             {showPaymentAccountModal && (
                 <PaymentAccountModal         
-                isOpen={showPaymentAccountModal}
-                onClose={() => setShowPaymentAccountModal(false)}
-                // paymentAccounts={accounts}
-                // onDelete={handleDelete}
-                // onUpdate={handleUpdate}
+                    isOpen={showPaymentAccountModal}
+                    onClose={() => setShowPaymentAccountModal(false)}
+                    PaymentAccounts={paymentAccounts}
+                    paymentTypeId={paymentTypeId}
                 />
                 
             )}
