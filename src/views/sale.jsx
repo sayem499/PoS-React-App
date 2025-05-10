@@ -30,6 +30,7 @@ import {
 
 } from '../redux/sale/saleSlice';
 import { getPurchaseById, allPurchases, updatePurchases } from '../redux/purchase/purchaseSlice';
+import { allPaymentTypes } from '../redux/payment/paymentSlice';
 import { toast } from 'react-toastify'
 import { useLocation } from "react-router-dom";
 import Loading from '../components/loading';
@@ -52,6 +53,7 @@ function Sale() {
   const { purchase } = useSelector((state) => state.purchase)
   const { searchInput, searchRef } = useSelector((state) => state.search)
   const { customers } = useSelector((state) => state.customerState)
+  const { paymentTypes } = useSelector((state) => state.paymentTypeState)
   const { cartItems,
     saleSubTotal,
     saleVAT,
@@ -86,7 +88,13 @@ function Sale() {
   const printRef = useRef()
   let productTemp = [], fetch = JSON.parse(localStorage.getItem('sale-settings')), salePayload
   const type = 'sale';
+  const [showPaymentAccounts, setShowPaymentAccounts] = useState(false)
+  const [clickedPayment, setClickedPayment] = useState(null);
 
+  const handlePaymentClick = (payment) => {
+    setClickedPayment(payment);
+    setShowPaymentAccounts(!showPaymentAccounts);
+  };
 
 
 
@@ -101,8 +109,13 @@ function Sale() {
     if (productTemp.length === 0 || products.length > productTemp || products.length < productTemp) {
       dispatch(allProducts())
     }
+
     if (location.pathname === "/sale") {
       dispatch(allProducts())
+    }
+
+    if (paymentTypes.length === 0) {
+      dispatch(allPaymentTypes())
     }
 
     dispatch(cartProductTotal())
@@ -169,7 +182,7 @@ function Sale() {
         let productCurrentPurchaseId = null;
         const product = products.find((p) => p._id === cartProduct._id);
         if (!product) return null;
-        
+
         try {
           if (product.productCurrentPurchaseId) {
             let purchase = await dispatch(getPurchaseById(product.productCurrentPurchaseId)).unwrap();
@@ -624,45 +637,70 @@ function Sale() {
 
           <hr></hr>
           <div className='payment-selector-btn'>
-            <div className='cash-div'>
-
-              <div className={`logo-tile logo-tile-hover ${paymentMethod === "Cash" ? "payment-checked" : ""}`}
-                onClick={(e) => setPaymentMethod("Cash")}>
-                {/*               <input
-                id='cash'
-                type='radio'
-                name='payment-method'
-                value='Cash'
-                defaultChecked={paymentMethod}
-                onClick={(e) => setPaymentMethod(e.target.value)}
-              ></input> */}
-                <MoneyIcon className={`${paymentMethod === "Cash" ? "btn-icon-checked" : "btn-icon-unchecked"}`} />
-                <span className={` ${paymentMethod === "Cash" ? "checked-span" : "unchecked-span"}`}>
-                  Cash
-                </span>
+            {paymentTypes.length > 0 ? (paymentTypes?.map((payment) => (
+              <div className='cash-div'>
+                <div className={`logo-tile logo-tile-hover `}  //${paymentMethod === "Cash" ? "payment-checked" : ""}
+                  onClick={(e) => handlePaymentClick(payment)}>
+                  {/* <MoneyIcon className={` btn-icon-unchecked  `} // "btn-icon-checked"
+                  /> */}
+                  <span  //${paymentMethod === "Cash" ? "checked-span" : "unchecked-span"}
+                  >
+                    {payment?.type_image
+                      ? <img src={payment.type_image} alt={payment.type_name} style={{ height: '50px', width: '60px' }} />
+                      : payment?.type_name
+                        ?.split(' ')
+                        .map(word => word[0])
+                        .join('')
+                    }
+                  </span>
+                </div>
+                {/* {
+                  showPaymentAccounts && payment?.paymentAccounts?.map((accounts) => (
+                    <div className="dropdown-wrapper">
+                      <select className="account-dropdown">
+                        <option value="">Select Account</option>
+                        {
+                          showPaymentAccounts && payment?.paymentAccounts?.map((account, index) => (
+                            <option key={index} value={account.id}>
+                              {account.account_name} ({account.account_number})
+                            </option>
+                          ))
+                        }
+                      </select>
+                    </div>
+                  ))
+                } */}
               </div>
-            </div>
 
-            <div className='credit-div'>
+            ))) : <span>Create Payemnt Methods from Settings</span>
 
+            }
+            {/* <div className='credit-div'>
               <div className={`logo-tile logo-tile-hover ${paymentMethod === "Credit" ? "payment-checked" : ""}`}
                 onClick={(e) => setPaymentMethod("Credit")}>
-                {/*               <input
-                id='credit'
-                type='radio'
-                name='payment-method'
-                value='Credit'
-                onClick={(e) => setPaymentMethod(e.target.value)}
-              ></input> */}
                 <CreditCardIcon className={`${paymentMethod === "Credit" ? "btn-icon-checked" : "btn-icon-unchecked"}`} />
                 <span className={` ${paymentMethod === "Credit" ? "checked-span" : "unchecked-span"}`}>
                   Credit
                 </span>
               </div>
-
-            </div>
+            </div> */}
 
           </div>
+          {showPaymentAccounts && clickedPayment?.paymentAccounts?.length > 0 && (
+            <div className="dropdown-wrapper">
+              <div className="close-icon-square">
+                <CloseIcon onClick={() => setShowPaymentAccounts(false)} style={{ color: 'white', height: '15px', width: '15px' }} />
+              </div>
+              <select className="account-dropdown">
+                <option value="">Select Account</option>
+                {clickedPayment.paymentAccounts.map((account) => (
+                  <option key={account.id} value={account.id}>
+                    {account.account_name} ({account.account_number})
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
           <hr></hr>
           {/* <div className='cart-list-header'>
             <table className='cart-list-header-table-header'>
