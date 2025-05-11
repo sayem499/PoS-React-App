@@ -39,7 +39,7 @@ const navigate = useNavigate()
     
 
    
-  },[dispatch,isFetchSaleSuccess])
+  },[isFetchSaleSuccess])
 
   
 

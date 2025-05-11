@@ -550,6 +550,16 @@ function Sale() {
     pageStyle: () => "align-items: center margin: 0px justify-content: center",
   });
 
+  const [selectedAccountId, setSelectedAccountId] = useState("");
+  const [accountAmount, setAccountAmount] = useState('');
+
+  // Set the first account as selected when dropdown is shown
+  useEffect(() => {
+    if (showPaymentAccounts && clickedPayment?.paymentAccounts?.length > 0) {
+      setSelectedAccountId(clickedPayment.paymentAccounts[0]._id);
+    }
+  }, [showPaymentAccounts, clickedPayment]);
+
   return (
 
     <div className='container-column' ref={elementRef} onClick={handleDispatch}>
@@ -688,19 +698,41 @@ function Sale() {
           </div>
           {showPaymentAccounts && clickedPayment?.paymentAccounts?.length > 0 && (
             <div className="dropdown-wrapper">
-              <div className="close-icon-square">
-                <CloseIcon onClick={() => setShowPaymentAccounts(false)} style={{ color: 'white', height: '15px', width: '15px' }} />
+              <div className="dropdown-header">
+                <span className="dropdown-title">Payment Accounts</span>
+                  <div className="close-icon-square" onClick={() => setShowPaymentAccounts(false)}>
+                    <CloseIcon style={{ color: 'white', height: '15px', width: '15px' }} />
+                  </div>
+                </div>
+                <select
+                  className="account-dropdown"
+                  value={clickedPayment.paymentAccounts[0]._id}
+                  onChange={(e) => setSelectedAccountId(e.target.value)}
+                >
+                  <option value="">Select Account</option>
+                  {clickedPayment.paymentAccounts.map((account) => (
+                    <option key={account._id} value={account._id}>
+                      {account.account_name} ({account.account_number})
+                    </option>
+                  ))}
+                </select>
+                <input
+                  type="number"
+                  name="account_amount"
+                  className="account-amount-input"
+                  placeholder="Enter amount"
+                  value={accountAmount}
+                  onChange={(e) => setAccountAmount(e.target.value)}
+                />
+
+                {clickedPayment.paymentAccounts.length > 1 && (
+                  <div className="add-account-row">
+                    <span className="add-account-text">Add another account</span>
+                    <AddIcon className="add-account-icon" />
+                  </div>
+                )}
               </div>
-              <select className="account-dropdown">
-                <option value="">Select Account</option>
-                {clickedPayment.paymentAccounts.map((account) => (
-                  <option key={account.id} value={account.id}>
-                    {account.account_name} ({account.account_number})
-                  </option>
-                ))}
-              </select>
-            </div>
-          )}
+            )}
           <hr></hr>
           {/* <div className='cart-list-header'>
             <table className='cart-list-header-table-header'>
