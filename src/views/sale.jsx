@@ -94,6 +94,19 @@ function Sale() {
   const handlePaymentClick = (payment) => {
     setClickedPayment(payment);
     setShowPaymentAccounts(!showPaymentAccounts);
+
+    setSelectedAccountsMap((prev) => {
+      if (!prev[payment._id]) {
+        const firstAccount = payment.paymentAccounts[0];
+        return {
+          ...prev,
+          [payment._id]: firstAccount
+            ? [{ accountId: firstAccount._id, amount: '' }]
+            : [],
+        };
+      }
+      return prev; // already exists
+    });
   };
 
 
@@ -552,13 +565,128 @@ function Sale() {
 
   const [selectedAccountId, setSelectedAccountId] = useState("");
   const [accountAmount, setAccountAmount] = useState('');
+  const [visibleAccountInputs, setVisibleAccountInputs] = useState(1); // start with 1 set
+  const [selectedAccountsMap, setSelectedAccountsMap] = useState({});
+  const [accountInputsPerPayment, setAccountInputsPerPayment] = useState({});
+  const [multipayment, setMultipayment] = useState([]);
+  const selectedAccounts = selectedAccountsMap[clickedPayment?._id] || [];
 
-  // Set the first account as selected when dropdown is shown
   useEffect(() => {
-    if (showPaymentAccounts && clickedPayment?.paymentAccounts?.length > 0) {
-      setSelectedAccountId(clickedPayment.paymentAccounts[0]._id);
+    if (clickedPayment?._id && clickedPayment.paymentAccounts?.length > 0) {
+      setSelectedAccountsMap(prev => {
+        // If already exists, keep it; else initialize it with the first account
+        if (prev[clickedPayment._id]) return prev;
+
+        return {
+          ...prev,
+          [clickedPayment._id]: [
+            {
+              accountId: clickedPayment.paymentAccounts[0]._id,
+              amount: ''
+            }
+          ]
+        };
+      });
     }
-  }, [showPaymentAccounts, clickedPayment]);
+  }, [clickedPayment]);
+
+  useEffect(() => {
+    console.log("Multipayment ....... ", multipayment);
+    console.log("selectedAccountsMap ....... ", selectedAccountsMap);
+  }, [multipayment])
+  useEffect(() => {
+    if (clickedPayment?._id && !accountInputsPerPayment[clickedPayment._id]) {
+      setAccountInputsPerPayment(prev => ({
+        ...prev,
+        [clickedPayment._id]: [{ id: '', amount: '' }]
+      }));
+    }
+  }, [clickedPayment]);
+
+  const handleAddAccount = () => {
+    const existingAccounts = selectedAccountsMap[clickedPayment._id] || [];
+    const nextAccount = clickedPayment.paymentAccounts[existingAccounts.length];
+
+    if (nextAccount) {
+      setSelectedAccountsMap(prev => ({
+        ...prev,
+        [clickedPayment._id]: [
+          ...existingAccounts,
+          { accountId: nextAccount._id, amount: '' }
+        ]
+      }));
+    }
+  };
+
+  const handleAccountChange = (index, field, value) => {
+    setSelectedAccountsMap(prev => {
+      const updatedAccounts = [...(prev[clickedPayment._id] || [])];
+      updatedAccounts[index] = {
+        ...updatedAccounts[index],
+        [field]: value
+      };
+      return {
+        ...prev,
+        [clickedPayment._id]: updatedAccounts
+      };
+    });
+  };
+
+  const handleSelectChange = (index, value) => {
+    const updated = [...accountInputsPerPayment[clickedPayment._id]];
+    updated[index].id = value;
+    setAccountInputsPerPayment(prev => ({
+      ...prev,
+      [clickedPayment._id]: updated
+    }));
+  };
+
+  const handleAmountChange = (index, value) => {
+    const updated = [...accountInputsPerPayment[clickedPayment._id]];
+    updated[index].amount = value;
+    setAccountInputsPerPayment(prev => ({
+      ...prev,
+      [clickedPayment._id]: updated
+    }));
+  };
+
+const handleDone = () => {
+  const selected = selectedAccountsMap[clickedPayment._id] || [];
+
+  const enriched = selected.map((entry) => {
+    const account = clickedPayment.paymentAccounts.find(
+      (acc) => acc._id === entry.accountId
+    );
+
+    return {
+      accountId: account?._id,
+      payment_type_id: account?.payment_type_id,
+      amount: entry.amount,
+    };
+  });
+
+  setMultipayment((prev) => {
+    // Combine previous and new entries
+    const combined = [...prev?.filter(
+      (entry) => !enriched.find((e) => e.accountId === entry.accountId)
+    ), ...enriched];
+
+    // Remove duplicates by accountId
+    const unique = [];
+    const seenIds = new Set();
+
+    for (const item of combined) {
+      if (!seenIds.has(item.accountId)) {
+        unique.push(item);
+        seenIds.add(item.accountId);
+      }
+    }
+
+    return unique;
+  });
+
+  setShowPaymentAccounts(false);
+};
 
   return (
 
@@ -700,39 +828,56 @@ function Sale() {
             <div className="dropdown-wrapper">
               <div className="dropdown-header">
                 <span className="dropdown-title">Payment Accounts</span>
-                  <div className="close-icon-square" onClick={() => setShowPaymentAccounts(false)}>
-                    <CloseIcon style={{ color: 'white', height: '15px', width: '15px' }} />
-                  </div>
-                </div>
-                <select
-                  className="account-dropdown"
-                  value={clickedPayment.paymentAccounts[0]._id}
-                  onChange={(e) => setSelectedAccountId(e.target.value)}
+                <div
+                  className="close-icon-square"
+                  onClick={() => setShowPaymentAccounts(false)}
                 >
-                  <option value="">Select Account</option>
-                  {clickedPayment.paymentAccounts.map((account) => (
-                    <option key={account._id} value={account._id}>
-                      {account.account_name} ({account.account_number})
-                    </option>
-                  ))}
-                </select>
-                <input
-                  type="number"
-                  name="account_amount"
-                  className="account-amount-input"
-                  placeholder="Enter amount"
-                  value={accountAmount}
-                  onChange={(e) => setAccountAmount(e.target.value)}
-                />
-
-                {clickedPayment.paymentAccounts.length > 1 && (
-                  <div className="add-account-row">
-                    <span className="add-account-text">Add another account</span>
-                    <AddIcon className="add-account-icon" />
-                  </div>
-                )}
+                  <CloseIcon style={{ color: 'white', height: '15px', width: '15px' }} />
+                </div>
               </div>
-            )}
+
+              {selectedAccounts.map((entry, index) => (
+                <div key={index}>
+                  <select
+                    className="account-dropdown"
+                    value={entry.accountId}
+                    onChange={(e) =>
+                      handleAccountChange(index, 'accountId', e.target.value)
+                    }
+                  >
+                    <option value="">Select Account</option>
+                    {clickedPayment.paymentAccounts.map((account) => (
+                      <option key={account._id} value={account._id}>
+                        {account.account_name} ({account.account_number})
+                      </option>
+                    ))}
+                  </select>
+
+                  <input
+                    type="number"
+                    name="account_amount"
+                    className="account-amount-input"
+                    placeholder="Enter amount"
+                    value={entry.amount}
+                    onChange={(e) =>
+                      handleAccountChange(index, 'amount', e.target.value)
+                    }
+                  />
+                </div>
+              ))}
+
+              {selectedAccounts.length < clickedPayment.paymentAccounts.length && (
+                <div className="add-account-row" onClick={handleAddAccount}>
+                  <span className="add-account-text">Add another account</span>
+                  <AddIcon className="add-account-icon" />
+                </div>
+              )}
+
+              <button className="done-button" onClick={handleDone}>
+                Done
+              </button>
+            </div>
+          )}
           <hr></hr>
           {/* <div className='cart-list-header'>
             <table className='cart-list-header-table-header'>
