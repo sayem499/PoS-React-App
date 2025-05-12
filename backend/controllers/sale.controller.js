@@ -1,5 +1,6 @@
 const asyncHandler = require('express-async-handler')
 const Sales = require('../model/sale.model')
+const Accounts = require('../model/account.model')
 
 //@desc GET sales
 //@route GET/api/sales
@@ -59,6 +60,22 @@ const setSales = asyncHandler( async (req, res) => {
       saleCashPaid: req.body.saleCashPaid,
       saleChange: req.body.saleChange,
     });
+
+    // Then create Account records
+    const multiPayment = req.body.multiPayment || [];
+
+    const accountEntries = multiPayment.map(payment => ({
+      userId: userIdV,
+      invoice: invoiceId,
+      sales_id: sale._id,
+      account_type: 'credit',
+      transaction_id: null, // Or generate if needed
+      payment_type_id: payment.payment_type_id,
+      payment_account_id: payment.accountId,
+      payment_amount: payment.amount,
+    }));
+
+    await Accounts.insertMany(accountEntries);
 
     res.status(200).json(sale)
   } catch (error) {

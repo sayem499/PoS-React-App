@@ -352,7 +352,7 @@ function Sale() {
   /* Function to handle confirm button click */
   const handleConfirm = (e) => {
     e.preventDefault()
-    let saleTime, saleDate, payload, products, customerPayload, saleCustomerName, saleCustomerPhoneNumber, flag = false, updateCustomerPayload, newCustomerPayload
+    let saleTime, saleDate, payload, products, customerPayload, saleCustomerName, saleCustomerPhoneNumber, flag = false, updateCustomerPayload, newCustomerPayload, multiPayment
     customerPayload = {
       customerName,
       customerPhoneNumber,
@@ -415,11 +415,12 @@ function Sale() {
       }
     }
 
-
-
-
+    multiPayment = [...multipayment]
+    console.log("multiPaymentLoad........ ",multiPayment)
+    console.log("cartItems........ ",cartItems)
     products = [...cartItems]
     salePayload = {
+      multiPayment,
       products,
       saleSubTotal,
       saleVAT,
@@ -440,7 +441,7 @@ function Sale() {
       saleCashPaid,
       saleChange,
     }
-
+    console.log("saslePayload/........ ",salePayload)
     Swal.fire({
       title: 'Confirm Sale?',
       showDenyButton: true,
@@ -459,8 +460,11 @@ function Sale() {
           dispatch(setCustomers(newCustomerPayload))
         }
 
-
+        console.log("saslePayloadDispatch/........ ",salePayload)
         dispatch(registerSale(salePayload))
+        setSelectedAccountsMap({})
+        setAccountInputsPerPayment({})
+        setMultipayment([])
         // dispatch(allProducts({page: 1}))
         Swal.fire('Confirmed!', '', 'success')
 
@@ -477,7 +481,7 @@ function Sale() {
   /* Function to load all the sale data. */
   const handleSaleLoad = () => {
     console.log(printRef.current)
-    let saleTime, saleDate, payload, products, customerPayload, saleCustomerName, saleCustomerPhoneNumber
+    let saleTime, saleDate, payload, products, customerPayload, saleCustomerName, saleCustomerPhoneNumber, multiPayment
 
     saleTime = new Date().toLocaleTimeString()
     saleDate = new Date().toLocaleDateString()
@@ -498,7 +502,7 @@ function Sale() {
 
     saleCustomerName = customerName
     saleCustomerPhoneNumber = customerPhoneNumber
-
+    multiPayment = [...multipayment]
     products = [...cartItems]
     salePayload = {
       products,
@@ -520,6 +524,7 @@ function Sale() {
       saleCustomerPhoneNumber,
       saleCashPaid,
       saleChange,
+      multiPayment
     }
 
     setSalePayloadState(salePayload)
@@ -661,7 +666,7 @@ const handleDone = () => {
     return {
       accountId: account?._id,
       payment_type_id: account?.payment_type_id,
-      amount: entry.amount,
+      amount: parseFloat(entry.amount) || 0,
     };
   });
 
@@ -681,6 +686,9 @@ const handleDone = () => {
         seenIds.add(item.accountId);
       }
     }
+
+    const totalPaid = unique.reduce((sum, item) => sum + item.amount, 0);
+    setCustomerCashPaid(totalPaid);
 
     return unique;
   });

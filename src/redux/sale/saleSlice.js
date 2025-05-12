@@ -44,6 +44,7 @@ const initialState = {
 export const registerSale = createAsyncThunk('sale/registerSale', async (salePayload, thunkAPI) => {
     try{
         const token = thunkAPI.getState().auth.user.token
+        console.log("inside register... ",salePayload)
         return await saleServices.registerSale(salePayload, token)
 
     }catch( error ) {
