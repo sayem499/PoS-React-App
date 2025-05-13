@@ -4,6 +4,7 @@ import { getSales, resetSale } from '../redux/sale/saleSlice'
 import { useSelector, useDispatch } from 'react-redux'
 import { calculateTotalSale, calculateAverageSale, calculateGrossProfit, calculateGrossMargin } from '../redux/sale/saleSlice'
 import { useNavigate } from 'react-router-dom'
+import { logout, reset } from '../auth/authSlice.js'
 
 
 function Dashboard(){
@@ -25,6 +26,7 @@ const navigate = useNavigate()
       .catch((error) => {
         console.error("Error fetching sales:", error);
           localStorage.removeItem('users');
+          dispatch(logout())
           navigate('/login');
       });
     }
