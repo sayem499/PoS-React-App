@@ -696,6 +696,61 @@ const handleDone = () => {
   setShowPaymentAccounts(false);
 };
 
+useEffect(() => {
+  const container = document.getElementById("paymentScroll");
+  if (!container) return;
+
+  let isDown = false;
+  let startX;
+  let scrollLeft;
+
+  const handleMouseDown = (e) => {
+    isDown = true;
+    container.classList.add("active");
+    startX = e.pageX - container.offsetLeft;
+    scrollLeft = container.scrollLeft;
+  };
+
+  const handleMouseLeave = () => {
+    isDown = false;
+    container.classList.remove("active");
+  };
+
+  const handleMouseUp = () => {
+    isDown = false;
+    container.classList.remove("active");
+  };
+
+  const handleMouseMove = (e) => {
+    if (!isDown) return;
+    e.preventDefault();
+    const x = e.pageX - container.offsetLeft;
+    const walk = (x - startX) * 2; // scroll speed
+    container.scrollLeft = scrollLeft - walk;
+  };
+
+  const handleWheel = (e) => {
+    if (e.deltaY === 0) return;
+    e.preventDefault(); // prevent vertical scroll
+    container.scrollLeft += e.deltaY;
+  };
+
+  container.addEventListener("mousedown", handleMouseDown);
+  container.addEventListener("mouseleave", handleMouseLeave);
+  container.addEventListener("mouseup", handleMouseUp);
+  container.addEventListener("mousemove", handleMouseMove);
+  container.addEventListener("wheel", handleWheel, { passive: false });
+
+  // Clean up
+  return () => {
+    container.removeEventListener("mousedown", handleMouseDown);
+    container.removeEventListener("mouseleave", handleMouseLeave);
+    container.removeEventListener("mouseup", handleMouseUp);
+    container.removeEventListener("mousemove", handleMouseMove);
+    container.removeEventListener("wheel", handleWheel);
+  };
+}, []);
+
   return (
 
     <div className='container-column' ref={elementRef} onClick={handleDispatch}>
@@ -782,9 +837,9 @@ const handleDone = () => {
           <span className='cart-header'><h1>Cart</h1></span>
 
           <hr></hr>
-          <div className='payment-selector-btn'>
-            {paymentTypes.length > 0 ? (paymentTypes?.map((payment) => (
-              <div className='cash-div'>
+          <div className='payment-selector-btn' id="paymentScroll">
+            {paymentTypes.length > 0 ? (paymentTypes?.map((payment, index) => (
+              <div className='cash-div' key={index}>
                 <div className={`logo-tile logo-tile-hover `}  //${paymentMethod === "Cash" ? "payment-checked" : ""}
                   onClick={(e) => handlePaymentClick(payment)}>
                   {/* <MoneyIcon className={` btn-icon-unchecked  `} // "btn-icon-checked"
@@ -818,7 +873,7 @@ const handleDone = () => {
                 } */}
               </div>
 
-            ))) : <span>Create Payemnt Methods from Settings</span>
+            ))) : <span className='no-payment-method-text'>Create Payemnt Methods from Settings</span>
 
             }
             {/* <div className='credit-div'>

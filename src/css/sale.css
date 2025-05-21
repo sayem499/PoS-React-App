@@ -111,25 +111,34 @@
 }
 
 .payment-selector-btn {
-    /* margin-top: 10px;
-    margin-bottom: 10px; */
     padding-top: 10px;
     padding-bottom: 10px;
+    max-width: 1200px;
     width: 100%;
-    height: 60px;
+    height: 80px; /* let height adapt */
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: flex-start;
-    overflow-x: scroll;
-    overflow-y: visible;
+    overflow-x: auto;
+    cursor: grab;
+    user-select: none;
+    scroll-behavior: smooth;
     white-space: nowrap;
+    gap: 10px;
+    -webkit-overflow-scrolling: touch;
 
+    /* Hide scrollbar (cross-browser) */
     scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none; /* IE 10+ */
+    -ms-overflow-style: none; /* IE and Edge */
 }
+
 .payment-selector-btn::-webkit-scrollbar {
-    display: none; /* Chrome, Safari */
+    display: none; 
+}
+
+.payment-selector-btn.active {
+  cursor: grabbing;
+  cursor: -webkit-grabbing;
 }
 
 /* .payment-selector-btn input {
@@ -143,13 +152,19 @@
 } */
 
 .cash-div {
-    width:50%;
-    height:100%;
-    margin-right: 10px;
-    display:flex;
+    flex-shrink: 0;          /* Don't shrink when space is tight */
+    min-width: 160px;        /* Ensure width for scroll */
+    height: 60px;
+    display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1;
+}
+
+.no-payment-method-text {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .dropdown-wrapper {
