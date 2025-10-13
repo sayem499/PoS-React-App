@@ -7,10 +7,13 @@ import { useNavigate } from 'react-router-dom';
 import Loading from '../components/loading';
 import MoneyIcon from '@mui/icons-material/Money';
 import CreditCardIcon from '@mui/icons-material/CreditCard';
+import CloseIcon from '@mui/icons-material/Close';
+import AddIcon from '@mui/icons-material/Add';
 import { useLocation } from "react-router-dom";
 import { toast } from 'react-toastify'
 import ProductCartListItem from '../components/productcartlistitem';
 import CreatableSelect from 'react-select/creatable';
+import { allPaymentTypes } from '../redux/payment/paymentSlice';
 import {
 
   resetPurchase,
@@ -78,8 +81,210 @@ const Purchase = () => {
   const [isReceiptOpen, setIsReceiptOpen] = useState(false)
   const [isFocused, setIsFocused] = useState(false);
   const [isNameFocused, setIsNameFocused] = useState(false);
+  const { paymentTypes } = useSelector((state) => state.paymentTypeState)
 
   let productTemp = [], fetch = JSON.parse(localStorage.getItem('sale-settings')), salePayload
+  const [clickedPayment, setClickedPayment] = useState(null);
+  const [selectedAccountsMap, setSelectedAccountsMap] = useState({});
+  const [accountInputsPerPayment, setAccountInputsPerPayment] = useState({});
+  const [multipayment, setMultipayment] = useState([]);
+  const selectedAccounts = selectedAccountsMap[clickedPayment?._id] || [];
+  const [showPaymentAccounts, setShowPaymentAccounts] = useState(false)
+  
+  
+  const handlePaymentClick = (payment) => {
+    setClickedPayment(payment);
+    setShowPaymentAccounts(!showPaymentAccounts);
+
+    setSelectedAccountsMap((prev) => {
+      if (!prev[payment._id]) {
+        const firstAccount = payment.paymentAccounts[0];
+        return {
+          ...prev,
+          [payment._id]: firstAccount
+            ? [{ accountId: firstAccount._id, amount: '' }]
+            : [],
+        };
+      }
+      return prev; // already exists
+    });
+  };
+
+
+    useEffect(() => {
+      if (clickedPayment?._id && clickedPayment.paymentAccounts?.length > 0) {
+        setSelectedAccountsMap(prev => {
+          // If already exists, keep it; else initialize it with the first account
+          if (prev[clickedPayment._id]) return prev;
+  
+          return {
+            ...prev,
+            [clickedPayment._id]: [
+              {
+                accountId: clickedPayment.paymentAccounts[0]._id,
+                amount: ''
+              }
+            ]
+          };
+        });
+      }
+    }, [clickedPayment]);
+  
+    useEffect(() => {
+      console.log("Multipayment ....... ", multipayment);
+      console.log("selectedAccountsMap ....... ", selectedAccountsMap);
+    }, [multipayment])
+    useEffect(() => {
+      if (clickedPayment?._id && !accountInputsPerPayment[clickedPayment._id]) {
+        setAccountInputsPerPayment(prev => ({
+          ...prev,
+          [clickedPayment._id]: [{ id: '', amount: '' }]
+        }));
+      }
+    }, [clickedPayment]);
+  
+    const handleAddAccount = () => {
+      const existingAccounts = selectedAccountsMap[clickedPayment._id] || [];
+      const nextAccount = clickedPayment.paymentAccounts[existingAccounts.length];
+  
+      if (nextAccount) {
+        setSelectedAccountsMap(prev => ({
+          ...prev,
+          [clickedPayment._id]: [
+            ...existingAccounts,
+            { accountId: nextAccount._id, amount: '' }
+          ]
+        }));
+      }
+    };
+  
+    const handleAccountChange = (index, field, value) => {
+      setSelectedAccountsMap(prev => {
+        const updatedAccounts = [...(prev[clickedPayment._id] || [])];
+        updatedAccounts[index] = {
+          ...updatedAccounts[index],
+          [field]: value
+        };
+        return {
+          ...prev,
+          [clickedPayment._id]: updatedAccounts
+        };
+      });
+    };
+  
+    const handleSelectChange = (index, value) => {
+      const updated = [...accountInputsPerPayment[clickedPayment._id]];
+      updated[index].id = value;
+      setAccountInputsPerPayment(prev => ({
+        ...prev,
+        [clickedPayment._id]: updated
+      }));
+    };
+  
+    const handleAmountChange = (index, value) => {
+      const updated = [...accountInputsPerPayment[clickedPayment._id]];
+      updated[index].amount = value;
+      setAccountInputsPerPayment(prev => ({
+        ...prev,
+        [clickedPayment._id]: updated
+      }));
+    };
+  
+  const handleDone = () => {
+    const selected = selectedAccountsMap[clickedPayment._id] || [];
+  
+    const enriched = selected.map((entry) => {
+      const account = clickedPayment.paymentAccounts.find(
+        (acc) => acc._id === entry.accountId
+      );
+  
+      return {
+        accountId: account?._id,
+        payment_type_id: account?.payment_type_id,
+        amount: parseFloat(entry.amount) || 0,
+      };
+    });
+  
+    setMultipayment((prev) => {
+      // Combine previous and new entries
+      const combined = [...prev?.filter(
+        (entry) => !enriched.find((e) => e.accountId === entry.accountId)
+      ), ...enriched];
+  
+      // Remove duplicates by accountId
+      const unique = [];
+      const seenIds = new Set();
+  
+      for (const item of combined) {
+        if (!seenIds.has(item.accountId)) {
+          unique.push(item);
+          seenIds.add(item.accountId);
+        }
+      }
+  
+      const totalPaid = unique.reduce((sum, item) => sum + item.amount, 0);
+  
+      return unique;
+    });
+  
+    setShowPaymentAccounts(false);
+  };
+  
+  useEffect(() => {
+    const container = document.getElementById("paymentScroll");
+    if (!container) return;
+  
+    let isDown = false;
+    let startX;
+    let scrollLeft;
+  
+    const handleMouseDown = (e) => {
+      isDown = true;
+      container.classList.add("active");
+      startX = e.pageX - container.offsetLeft;
+      scrollLeft = container.scrollLeft;
+    };
+  
+    const handleMouseLeave = () => {
+      isDown = false;
+      container.classList.remove("active");
+    };
+  
+    const handleMouseUp = () => {
+      isDown = false;
+      container.classList.remove("active");
+    };
+  
+    const handleMouseMove = (e) => {
+      if (!isDown) return;
+      e.preventDefault();
+      const x = e.pageX - container.offsetLeft;
+      const walk = (x - startX) * 2; // scroll speed
+      container.scrollLeft = scrollLeft - walk;
+    };
+  
+    const handleWheel = (e) => {
+      if (e.deltaY === 0) return;
+      e.preventDefault(); // prevent vertical scroll
+      container.scrollLeft += e.deltaY;
+    };
+  
+    container.addEventListener("mousedown", handleMouseDown);
+    container.addEventListener("mouseleave", handleMouseLeave);
+    container.addEventListener("mouseup", handleMouseUp);
+    container.addEventListener("mousemove", handleMouseMove);
+    container.addEventListener("wheel", handleWheel, { passive: false });
+  
+    // Clean up
+    return () => {
+      container.removeEventListener("mousedown", handleMouseDown);
+      container.removeEventListener("mouseleave", handleMouseLeave);
+      container.removeEventListener("mouseup", handleMouseUp);
+      container.removeEventListener("mousemove", handleMouseMove);
+      container.removeEventListener("wheel", handleWheel);
+    };
+  }, []);
+
 
   const handleDecrement = (id, e) => {
     e.preventDefault()
@@ -190,7 +395,7 @@ const Purchase = () => {
   /* Function to handle confirm button click */
   const handleConfirm = (e) => {
     e.preventDefault()
-    let purchaseTime, purchaseDate, payload, purchaseProducts, customerPayload, purchasepurchaseSupplierName, purchasesupplierPhoneNumber, flag = false, updateCustomerPayload, newCustomerPayload
+    let purchaseTime, purchaseDate, payload, purchaseProducts, multiPayment, customerPayload, purchasepurchaseSupplierName, purchasesupplierPhoneNumber, flag = false, updateCustomerPayload, newCustomerPayload
     // customerPayload = {
     //   purchaseSupplierName,
     //   supplierPhoneNumber,
@@ -257,8 +462,10 @@ const Purchase = () => {
 
 
     purchaseProducts = [...cartItems]
+    multiPayment = [...multipayment]
     let purchasePayload = {
       purchaseProducts,
+      multiPayment,
       purchaseSupplierId,
       purchaseSupplierName,
       purchaseSupplierPhoneNumber,
@@ -352,6 +559,10 @@ const Purchase = () => {
       dispatch(resetPurchase())
       dispatch(allProducts({page: 1}))
     }
+
+    if (paymentTypes.length === 0) {
+      dispatch(allPaymentTypes())
+    }
     //dispatch(insertCashPaid(customerCashPaid))
     dispatch(calculateChange())
   }, [user, navigate, dispatch, cartItems, purchaseTotal, paymentMethod, isPurchaseLoading, isPurchaseSuccess])
@@ -420,34 +631,112 @@ const Purchase = () => {
           <div className='purchase-cart-container'>
             <span className='cart-header'><h1>Cart</h1></span>
 
-            <hr></hr>
-            <div className='payment-selector-btn'>
-              <div className='cash-div'>
+          <hr></hr>
+          <div className='payment-selector-btn' id="paymentScroll">
+            {paymentTypes.length > 0 ? (paymentTypes?.map((payment, index) => (
+              <div className='cash-div' key={index}>
+                <div className={`logo-tile logo-tile-hover `}  //${paymentMethod === "Cash" ? "payment-checked" : ""}
+                  onClick={(e) => handlePaymentClick(payment)}>
+                  {/* <MoneyIcon className={` btn-icon-unchecked  `} // "btn-icon-checked"
+                  /> */}
+                  <span  //${paymentMethod === "Cash" ? "checked-span" : "unchecked-span"}
+                  >
+                    {payment?.type_image
+                      ? <img src={payment.type_image} alt={payment.type_name} style={{ height: '50px', width: '60px' }} />
+                      : payment?.type_name
+                        ?.split(' ')
+                        .map(word => word[0])
+                        .join('')
+                    }
+                  </span>
+                </div>
+                {/* {
+                  showPaymentAccounts && payment?.paymentAccounts?.map((accounts) => (
+                    <div className="dropdown-wrapper">
+                      <select className="account-dropdown">
+                        <option value="">Select Account</option>
+                        {
+                          showPaymentAccounts && payment?.paymentAccounts?.map((account, index) => (
+                            <option key={index} value={account.id}>
+                              {account.account_name} ({account.account_number})
+                            </option>
+                          ))
+                        }
+                      </select>
+                    </div>
+                  ))
+                } */}
+              </div>
 
-                <div className={`logo-tile logo-tile-hover ${paymentMethod === "Cash" ? "payment-checked" : ""}`}
-                  onClick={(e) => setPaymentMethod("Cash")}
+            ))) : <span className='no-payment-method-text'>Create Payemnt Methods from Settings</span>
+
+            }
+            {/* <div className='credit-div'>
+              <div className={`logo-tile logo-tile-hover ${paymentMethod === "Credit" ? "payment-checked" : ""}`}
+                onClick={(e) => setPaymentMethod("Credit")}>
+                <CreditCardIcon className={`${paymentMethod === "Credit" ? "btn-icon-checked" : "btn-icon-unchecked"}`} />
+                <span className={` ${paymentMethod === "Credit" ? "checked-span" : "unchecked-span"}`}>
+                  Credit
+                </span>
+              </div>
+            </div> */}
+
+          </div>
+          {showPaymentAccounts && clickedPayment?.paymentAccounts?.length > 0 && (
+            <div className="dropdown-wrapper">
+              <div className="dropdown-header">
+                <span className="dropdown-title">Payment Accounts</span>
+                <div
+                  className="close-icon-square"
+                  onClick={() => setShowPaymentAccounts(false)}
                 >
-                  <MoneyIcon className={`${paymentMethod === "Cash" ? "btn-icon-checked" : "btn-icon-unchecked"}`} />
-                  <span className={` ${paymentMethod === "Cash" ? "checked-span" : "unchecked-span"}`}>
-                    Cash
-                  </span>
+                  <CloseIcon style={{ color: 'white', height: '15px', width: '15px' }} />
                 </div>
               </div>
 
-              <div className='credit-div'>
+              {selectedAccounts.map((entry, index) => (
+                <div key={index}>
+                  <select
+                    className="account-dropdown"
+                    value={entry.accountId}
+                    onChange={(e) =>
+                      handleAccountChange(index, 'accountId', e.target.value)
+                    }
+                  >
+                    <option value="">Select Account</option>
+                    {clickedPayment.paymentAccounts.map((account) => (
+                      <option key={account._id} value={account._id}>
+                        {account.account_name} ({account.account_number})
+                      </option>
+                    ))}
+                  </select>
 
-                <div className={`logo-tile logo-tile-hover ${paymentMethod === "Credit" ? "payment-checked" : ""}`}
-                  onClick={(e) => setPaymentMethod("Credit")}>
-                  <CreditCardIcon className={`${paymentMethod === "Credit" ? "btn-icon-checked" : "btn-icon-unchecked"}`} />
-                  <span className={` ${paymentMethod === "Credit" ? "checked-span" : "unchecked-span"}`}>
-                    Credit
-                  </span>
+                  <input
+                    type="number"
+                    name="account_amount"
+                    className="account-amount-input"
+                    placeholder="Enter amount"
+                    value={entry.amount}
+                    onChange={(e) =>
+                      handleAccountChange(index, 'amount', e.target.value)
+                    }
+                  />
                 </div>
+              ))}
 
-              </div>
+              {selectedAccounts.length < clickedPayment.paymentAccounts.length && (
+                <div className="add-account-row" onClick={handleAddAccount}>
+                  <span className="add-account-text">Add another account</span>
+                  <AddIcon className="add-account-icon" />
+                </div>
+              )}
 
+              <button className="done-button" onClick={handleDone}>
+                Done
+              </button>
             </div>
-            <hr></hr>
+          )}
+          <hr></hr>
             {/* <div className='cart-list-header'>
           <table className='cart-list-header-table-header'>
             <tr>

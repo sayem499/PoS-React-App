@@ -1,6 +1,7 @@
 const asyncHandler = require('express-async-handler')
 const Purchases = require('../model/purchase.model.js')
 const Products = require('../model/product.model.js')
+const Accounts = require('../model/account.model')
 
 
 //@desc Get purchase
@@ -24,11 +25,12 @@ const setPurchase = asyncHandler( async (req, res) => {
     }
 
     const invoiceId = generateInvoiceId();
+    const userIdV = req.users._id;
 
     const purchase = await Purchases.create({
         purchaseProducts: req.body.purchaseProducts,
         invoiceId: invoiceId,
-        userId: req.users._id, // Assuming the user is authenticated and `req.users` contains user info
+        userId: userIdV, // Assuming the user is authenticated and `req.users` contains user info
         purchaseSupplierId: req.body.purchaseSupplierId,
         purchaseSupplierName: req.body.purchaseSupplierName,
         purchaseSupplierPhoneNumber: req.body.purchaseSupplierPhoneNumber,
@@ -61,6 +63,22 @@ const setPurchase = asyncHandler( async (req, res) => {
   
       await product.save(); // Save the updated product
     }
+
+    // Then create Account records
+    const multiPayment = req.body.multiPayment || [];
+
+    const accountEntries = multiPayment.map(payment => ({
+      userId: userIdV,
+      invoice: invoiceId,
+      purchase_id: purchase._id,
+      account_type: 'debit',
+      transaction_id: null, // Or generate if needed
+      payment_type_id: payment.payment_type_id,
+      payment_account_id: payment.accountId,
+      payment_amount: payment.amount,
+    }));
+
+    await Accounts.insertMany(accountEntries);
     
     res.status(200).json(purchase);
 })
