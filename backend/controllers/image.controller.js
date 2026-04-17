@@ -47,7 +47,7 @@ const imageUpload = asyncHandler( async (req, res) => {
 
         // Construct the full file URL
         const category = req.params.category; // Get category from URL
-        const fileUrl = `${req.protocol}://${req.get('host')}/uploads/${category}/${req.file.filename}`;
+        const fileUrl = `/uploads/${category}/${req.file.filename}`;
 
         // ✅ Delete previous image if provided and valid
         if (req.body.previousImageUrl) {
