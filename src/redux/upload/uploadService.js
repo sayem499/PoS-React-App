@@ -1,6 +1,5 @@
 import axios from 'axios'
 
-const API_URL = process.env.REACT_APP_ORIGIN_URL + '/api/uploads/'
 const FILE_PATH = '/api/uploads/';
 
 const imageUpload = async (type, file, data, token) => {
