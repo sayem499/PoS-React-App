@@ -3,7 +3,7 @@ import "../css/productcard.css";
 function ProductCard({ image, name, price, quantity, cost, type }) {
   return (
     <div className="product-card">
-      <img src={`${process.env.REACT_APP_ORIGIN_URL}/${image}`} alt={name} className="product-image" />
+      <img src={`${process.env.REACT_APP_ORIGIN_URL}${image}`} alt={name} className="product-image" />
       <div className="product-info">
         <h3 className="product-name">{name}</h3>
         <p className="product-price"> X{quantity}</p>
