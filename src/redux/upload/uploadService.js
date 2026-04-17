@@ -1,6 +1,7 @@
 import axios from 'axios'
 
 const API_URL = process.env.REACT_APP_ORIGIN_URL + '/api/uploads/'
+const FILE_PATH = '/api/uploads/';
 
 const imageUpload = async (type, file, data, token) => {
     if (!["logos", "profiles", "products", "paymentTypes"].includes(type)) {
@@ -20,7 +21,7 @@ const imageUpload = async (type, file, data, token) => {
         }
     };
 
-    const response = await axios.post(`${API_URL}${type}`, formData, config);
+    const response = await axios.post(`${FILE_PATH}${type}`, formData, config);
     return response.data;
 };
 
