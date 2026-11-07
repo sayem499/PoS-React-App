@@ -27,85 +27,102 @@ const Payment = () => {
     const [paymentTypeId, setPaymentTypeId] = useState("");
 
     const handleUpdatePayment = async () => {
-        let paymentTypeImageUrl = newTypeImage;
-    
-        if (newTypeImageFile) {
-            const payload = {
-                type: 'paymentTypes',
-                file: newTypeImageFile,
-                data: {
-                    previousImageUrl: newTypeImage,
-                },
-            };
-            console.log("newTypeImage ............... ", newTypeImage)
-            const response = await dispatch(imageUpload(payload)).unwrap();
-            paymentTypeImageUrl = response.filePath;
-        }
-    
-        if (newTypeName === '') {
-            toast.error('Please fill the required fields!');
+        if (!newTypeName.trim()) {
+            toast.error("Please fill the required fields!");
             return;
         }
-        
-        console.log("paymentTypeImageUrl ............... ",paymentTypeImageUrl)
-        const paymentTypeData = {
-            type_name: newTypeName,
-            type_image: paymentTypeImageUrl,
-        };
-    
+
         try {
-            dispatch(updatePaymentType({ paymentTypeID: editingPaymentId, updatedPaymentTypeData: paymentTypeData }));
-            toast.success('Payment type updated successfully!');
+            let paymentTypeImageUrl = newTypeImage;
+            const currentPaymentType = paymentTypes.find(
+                (payment) => payment._id === editingPaymentId
+            );
+
+            let typeImageFileId = currentPaymentType?.typeImageFileId || "";
+
+            if (newTypeImageFile) {
+                const response = await dispatch(
+                    imageUpload({
+                        type: "paymentTypes",
+                        file: newTypeImageFile,
+                    })
+                ).unwrap();
+
+                paymentTypeImageUrl = response.image.url;
+                typeImageFileId = response.image.fileId;
+            }
+
+            const paymentTypeData = {
+                type_name: newTypeName,
+                type_image: paymentTypeImageUrl,
+                typeImageFileId,
+            };
+
+            await dispatch(
+                updatePaymentType({
+                    paymentTypeID: editingPaymentId,
+                    updatedPaymentTypeData: paymentTypeData,
+                })
+            ).unwrap();
+
+            toast.success("Payment type updated successfully!");
+
+            setNewTypeName("");
+            setNewTypeImage("");
+            setNewTypeImageFile(null);
+            setEditingPaymentId(null);
+            setIsEditMode(false);
+            setShowAddPaymentModal(false);
+
         } catch (error) {
-            console.log(error);
-            toast.error('Failed to update payment type');
+            console.error(error);
+            toast.error(error?.message || "Failed to update payment type");
         }
-    
-        // Reset
-        setNewTypeName('');
-        setNewTypeImage('');
-        setNewTypeImageFile('');
-        setEditingPaymentId(null);
-        setIsEditMode(false);
-        setShowAddPaymentModal(false);
     };
 
     const handleAddPayment = async (e) => {
-        let paymentTypeImageUrl = null;
-        if (newTypeImageFile) {
-            const payload = {
-                type: 'paymentTypes',
-                file: newTypeImageFile,
-                data: {
-                    previousImageUrl: null
-                }
-            }
+        e?.preventDefault();
 
-            const response = await dispatch(imageUpload(payload)).unwrap()
-            paymentTypeImageUrl = response.filePath
-        }
-        if (newTypeName === '')
-            toast.error('Please fill the required fields!')
-
-        let paymentTypeData = {
-            type_name: newTypeName,
-            type_image: paymentTypeImageUrl
+        if (!newTypeName.trim()) {
+            toast.error("Please fill the required fields!");
+            return;
         }
 
         try {
-            dispatch(setPaymentType(paymentTypeData))
+            let paymentTypeImageUrl = null;
+            let typeImageFileId = "";
+
+            if (newTypeImageFile) {
+                const response = await dispatch(
+                    imageUpload({
+                        type: "paymentTypes",
+                        file: newTypeImageFile,
+                    })
+                ).unwrap();
+
+                paymentTypeImageUrl = response.image.url;
+                typeImageFileId = response.image.fileId;
+            }
+
+            const paymentTypeData = {
+                type_name: newTypeName,
+                type_image: paymentTypeImageUrl,
+                typeImageFileId,
+            };
+
+            await dispatch(setPaymentType(paymentTypeData)).unwrap();
+
+            toast.success("Payment type created successfully!");
+
+            setNewTypeName("");
+            setNewTypeImage("");
+            setNewTypeImageFile(null);
+            setShowAddPaymentModal(false);
 
         } catch (error) {
-            console.log(error)
+            console.error(error);
+            toast.error(error?.message || "Failed to create payment type");
         }
-
-        if (isPaymentTypesSuccess) {
-            toast.success('Payment type created successfully!')
-        }
-
-        setNewTypeName('');
-        setNewTypeImage('');
-        setShowAddPaymentModal(false);
     };
 
     const handleDeletePaymentType = async (id) => {
@@ -141,8 +158,8 @@ const Payment = () => {
 
     useEffect(() => {
         dispatch(allPaymentTypes())
-    },[showPaymentAccountModal])
-    
+    }, [showPaymentAccountModal])
+
 
     return (
         <div className='settings-payment-container'>
@@ -173,7 +190,7 @@ const Payment = () => {
                                     }
                                 </span>
                                 <div className='settings-payment-card-item-actions'>
-                                    <span onClick={() => {setShowPaymentAccountModal(true); setPaymentAccounts(payment.paymentAccounts); setPaymentTypeId(payment._id)}}><FormatListBulletedOutlinedIcon/></span>
+                                    <span onClick={() => { setShowPaymentAccountModal(true); setPaymentAccounts(payment.paymentAccounts); setPaymentTypeId(payment._id) }}><FormatListBulletedOutlinedIcon /></span>
                                     <span onClick={() => {
                                         setIsEditMode(true);
                                         setShowAddPaymentModal(true);
@@ -192,13 +209,13 @@ const Payment = () => {
             }
 
             {showPaymentAccountModal && (
-                <PaymentAccountModal         
+                <PaymentAccountModal
                     isOpen={showPaymentAccountModal}
                     onClose={() => setShowPaymentAccountModal(false)}
                     PaymentAccounts={paymentAccounts}
                     paymentTypeId={paymentTypeId}
                 />
-                
+
             )}
 
             {showAddPaymentModal && (

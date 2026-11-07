@@ -25,7 +25,7 @@ export const allPaymentTypes = createAsyncThunk(
 
       return thunkAPI.rejectWithValue(message);
     }
-  }
+  },
 );
 
 export const setPaymentType = createAsyncThunk(
@@ -44,7 +44,7 @@ export const setPaymentType = createAsyncThunk(
 
       return thunkAPI.rejectWithValue(message);
     }
-  }
+  },
 );
 
 export const updatePaymentType = createAsyncThunk(
@@ -56,7 +56,7 @@ export const updatePaymentType = createAsyncThunk(
       return await paymentTypeService.updatePaymentType(
         paymentTypeID,
         updatedPaymentTypeData,
-        token
+        token,
       );
     } catch (error) {
       const message =
@@ -68,7 +68,7 @@ export const updatePaymentType = createAsyncThunk(
 
       return thunkAPI.rejectWithValue(message);
     }
-  }
+  },
 );
 
 export const deletePaymentType = createAsyncThunk(
@@ -87,7 +87,7 @@ export const deletePaymentType = createAsyncThunk(
 
       return thunkAPI.rejectWithValue(message);
     }
-  }
+  },
 );
 
 export const paymentTypeSlice = createSlice({
@@ -99,66 +99,80 @@ export const paymentTypeSlice = createSlice({
 
   extraReducers: (builder) => {
     builder
+      // Get all payment types
       .addCase(allPaymentTypes.pending, (state) => {
-        state.isPaymentTypesLoading = true
+        state.isPaymentTypesLoading = true;
+        state.isPaymentTypesError = false;
       })
       .addCase(allPaymentTypes.fulfilled, (state, action) => {
-        state.isPaymentTypesLoading = false
-        state.isPaymentTypesSuccess = true
-        state.paymentTypes = action.payload
+        state.isPaymentTypesLoading = false;
+        state.isPaymentTypesSuccess = true;
+        state.paymentTypes = action.payload;
       })
       .addCase(allPaymentTypes.rejected, (state, action) => {
-        state.isPaymentTypesLoading = false
-        state.isPaymentTypesError = true
-        state.message = action.payload
+        state.isPaymentTypesLoading = false;
+        state.isPaymentTypesError = true;
+        state.message = action.payload;
       })
+
+      // Create payment type
       .addCase(setPaymentType.pending, (state) => {
-        state.isPaymentTypesLoading = true
+        state.isPaymentTypesLoading = true;
       })
       .addCase(setPaymentType.fulfilled, (state, action) => {
-        state.isPaymentTypesLoading = false
-        state.isPaymentTypesSuccess = true
+        state.isPaymentTypesLoading = false;
+        state.isPaymentTypesSuccess = true;
         state.paymentTypes = state.paymentTypes.concat(action.payload);
       })
       .addCase(setPaymentType.rejected, (state, action) => {
-        state.isPaymentTypesLoading = false
-        state.isPaymentTypesError = true
-        state.message = action.payload
+        state.isPaymentTypesLoading = false;
+        state.isPaymentTypesError = true;
+        state.message = action.payload;
       })
+
+      // Update payment type
       .addCase(updatePaymentType.pending, (state) => {
-        state.isPaymentTypesLoading = true
+        state.isPaymentTypesLoading = true;
       })
       .addCase(updatePaymentType.fulfilled, (state, action) => {
-        state.isPaymentTypesLoading = false
-        state.isPaymentTypesSuccess = true
-        state.paymentTypes.map((payment) => {
-          if (payment._id === action.payload._id) {
-            payment.type_name = action.payload.type_name
-            payment.type_image = action.payload.type_image
-          }
-        });
+        state.isPaymentTypesLoading = false;
+        state.isPaymentTypesSuccess = true;
+
+        state.paymentTypes = state.paymentTypes.map((payment) =>
+          payment._id === action.payload._id
+            ? {
+                ...payment,
+                type_name: action.payload.type_name,
+                type_image: action.payload.type_image,
+                typeImageFileId: action.payload.typeImageFileId,
+              }
+            : payment,
+        );
       })
       .addCase(updatePaymentType.rejected, (state, action) => {
-        state.isPaymentTypesLoading = false
-        state.isPaymentTypesError = true
-        state.message = action.payload
+        state.isPaymentTypesLoading = false;
+        state.isPaymentTypesError = true;
+        state.message = action.payload;
       })
+
+      // Delete payment type
       .addCase(deletePaymentType.pending, (state) => {
-        state.isPaymentTypesLoading = true
+        state.isPaymentTypesLoading = true;
       })
       .addCase(deletePaymentType.fulfilled, (state, action) => {
-        state.isPaymentTypesLoading = false
-        state.isPaymentTypesSuccess = true
+        state.isPaymentTypesLoading = false;
+        state.isPaymentTypesSuccess = true;
+
         state.paymentTypes = state.paymentTypes.filter(
-          (payment) => payment._id !== action.payload._id
+          (payment) => payment._id !== action.payload._id,
         );
       })
       .addCase(deletePaymentType.rejected, (state, action) => {
-        state.isPaymentTypesLoading = false
-        state.isPaymentTypesError = true
-        state.message = action.payload
-      })
-  }
+        state.isPaymentTypesLoading = false;
+        state.isPaymentTypesError = true;
+        state.message = action.payload;
+      });
+  },
 });
 
 export const { resetPaymentType } = paymentTypeSlice.actions;

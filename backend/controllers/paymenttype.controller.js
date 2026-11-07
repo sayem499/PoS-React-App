@@ -1,8 +1,9 @@
-const asyncHandler = require('express-async-handler');
-const PaymentTypes = require('../model/paymenttype.model');
-const PaymentAccounts = require('../model/paymentaccount.model');
-const fs = require('fs');
-const path = require('path');
+const asyncHandler = require("express-async-handler");
+const PaymentTypes = require("../model/paymenttype.model");
+const PaymentAccounts = require("../model/paymentaccount.model");
+const fs = require("fs");
+const path = require("path");
+const imagekit = require("../config/imagekit.js");
 
 // @desc    Get all payment types
 // @route   GET /api/payment-types
@@ -15,13 +16,15 @@ const getPaymentTypes = asyncHandler(async (req, res) => {
   // Then for each type, fetch its related payment accounts
   const typesWithAccounts = await Promise.all(
     types.map(async (type) => {
-      const accounts = await PaymentAccounts.find({ payment_type_id: type._id });
+      const accounts = await PaymentAccounts.find({
+        payment_type_id: type._id,
+      });
 
       return {
         ...type._doc, // spread the original payment type fields
         paymentAccounts: accounts, // add paymentAccounts array
       };
-    })
+    }),
   );
   res.status(200).json(typesWithAccounts);
 });
@@ -30,12 +33,15 @@ const getPaymentTypes = asyncHandler(async (req, res) => {
 // @route   POST /api/payment-types
 // @access  Private
 const setPaymentType = asyncHandler(async (req, res) => {
-  const { type_name, type_image } = req.body;
+  const { type_name, type_image, typeImageFileId } = req.body;
+
   const userId = req.users._id;
+
   const paymentType = await PaymentTypes.create({
     userId,
     type_name,
-    type_image
+    type_image,
+    typeImageFileId,
   });
 
   res.status(201).json(paymentType);
@@ -49,12 +55,34 @@ const updatePaymentType = asyncHandler(async (req, res) => {
 
   if (!paymentType) {
     res.status(404);
-    throw new Error('Payment type not found!');
+    throw new Error("Payment type not found!");
   }
 
-  const updated = await PaymentTypes.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-  });
+  const oldFileId = paymentType.typeImageFileId;
+
+  const updated = await PaymentTypes.findByIdAndUpdate(
+    req.params.id,
+    {
+      type_name: req.body.type_name,
+      type_image: req.body.type_image,
+      typeImageFileId: req.body.typeImageFileId,
+    },
+    {
+      new: true,
+      runValidators: true,
+    },
+  );
+
+  // Delete old ImageKit image only after MongoDB update succeeds
+  const newFileId = updated.typeImageFileId;
+
+  if (oldFileId && oldFileId !== newFileId) {
+    try {
+      await imagekit.deleteFile(oldFileId);
+    } catch (error) {
+      console.error("Old ImageKit image deletion failed:", error.message);
+    }
+  }
 
   res.status(200).json(updated);
 });
@@ -62,38 +90,37 @@ const updatePaymentType = asyncHandler(async (req, res) => {
 // @desc    Delete a payment type
 // @route   DELETE /api/payment-types/:id
 // @access  Private
-const deletePaymentType = async (req, res) => {
-  try {
-      const paymentType = await PaymentTypes.findById(req.params.id);
-      if (!paymentType) {
-          return res.status(404).json({ message: 'Payment type not found' });
-      }
+const deletePaymentType = asyncHandler(async (req, res) => {
+  const paymentType = await PaymentTypes.findById(req.params.id);
 
-      // Extract filename from URL
-      const imageUrl = paymentType.type_image;
-      if (imageUrl) {
-          const filename = imageUrl.split('/uploads/paymentTypes/')[1]; // Get filename only
-          const filePath = path.join(__dirname, '..', 'uploads', 'paymentTypes', filename);
-
-          // Delete the file if it exists
-          if (fs.existsSync(filePath)) {
-              fs.unlinkSync(filePath);
-          }
-      }
-
-      // Then delete the database document
-      await PaymentTypes.findByIdAndDelete(req.params.id);
-
-      res.status(200).json({ message: 'Payment type and image deleted successfully' });
-  } catch (error) {
-      console.error('Error deleting payment type:', error);
-      res.status(500).json({ message: 'Internal server error' });
+  if (!paymentType) {
+    res.status(404);
+    throw new Error("Payment type not found!");
   }
-};
+
+  const fileId = paymentType.typeImageFileId;
+
+  // Delete MongoDB document
+  await PaymentTypes.findByIdAndDelete(req.params.id);
+
+  // Delete ImageKit image
+  if (fileId) {
+    try {
+      await imagekit.deleteFile(fileId);
+    } catch (error) {
+      console.error("ImageKit image deletion failed:", error.message);
+    }
+  }
+
+  res.status(200).json({
+    _id: paymentType._id,
+    message: "Payment type deleted successfully",
+  });
+});
 
 module.exports = {
   getPaymentTypes,
   setPaymentType,
   updatePaymentType,
-  deletePaymentType
+  deletePaymentType,
 };
