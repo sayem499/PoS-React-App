@@ -41,7 +41,7 @@ function Updateproduct({ row, closeUpdateProduct }) {
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-    
+
     if (file) {
       setProductImage(file)
       setPreview(URL.createObjectURL(file));
@@ -50,25 +50,30 @@ function Updateproduct({ row, closeUpdateProduct }) {
 
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    let productImageUrl = row.productImageUrl
+    e.preventDefault();
 
-    if (productImage != null) {
-      const imagePayload = {
-        type: 'products',
-        file: productImage,
-        data: {
-          previousImageUrl: row.productImageUrl
-        }
-      }
-
-      const response = await dispatch(imageUpload(imagePayload)).unwrap()
-      productImageUrl = response.filePath
+    if (!productTitle || !productBrand || !productType) {
+      toast.error("Please fill the required fields!");
+      return;
     }
 
-    if (productTitle === '' || productBrand === '' || productType === '')
-      toast.error('Please fill the required fields!')
-    else {
+    try {
+      let productImageUrl = row.productImageUrl;
+      let productImageFileId = row.productImageFileId;
+
+      // Upload new image if selected
+      if (productImage) {
+        const imagePayload = {
+          type: "products",
+          file: productImage,
+        };
+
+        const response = await dispatch(imageUpload(imagePayload)).unwrap();
+
+        productImageUrl = response.image.url;
+        productImageFileId = response.image.fileId;
+      }
+
       const updatedProductData = {
         productTitle,
         productBrand,
@@ -77,22 +82,23 @@ function Updateproduct({ row, closeUpdateProduct }) {
         productUnitPrice,
         productUnitCost,
         productBarcode,
-        productImageUrl
-      }
-      let productID = row._id
-      const payload = {
-        productID,
-        updatedProductData,
-      }
+        productImageUrl,
+        productImageFileId,
+      };
 
-      dispatch(updateProducts(payload))
+      await dispatch(
+        updateProducts({
+          productID: row._id,
+          updatedProductData,
+        })
+      ).unwrap();
+
+      toast.success("Product updated successfully!");
+    } catch (error) {
+      console.error(error);
+      toast.error(error?.message || "Failed to update product!");
     }
-
-
-    if (isSuccess) {
-      toast.success('Product updated successfully!')
-    }
-  }
+  };
 
   const handleScan = (data) => {
     setProductBarcode(data)
